@@ -633,7 +633,7 @@ Let's disassemble $B500 ...
                         COUNT      = $3E    ; 16-bit counter
                         DRIVE_DATA = $C08C  ; Read Disk Nibble
 
-                ReadBoot3:               
+                ReadBoot3:
 B500:8D 17 B5           STA _B516+1         ; *** SELF-MODIFYING *** DestAddr
                                             ; These 3 bytes are wasted
                                             ; Should just be STA $3D
