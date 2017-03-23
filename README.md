@@ -1035,7 +1035,7 @@ And now for the moment of truth ...
 
 ## Logo Take 2
 
-For some unknown reason there is actually a complete _second_ logo on disk?!
+For some unknown reason there is actually a complete _second_ copy of the logo on disk!?
 
 ```
     BLOAD GET_LOGO_1
@@ -1045,9 +1045,11 @@ For some unknown reason there is actually a complete _second_ logo on disk?!
     BSAVE GET_LOGO_2,A$1EEE,L$46
 ```
 
-Hmm, why is our logo messed up?
+* ![logo 2](pics/logo_2.png)
 
-It turns out 4 tracks are mirrored !?!?
+Hmm, why is our logo messed up??
+
+It turns out 4 tracks are mirrored !?!?!?
 
 |Track| Description                 |
 |:---:|:---------------------------:|
@@ -1056,7 +1058,7 @@ It turns out 4 tracks are mirrored !?!?
 | $0A | Mirror of Track $18 @ $3000 |
 | $0B | Mirror of Track $17 @ $2000 |
 
-This is easy enough to fix:
+This is easy enough to fix, we just need to swap the track load order. :-)
 
 Boot our `Fanta.Work` disk ...
 
@@ -1071,6 +1073,8 @@ Boot our `Fanta.Work` disk ...
 You know the drill ... replace Slot 6, Drive 1 with Fantavision,
 and `1EEEG`
 
+* ![logo](pics/logo.png)
+
 
 ## Logo Take 3 !
 
@@ -1084,12 +1088,17 @@ Track $20, Sectors $8 .. $F has yet a _3rd_ copy of the logo! (Bottom 1/4)
     BSAVE GET_LOGO_34,A$1EEE,L$46
 ```
 
-If we compare the original logo on Tracks $17 and $18 we see that:
+* ![logo 3](pics/logos_34.png)
+
+If we compare the original logo on Tracks $17 and $18 to this third copy
+we find:
 
 * Track $20, Sector $8 == Track $18, Sector $8 @ $3800
 
+
 ## Logo Take 4 !!
 
+And just when you thought it couldn't get any more loopy ...
 Track $21, Sectors $8 ..$F has yet a _4th_ copy of the logo! (Bottom 1/4)
 
 If we compare the original logo on Tracks $17 and $18 we see that:
@@ -1097,6 +1106,26 @@ If we compare the original logo on Tracks $17 and $18 we see that:
 * Track $21, Sector $8 == Track $18, Sector $8
 
 Are you going loco yet?
+
+In case you are curious how does Fantavision orignally loads the logo?
+That resides at $BE89:
+
+```asm
+    BE89:AD 52 C0       LDA $C052
+    BE8C:AD 57 C0       LDA $C057
+    BE8F:AD 50 C0       LDA $C050
+
+    BE92:A9 17          LDA #$17        ; Track $17
+    BE94:20 09 B0       JSR RWTS_Seek
+
+    BE97:A9 20          LDA #$20        ; Load $2000 .. $2FFF
+    BE99:A0 17          LDY #$17        ; First half of logo on track $17
+    BE9B:20 00 B0       JSR RTWS_LoadTrack
+
+    BE9E:A9 30          LDA #$20        ; Load $3000 .. $3FFF
+    BEA0:A0 18          LDY #$18        ; Second half of logo on track $18
+    BEA2:20 00 B0       JSR RTWS_LoadTrack
+```
 
 
 # Boot Tracing Stage 5
