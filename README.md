@@ -761,6 +761,9 @@ The simpliest is to format track $22 normally,
 and modify $B500 to load them in.
 
 That is exactly what Black Bag's "Kracked" version of Fantavision does.
+
+* ![Black Bag Krack](pics/logo_blackbag.png)
+
 On Track $15, Sector $5 @ $B500 it uses:
 
 * RWTS_ReadPrologue = $B126 and
@@ -792,6 +795,10 @@ FindSectorD:
     CLC                 ; B527:18       ; Signal $087C Nibble Check = PASS
     RTS                 ; B528:60
 ```
+
+Someone even patched the backup utility !
+
+* ![Logo](pics/backup_blackbag.png)
 
 We will discuss when we remove the copy protection ourselves.
 
