@@ -413,7 +413,7 @@ In case you are wondering where `Sector` comes from --
 it comes from the P5 PROM ReadSector routine @ $C65C.
 On my //e it looks this:
 
-```
+```asm
                         ORG $C65C
 
                 P5.ReadSector
