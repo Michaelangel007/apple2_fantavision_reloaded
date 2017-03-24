@@ -1454,52 +1454,52 @@ This is the disassembly:
 Here is the diassembly of the second nibble check on Track $22.
 
 ```asm
-                        ; Normally $0200 is the keyboard buffer
-                        ; But here it is used as an array of booleans.
-                        ;
-                        ;   bool MissingKey[ 256 ];
-                        ;
-                        False     = $00
-                        True      = $FF
+                            ; Normally $0200 is the keyboard buffer
+                            ; But here it is used as an array of booleans.
+                            ;
+                            ;   bool MissingKey[ 256 ];
+                            ;
+                            False     = $00
+                            True      = $FF
 
-                        KeyBuf    = $0200
-                        DriveData = $C08C
+                            KeyBuf    = $0200
+                            DriveData = $C08C
 
-                        DoNibbleCheck2:
+                    DoNibbleCheck2:
     BEAD:A0 00              LDY #$00
     BEAF:A9 FF              LDA #True       ; -1 = True
-                        _Init200
+                    _Init200
     BEB1:99 00 02           STA KeyBuf,Y    ; MissingKey[ $00 .. $FF ] = True
     BEB4:C8                 INY
     BEB5:D0 FA              BNE _Init200    ;^ $BEB1
 
-                        _Nib0
-    BEB7:A6 FD              LDX RWTS_Slotx16
-                        _Read1:
+                    _Nib0
+    BEB7:A6 FD              LDX rwts_SlotX16
+                    _Read1:
     BEB9:BD 8C C0           LDX DriveData,X
     BEBC:10 FB              BPL _Read1      ;^ $BEB9
-                        _Nib1:
+                    _Nib1:
     BEBE:C9 D4              CMP #$D4        ; Check1 = #$D4
     BEC0:D0 F5              BNE _Nib0       ;^ $BEB7
     BEC2:20 10 BF           JSR _NibRead
-                        _Nib2:
+                    _Nib2:
     BEC5:C9 D5              CMP #$D5        ; Check2 = #$D5
     BEC7:D0 F5              BNE _Nib1       ;^ $BEBE
     BEC9:20 10 BF           JSR NibRead
-                        _Nib3:
+                    _Nib3:
     BECC:C9 DE              CMP #$DE        ; Check3 = #$DE
     BECE:D0 F5              BNE _Nib2       ;^ $BEC5
     BED0:20 10 BF           JSR NibRead
-                        _Nib4:
+                    _Nib4:
     BED3:C9 A5              CMP #$A5        ; Check4 = #$A5
     BED5:D0 F5              BNE _Nib3       ;^ $BECC
     BED7:EA                 NOP
-                        _Nib5:
+                    _Nib5:
     BED8:BD 8C C0           LDA DriveData,X
     BEDB:10 FB              BPL _Nib5
     BEDD:2A                 ROL
     BEDE:85 26              STA #$26        ; Save CheckYa
-                        _Nib6:
+                    _Nib6:
     BEE0:BD 8C C0           LDA DriveData,X
     BEE3:10 FB              BPL _Nib6
     BEE5:25 26              AND $26         ; Save CheckYb in 4&4 format
@@ -1510,7 +1510,7 @@ Here is the diassembly of the second nibble check on Track $22.
 
     BEEF:20 10 BF           JSR NibRead
     BEF2:C9 AA              CMP #$AA        ; Check8 = #$AA
-    BEF4:D0 C1              BNE ;^ $BEB7
+    BEF4:D0 C1              BNE Nib0        ;^ $BEB7
 
     BEF6:B9 00 02           LDA KeyBuf,Y    ; if MissingKey[ Y ] > 0 cont. to next key
     BEF9:10 BC              BPL _Nib0       ;^ $BEB7
@@ -1559,6 +1559,8 @@ The rest of the code is pretty straightforward.
                     Verify64K:
     BF16:2C 83 C0           BIT $C083
     BF19:2C 83 C0           BIT $C083
+                            RTS
+    TODO: FIXME:
 ```
 
 
