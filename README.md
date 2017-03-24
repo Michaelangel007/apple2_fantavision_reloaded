@@ -8,6 +8,7 @@
 * Ye Olde Boot Tracing
   * P5 Boot PROM
 * Boot Tracing Stage 1b
+* RWTS
 * Boot Tracing Stage 2
 * Boot Tracing Stage 3
 * Time to go Loco, er, Logo
