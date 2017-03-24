@@ -1345,59 +1345,109 @@ Someone even patched the backup utility !
 
 * ![Logo](pics/backup_blackbag.png)
 
-We will discuss when we remove the copy protection ourselves.
+We will discuss this more when we remove the copy protection ourselves.
 
 
 # Boot Tracing Stage 3 $BE00
 
-The boot sector code @ $087E calls Stage 4 $BE00:
+The boot sector code @ $087E calls Stage 3 $BE00:
 
 ```asm
-087E:4C 00 BE           JMP   ExecBoot3     ;
+    087E:4C 00 BE           JMP ExecBoot3
 ```
 
-This is the disaassembly
+This is the disassembly:
 
 ```asm
                     ExecBoot3:
-    BE00:4C 06 BE         JMP Main
-    BE03:4C AD BE         JMP DoNibbleCheck2    ; Nibble Check #2: $D4,$D5,$DE,$A5,$xx,$yy,$E5,$AA
+    BE00:4C 06 BE           JMP Main
+    BE03:4C AD BE           JMP DoNibbleCheck2    ; Nibble Check #2: $D4,$D5,$DE,$A5,$xx,$yy,$E5,$AA
                     Main:
-    BE06:20 16 BF         JSR Verify64K
-    BE09:20 75 BE         JSR $BE75
-    BE0C:A0 58            LDY #<$FF58
-    BE0E:A9 FF            LDA #>$FF58
-    BE10:84 36            STA CSW+0       ; CSWL = $36, Char Out Vector (Function Pointer)
-    BE12:85 37            STA CSW+1
-    BE14:A0 1F            LDY #<NewKSW
-    BE16:A9 BE            LDA #>NewKSW
-    BE18:84 38            STY KSW+0       ; KSWL = $38, Char In Vector (Function Pointer)
-    BE1A:85 39            STA KSW+1
-    BE1C:4C 00 E0         JMP BASIC       ; BASIC Cold Start
+    BE06:20 16 BF           JSR Verify64K
+    BE09:20 75 BE           JSR $BE75
+
+    BE0C:A0 58              LDY #<$FF58
+    BE0E:A9 FF              LDA #>$FF58
+    BE10:84 36              STA CSW             ; CSWL = $36, Char Out Vector (Function Pointer)
+    BE12:85 37              STA CSW+1
+
+    BE14:A0 1F              LDY #<NewKSW
+    BE16:A9 BE              LDA #>NewKSW
+    BE18:84 38              STY KSW             ; KSWL = $38, Char In Vector (Function Pointer)
+    BE1A:85 39              STA KSW+1
+    BE1C:4C 00 E0           JMP BASIC           ; BASIC Cold Start
                     NewKSW:
-    BE1F:91 28            STA (BAS),Y     ; BASL   = $28
-    BE21:20 89 FE         JSR SETKBD      ; SETKBD = $FE89
-    BE24:20 93 FE         JSR SETVID      ; SETVID = $FE93
-    BE27:A9 16            LDA #$16        ; First Track to Load
-    BE29:8D 33 BE         STA NextTrack+1 ; *** SELF MODIFYING ***
-    BE2C:20 09 B0         JSR RWTS_Seek
-    BE2F:A9 08            LDA #$08        ; DestAddr
+    BE1F:91 28              STA (BAS),Y         ; BASL   = $28
+    BE21:20 89 FE           JSR SETKBD          ; SETKBD = $FE89
+    BE24:20 93 FE           JSR SETVID          ; SETVID = $FE93
+    BE27:A9 16              LDA #$16            ; First Track to Load
+    BE29:8D 33 BE           STA BE.NextTrack+1  ; *** SELF MODIFYING ***
+    BE2C:20 09 B0           JSR RWTS_Seek
+    BE2F:A9 08              LDA #$08            ; DestAddr
                     NextPage:
-    BE31:48               PHA             ;+ Save DestAddr
-                    NextTrack:
-    BE32:A0 00            LDY #$00        ; *** SELF-MODIFIED @ $BE27 ***
-    BE34:EE 33 BE         INC $BE33       ; *** SELF MODIFYING ***
-    BE37:20 00 B0         JSR RTWS_LoadTrack
-    BE3A:68               PLA             ; Restore DestAddr
-    BE3B:18               CLC
-    BE3C:69 18            ADC #$18        ; We initially loaded at $0800
-    BE3E:29 F0            AND #$F0        ; Force to load at start-of-page $2x00, $3x00, etc
-    BE40:C9 A1            CMP #$A1        ; Load entire $Ax00 page then stop
-    BE42:90 ED            BCC NextPage    ;^ $BE31
+    BE31:48                 PHA                 ;+ Save DestAddr
+                    BE.NextTrack:
+    BE32:A0 00              LDY #$00            ; *** SELF-MODIFIED @ $BE27 @ $BE34 ***
+    BE34:EE 33 BE           INC BE.NextTrack+1  ; *** SELF MODIFYING ***
+    BE37:20 00 B0           JSR RTWS_LoadTrack
+    BE3A:68                 PLA                 ; Restore DestAddr
+    BE3B:18                 CLC
+    BE3C:69 18              ADC #$18            ; We initially loaded at $0800
+    BE3E:29 F0              AND #$F0            ; Force to load at start-of-page $2x00, $3x00, etc
+    BE40:C9 A1              CMP #$A1            ; Load entire $Ax00 page then stop
+    BE42:90 ED              BCC NextPage        ;^ $BE31
 
-    BE44:AC 00 08         LDY $0800
+    BE44:AC 00 08           LDY $0800
+    BE47:AD 04 08           LDA $0804
+    BE4A:84 AF              STY $AF
+    BE4C:85 B0              STA $B0
+    BE4E:84 69              STY $69
+    BE50:85 6A              STA $6A
+    BE52:A9 00              LDY #$00
+    BE54:8D 00 08           STA $0800
+    BE57:8D 04 08           STA $0804
 
-    BE75:A2 20      LDX #$20
+    BE5A:AD 00 C0           LDA KEYBOARD        ; Key pressed?
+    BE5D:C9 9B              CMP #$1B + $80      ; ESC pressed?
+    BE5F:F0 07              BEQ LoadBackup      ;v $BE68
+    BE61:A6 FD              LDX $FD
+    BE63:86 43              STX $43
+    BE65:4C 00 40           JMP Main.2
+
+                    LoadBackup:
+    BE68:2C 10 C0           BIT KEYSTROBE
+    BE6B:A0 20              LDY #$20            ; Y = Track of Backup Utility
+    BE6D:A9 08              LDA #>Main.Backup   ; A = Address
+    BE6F:20 00 B0           JSR RWTS_LoadTrack
+    BE72:4C 00 08           JMP Main.Backup
+
+    BE75:A2 20              LDX #$20            ; Double Duty: DstAddr, and Num Pages
+    BE77:8E 7F BE           STX _ClearHGR+2     ; *** SELF-MODIFYING @ $BE7D
+    BE7A:A0 00              LDY #$00
+    BE7C:98                 TYA
+                    _ClearHgr
+    BE7D:99 00 20           STA $2000,Y         ; *** SELF_MODIFIED by $BE77, $BE83
+    BE80:C8                 INy
+    BE81:D0 FA              BNE _ClearHgr       ;^ $BE7D
+    BE83:EE 7F BE           INC _ClearHGR+2
+    BE86:CA                 DEX
+    BE87:D0 F4              BNE _ClearHgr
+
+    BE89:AD 52 C0           LDA $C052
+    BE8C:AD 57 C0           LDA $C057
+    BE8F:AD 50 C0           LDA $C050
+
+    BE92:A9 17              LDA #$17            ; Logo on Track $17
+    BE94:20 09 B0           JSR RWTS_Seek
+
+    BE97:A9 20              LDA #$20            ; A = Addr = HGR top half
+    BE99:A0 17              LDY #$17            ; Y = Track Logo Top
+    BE9B:20 00 B0           JSR RWTS_LoadTrack
+    BE9E:A9 30              LDA #$30            ; A = Addr = HGR bottom half
+    BEA0:A0 18              LDY #$18            ; Y = Track Logo Bot
+    BEA2:20 00 B0           JSR RWTS_LoadTrack
+
+                            RTS
 ```
 
 
