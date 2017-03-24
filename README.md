@@ -1777,22 +1777,30 @@ Track $20 has the built-in Backup Utility which is loaded in at $0800.
 How do I know that?
 
 * $B500 decodes Track $22 in 4&4 format to $BC00 .. $BFFF
-* $BE00 has the relevent code that loads it.
+* $BE00 has the relevent code that loads it:
 
 ```asm
-    BE00:4C 06 BE   JMP $BE06
+                        Main.Backup = $0800
 
-    BE06:20 16 BF   JSR Verify64K
+                        KEYBOARD    = $C000
+                        KEYSTROBE   = $C010
 
-    BE5A:AD 00 C0   LDA $C000   ; Key
-    BE5D:C9 9B      CMP #$9B    ; ESC pressed?
-    BE5F:F0 07      BEQ #$BE68
+                        ORG $BE00
 
-    BE68:2C 10 C0   BIT $C010
-    BE6B:A0 20      LDY #$20    ; Y=TRACK
-    BE6D:A9 08      LDA #$08    ; A=ADDR
-    BE6F:20 00 B0   JSR RWTS_LoadTrack
-    BE72:4C 00 08   JMP $0800   ; Backup.Main
+BE00:4C 06 BE           JMP $BE06
+
+BE06:20 16 BF   JSR Verify64K
+
+BE5A:AD 00 C0           LDA KEYBOARD        ; Key pressed?
+BE5D:C9 9B              CMP #$1B + $80      ; ESC pressed?
+BE5F:F0 07              BEQ LoadBackup      ;v $BE68
+
+                LoadBackup:
+BE68:2C 10 C0           BIT KEYSTROBE
+BE6B:A0 20              LDY #$20            ; Y = Track
+BE6D:A9 08              LDA #>Main.Backup   ; A = Address
+BE6F:20 00 B0           JSR RWTS_LoadTrack
+BE72:4C 00 08           JMP Main.Backup
 ```
 
 ## Backup Take 2
@@ -1950,6 +1958,8 @@ Let's decode the byte code tokens:
 Here is the diassembly of Backup 1:
 
 ```asm
+                    ORG $0800
+
 0800:4C 37 0D       JMP $0D37
 
 DecodeToken:
@@ -2047,8 +2057,8 @@ DecodeToken:
 0901:60             RTS
 
 0918:           DriveOn
-0918:A6 FD          LDX RWTS_SLOT16 ; $2B -> $FD
-091A:BD 89 C0       LDA $C089,X     ;
+0918:A6 FD          LDX rwts_SlotX16    ; P5.SlotX16 = $2B -> rwts_SlotX16 = $FD
+091A:BD 89 C0       LDA DRIVE_ON,X      ;
 091D:A9 00          LDA #$00
 091F:4C A8 FC       JMP WAIT
 
@@ -2057,7 +2067,7 @@ DecodeToken:
 0925:24 6D          BIT $6D
 0927:10 0B          BPL $0934
 0929:A9 44          LDA #$44        ; Track $22
-092B:85 FF          STA RWTS_HalfTrack       ; TODO: CLEANUP
+092B:85 FF          STA rwts_HalfTrack_Have
 092D:A9 00          LDA #0          ; Track $00
 092F:20 09 B0       JSR RWTS_Seek
 0932:46 6D          LSR $6D
@@ -2074,7 +2084,7 @@ DecodeToken:
 0944:20 44 19       JSR $1944
 0947:90 04          BCC +2      ; $094D
 0949:C6 60          DEC $60
-094D:BD 88 C0       LDA DRIVE_MOTON_OFF,X
+094D:BD 88 C0       LDA DRIVE_OFF,X
 0950:60             RTS
 
                 GetKey
@@ -2132,7 +2142,7 @@ DecodeToken:
 0D26:           ASC "Fantavision disk"
 0D36:00         DFB CMD_DONE
 
-0D37:A6 FD      LDX $FD     ; SLOTx16
+0D37:A6 FD      LDX rwts_SlotX16
 0D39:8E E9 1F   STX $1FE9   ;
 0D3C:8E F7 1F   STX $1FF7   ;
 0D3F:A9 00      LDA #$00
