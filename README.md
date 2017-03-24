@@ -1155,91 +1155,91 @@ TODO: FIXME: Convert ProDOS Block # to Sector # ?
 Once the entire track $15 of Stage 2 is read in it is executed to read Stage 3.
 
 ```asm
-                TestBoot3:                  ; Boot Stage 2 done, do stage 3
-0873:A6 2B              LDX P5.SlotX16      ;
-0875:86 FD              STX RWTS_SLOTx16    ;
-0877:A9 BC              LDA #>LoadBoot3     ; Load T$22 4&4 "4 sectors" @ $BC00, $BD00, $BE00, $BF00
-0879:20 00 B5           JSR   ReadBoot3     ; Boot Stage 2 reads in encrypted Stage 3
-087C:B0 F5              BCS   TestBoot3     ;^ $0873 C=1 error, Hang if NibbleCheck1 fails
-087E:4C 00 BE           JMP   ExecBoot3     ;
+                    TestBoot3:                  ; Boot Stage 2 done, do stage 3
+    0873:A6 2B              LDX P5.SlotX16      ;
+    0875:86 FD              STX rwts_SlotX16    ;
+    0877:A9 BC              LDA #>LoadBoot3     ; Load T$22 4&4 "4 sectors" @ $BC00, $BD00, $BE00, $BF00
+    0879:20 00 B5           JSR   ReadBoot3     ; Boot Stage 2 reads in encrypted Stage 3
+    087C:B0 F5              BCS   TestBoot3     ;^ $0873 C=1 error, Hang if NibbleCheck1 fails
+    087E:4C 00 BE           JMP   ExecBoot3     ;
 ```
 
 Let's disassemble $B500 ...
 
 ```asm
-                        COUNT      = $3E    ; 16-bit counter
-                        DRIVE_DATA = $C08C  ; Read Disk Nibble
+                            COUNT      = $3E    ; 16-bit counter
+                            DRIVE_DATA = $C08C  ; Read Disk Nibble
 
-                ReadBoot3:
-B500:8D 17 B5           STA _B516+1         ; *** SELF-MODIFYING *** DestAddr
-                                            ; These 3 bytes are wasted
-                                            ; Should just be STA $3D
-                                            ; And we can delete $B516..$B518
-B503:A9 22              LDA #$22            ; TRACK_NIBBLE_CHECK
-B505:20 09 B0           JSR RWTS_Seek       ; 
-B508:A6 FD              LDX RWTS_SLOTx16    ; 
-B50A:A9 80              LDA #$80            ; Attempt to read $8080 disk nibbles
-B50C:85 3E              STA Count           ; Count
-B50E:85 3F              STA Count+1         ; 
-B510:A9 04              LDA #$04            ; Num "Sectors" or Pages to read
-B512:85 3B              STA NumSectors      ; 
-B514:A0 00              LDY #$00            ; Num disk nibbles read (actually is 1/2)
-                _B516:
-B516:A9 00              LDA #$00            ; *** SELF-MODIFIED @ $B500 *** Dest Addr to Load at
-B518:84 3C              STY $3C             ; 
-B51A:85 3D              STA DestPage        ; DestPage
+                    ReadBoot3:
+    B500:8D 17 B5           STA _B516+1         ; *** SELF-MODIFYING *** DestAddr
+                                                ; These 3 bytes are wasted
+                                                ; Should just be STA $3D
+                                                ; And we can delete $B516..$B518
+    B503:A9 22              LDA #$22            ; TRACK_NIBBLE_CHECK
+    B505:20 09 B0           JSR RWTS_Seek       ;
+    B508:A6 FD              LDX rwts_SlotX16    ;
+    B50A:A9 80              LDA #$80            ; Attempt to read $8080 disk nibbles
+    B50C:85 3E              STA Count           ; Count
+    B50E:85 3F              STA Count+1         ; 
+    B510:A9 04              LDA #$04            ; Num "Sectors" or Pages to read
+    B512:85 3B              STA NumSectors      ; 
+    B514:A0 00              LDY #$00            ; Num disk nibbles read (actually is 1/2)
+                    _B516:
+    B516:A9 00              LDA #$00            ; *** SELF-MODIFIED @ $B500 *** Dest Addr to Load at
+    B518:84 3C              STY $3C             ; 
+    B51A:85 3D              STA DestPage        ; DestPage
 
-                NextCount:
-B51C:C6 3E              DEC Count           ; Force read counter
-B51E:D0 06              BNE DoNibbleCheck1  ; to read at least once
-B520:C6 3F              DEC Count+1         ; 
-B522:D0 02              BNE DoNibbleCheck1  ; 
-B524:38                 SEC                 ; FAIL nibble check 1
-B525:60                 RTS                 ; 
+                    NextCount:
+    B51C:C6 3E              DEC Count           ; Force read counter
+    B51E:D0 06              BNE DoNibbleCheck1  ; to read at least once
+    B520:C6 3F              DEC Count+1         ; 
+    B522:D0 02              BNE DoNibbleCheck1  ; 
+    B524:38                 SEC                 ; FAIL nibble check 1
+    B525:60                 RTS                 ; 
 
-                DoNibbleCheck1:
-                WaitNib1a:                  ;        ^
-B526:BD 8C C0           LDA DRIVE_DATA,X    ;        |
-B529:10 FB              BPl WaitNib1a       ;^ $B526 |
-                TestNib1a:                  ;        |
-B52B:C9 F5              CMP #$F5            ; $F5    | <--+
-B52D:D0 ED              BNE NextCount       ;^ $B51C +    |
-                                            ;             |
-                WaitNib1b:                  ;             |
-B52F:BD 8C C0           LDA DRIVE_DATA,X    ;             |
-B532:10 FB              BPL WaitNib1b       ;^ $B52F      |
-                TestNib1b:                  ;             |
-B534:C9 F4              CMP #$F4            ; $F4         |
-B536:D0 F3              BNE TestNib1a       ;^ $B52B   ---+
+                    DoNibbleCheck1:
+                    WaitNib1a:                  ;        ^
+    B526:BD 8C C0           LDA DRIVE_DATA,X    ;        |
+    B529:10 FB              BPl WaitNib1a       ;^ $B526 |
+                    TestNib1a:                  ;        |
+    B52B:C9 F5              CMP #$F5            ; $F5    | <--+
+    B52D:D0 ED              BNE NextCount       ;^ $B51C +    |
+                                                ;             |
+                    WaitNib1b:                  ;             |
+    B52F:BD 8C C0           LDA DRIVE_DATA,X    ;             |
+    B532:10 FB              BPL WaitNib1b       ;^ $B52F      |
+                    TestNib1b:                  ;             |
+    B534:C9 F4              CMP #$F4            ; $F4         |
+    B536:D0 F3              BNE TestNib1a       ;^ $B52B   ---+
 
-                WaitNib1c:
-B538:BD 8C C0           LDA DRIVE_DATA,X;
-B53B:10 FB              BPL WaitNib2b   ;^ $B538
-                TestNib1c:
-B53D:C9 CF              CMP #$CF        ; $CF
-B53F:D0 F3              BNE $B534
+                    WaitNib1c:
+    B538:BD 8C C0           LDA DRIVE_DATA,X;
+    B53B:10 FB              BPL WaitNib2b   ;^ $B538
+                    TestNib1c:
+    B53D:C9 CF              CMP #$CF        ; $CF
+    B53F:D0 F3              BNE $B534
 
-    :
-B541:BD 8C C0   LDA $C08C,X     ;+
-B544:10 FB      BPL $B541       ;^
-B546:2A         ROL
-B547:85 3A      STA $3A
-B549:BD 8C C0   LDA $C08C,X     ;+
-B54C:10 FB      BPL $B549       ;^
-B54E:25 3A      AND $3A
-B550:91 3C      STA ($3C),Y
-B552:C8         INY
-B553:D0 EC      BNE $B541
-B555:0E FF FF   ASL $FFFF       ; //e = $C3, //c = $C8, Laser128 = ? TODO: FIXME:
-B558:BD 8C C0   LDA $C08C,X
-B55B:10 FB      BPL $B558       ;^
-B55D:C9 D5      CMP #$D5        ; $ D5
-B55F:D0 AF      BNE $B510       ;^
-B561:E6 3D      INC $3D         ; Inc Dest Page
-B563:C6 3B      DEC NumSectors  ;
-B565:D0 DA      BNE $B541       ;^
-B567:18         CLC             ; PASS nibble check 1
-B568:60         RTS
+        :
+    B541:BD 8C C0   LDA $C08C,X     ;+
+    B544:10 FB      BPL $B541       ;^
+    B546:2A         ROL
+    B547:85 3A      STA $3A
+    B549:BD 8C C0   LDA $C08C,X     ;+
+    B54C:10 FB      BPL $B549       ;^
+    B54E:25 3A      AND $3A
+    B550:91 3C      STA ($3C),Y
+    B552:C8         INY
+    B553:D0 EC      BNE $B541
+    B555:0E FF FF   ASL $FFFF       ; //e = $C3, //c = $C8, Laser128 = ? TODO: FIXME:
+    B558:BD 8C C0   LDA $C08C,X
+    B55B:10 FB      BPL $B558       ;^
+    B55D:C9 D5      CMP #$D5        ; $ D5
+    B55F:D0 AF      BNE $B510       ;^
+    B561:E6 3D      INC $3D         ; Inc Dest Page
+    B563:C6 3B      DEC NumSectors  ;
+    B565:D0 DA      BNE $B541       ;^
+    B567:18         CLC             ; PASS nibble check 1
+    B568:60         RTS
 ```
 
 This first nibble check reads these disk nibbles on Track $22:
