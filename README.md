@@ -10,6 +10,7 @@
 * Boot Tracing Stage 1b
 * RWTS
 * Boot Tracing Stage 2
+  * Stupid Kids and their Graffiti
 * Boot Tracing Stage 3
 * Time to go Loco, er, Logo
   * Logo -- no, not the language
@@ -1297,6 +1298,9 @@ There are many different ways to remove the protection.
 The simpliest is to format track $22 normally,
 and modify $B500 to load them in.
 
+
+## Stupid Kids and their Graffiti
+
 That is exactly what Black Bag's "Kracked" version of Fantavision does.
 
 * ![Black Bag Krack](pics/logo_blackbag.png)
@@ -1309,29 +1313,33 @@ On Track $15, Sector $5 @ $B500 it uses:
 to read two sectors on a normal formatted track $22.
 _That_ code looks like this:
 
+```asm
+                    ReadBoot3:
+    B500:A9 22          LDA #$22                ; Nibble Check Track been converted to normal sector
+    B502:20 09 B0       JSR RWTS_Seek           ;
+    B505:A2 60          LDX #$60                ; BUG! Hard-Coded to Drive in Slot 6 !
+                    FindSector0:                ; Should be: LDX rwts_SlotX16 -> LDX $FD
+    B507:20 26 B1       JSR RWTS_Prologue       ;
+    B50A:A5 E3          LDA rwts_Sector_Have    ;
+    B50C:C9 00          CMP #$00                ; Logical Sector $0 -> Physical Sector $0
+    B50E:D0 F7          BNE FindSector0         ;
+    B510:85 E6          STA rwts_LoadAddr       ; Double Duty
+    B512:A9 BE          LDA #$BE                ; Dest Addr = $BE00
+    B514:85 E7          STA rwts_LoadAddr+1     ;
+    B516:20 11 B0       JSR RWTS_ReadSector     ;
+                    FindSectorD:                ;
+    B519:20 26 B1       JSR RWTS_Prologue       ;
+    B51C:A5 E3          LDA rwts_Sector_Have    ;
+    B51E:C9 0D          CMP #$0D                ; Logical Sector $1 -> Physical Sector $D
+    B520:D0 F7          BNE FindSectorD         ;
+    B522:E6 E7          INC rwts_LoadAddr+1     ; DestAddr += $0100
+    B522:20 11 B0       JSR RWTS_ReadSector     ;
+    B527:18             CLC                     ; Signal $087C Nibble Check = PASS
+    B528:60             RTS                     ;
 ```
-    LDA #$22            ; B500:A9 22    ; Nibble Check Track been converted to normal sector
-    JSR RWTS_Seek       ; B502:20 09 B0
-    LDX #$60            ; B505:A2 60    ; BUG! Hard-Coded to Drive in Slot 6 !
-FindSector0:                            ; Should be: LDX RWTS_SLOTx16 -> LDX $FD
-    JSR RWTS_Prologue   ; B507:20 26 B1
-    LDA RWTS_HAVE_SEC   ; B50A:A5 E3    ; Current sector under disk head
-    CMP #$00            ; B50C:C9 00    ; Look for sector $0
-    BNE FindSector0     ; B50E:D0 F7
-    STA $E6             ; B510:85 E6
-    LDA #$BE            ; B512:A9 BE    ; Dest Addr = $BE00
-    STA $E7             ; B514:85 E7
-    JSR RWTS_ReadSec    ; B516:20 11 B0
-FindSectorD:
-    JSR RWTS_Prologue   ; B519:20 26 B1
-    LDA RWTS_HAVE_SEC   ; B51C:A5 E3
-    CMP #$0D            ; B51E:C9 0D    ; Look for sector $D
-    BNE FindSectorD     ; B520:D) F7
-    INC $E7             ; B522:E6 E7
-    JSR RWTS_ReadSec    ; B522:20 11 B0
-    CLC                 ; B527:18       ; Signal $087C Nibble Check = PASS
-    RTS                 ; B528:60
-```
+
+Looks like this was an amateur rush job -- if you try to boot this version
+in Slot 5 it will fail.
 
 Someone even patched the backup utility !
 
