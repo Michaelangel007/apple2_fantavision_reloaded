@@ -52,6 +52,8 @@ released a fantastic animation program called `Fantavision`
 
 * ![Logo](pics/logo.png)
 
+* ![Logo](pics/about.png)
+
 * TODO: PIC: Disk
 
 * TODO: PIC: Box
