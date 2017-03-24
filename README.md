@@ -617,6 +617,537 @@ Boot to our `Fanta.Work` disk ...
     BSAVE B2.FANTAVISION_T15_B000,A$4000,L$800
 ```
 
+# RWTS
+
+Let's take a moment to analyze this mini-RWTS @ $B000
+
+I'll use the prefix:
+
+* lowercase `rwts` for variables
+* uppercase `RWTS` for functions
+
+```asm
+                            rwts_Sector_Have        = $E3
+                            rwts_E4                 = $E4   ; ???
+                            rwts_LoadAddr           = $E6   ; Pointer to dest buf
+                            rwts_ReadCount          = $E8   ; Attempts Remaining to read sector
+                            rwts_HalfTrack_Want     = $EB
+                            rwts_HalfTrack_Prev     = $EC   ; (mirror of $FF)
+                            rwts_ED                 = $ED   ; ??? previous track?
+
+                            rwts_Return             = $EB
+
+                            rwts_SlotX16            = $FD
+                            rwts_HalfTrack_Have     = $FF   ; Current track
+
+                            rwts_DestAddrLow        = $B3E9 ; ???
+
+                            ORG $B000
+
+                    RWTS_ReadTrack
+    B000:4C 51 B4           JMP Do_ReadTrack        ; Y = Track, A = Addr
+                    RWTS_LoadCode
+    B003:4C ED B3           JMP Do_LoadCode         ; Y = Track, $11 bytes after Program Counter
+                    RWTS_?
+    B006:4C 22 B4           JMP Do_B422             ; TODO: FIXME
+                    RWTS_Seek
+    B009:4C E9 B0           JMP Do_Seek             ; A = Track
+                    RWTS_?
+    B00C:4C 62 B4           JMP Do_B462             ; TODO: FIXME
+
+    B00F:38                 SEC                     ; Error
+    B010:60                 RTS
+
+                    ; ====================
+                    ; X = Slot * $10
+                    ; ====================
+                    RWTS_ReadSector
+    B011:86 FD              STX $FD             ; $E6 = Pointer to Dest Address
+    B013:8A                 TXA
+    B014:09 8C              ORA #<DRIVE_DATA    ; DRIVE_DATA = $C08C
+    B016:8D 70 B0           STA _B070
+    B019:8D 87 B0           STA _B087
+    B01C:8D 9D B0           STA _B09D
+    B01F:8D B1 B0           STA _B0B1
+    B022:8D C6 B0           STA _B0C6
+    B025:A5 E6              LDA rwts_LoadAddr
+    B027:A4 E7              LDY rwts_LoadAddr+1
+    B029:8D C3 B0           STA _B0C2+1
+    B02C:8C C4 B0           STY _B0C2+2
+    B02F:38                 SEC
+    B030:E9 54              SBC #$54
+    B032:B0 02              BCS                 ;v $B036 TODO
+    B034:88                 DEY
+    B035:38                 SEC
+    B036:8D AB B0           STA                 ; $B0AA+1
+    B039:8C AC B0           STA                 ; $B0AA+2
+    B03C:E9 57              SBC #$57
+    B03E:B0 01              BCS                 ;v $B041
+
+    B041:8D 84 B0           STA                 ; $B083+1
+    B044:8C B5 B0           STA                 ; $B083+2
+    B047:A0 20              LDY #$20
+
+    B049:88                 DEY
+                    DataProlog1:
+    B04C:BD 8C C0           LDA DRIVE_DATA,X
+    B04F:10 FB              BPL DataProlog1
+    B051:49 D5              EOR #$D5
+    B053:D0 F4              BNE _B049
+    B055:EA                 NOP
+                    DataProlog2:
+    B056:BD 8C C0           LDA DRIVE_DATA,X
+    B059:10 FB              BPL DataProlog2     ;^ $B056
+    B05B:C9 AA              CMP #$AA
+    B05D:D0 F2              BNE ;^ $B051
+
+                    DataProlog3:
+    B065:                   CMP #$AD
+    B069:                   Decode #$56 nibbles into $2AA..$2FF
+                    DataEpilog1:
+    B0DC:C9 DE              CMP #$DE
+    B0DE:B0 02              BCS DataEpilogGood      ;v $B0E2
+    B0E0:38                 SEC
+    B0E1:24                 DFB $24                 ; bit $zp
+                    DataEpilogGood:
+    B0E2:18                 CLC
+    B0E3:68                 PLA
+    B0E4:A0 55              LDY #$55
+    B0E6:91 E6              STY (rwts_LoadAddr),Y
+    B0E8:60                 RTS                     ; TODO: VERIFY BYTE
+
+                    Do_Seek:
+    B0E9:0A                 ASL
+    B0EA:85 EB              STA rwts_HalfTrack_Want
+                    _NextTrack:                     ; Very similiar to BS.HalfTrackSeek T00S0 @ $0881
+    B0EC:A5 FF              LDA rwts_HalfTrack_Have
+    B0EE:85 EC              STA rwts_HalfTrack_Prev
+    B0F0:38                 SEC
+    B0F1:E5 EB              SBC rwts_HalfTrack_Want
+    B0F3:F0 29              BEQ _Do_Seek_Done       ;v $B11E
+    B0F5:B0 04              BCS MoveTrackOut        ;v $B0FB
+
+                    _MoveHeadIn:
+    B0F7:E6 FF              INC rwts_HalfTrack_Have
+    B0F9:90 02              BCC _MoveHead           ;v $B0FD (always)
+
+                    _MoveHeadOut:
+    B0FB:C6 FF              DEC rwts_HalfTrack_Have
+                    _MoveHead:
+    B0FD:20 13 B1           JSR _PhaseOn
+    B100:20 1F B1           JSR _Delay
+                    _PhaseOff:
+    B103:A5 EC              LDA rwts_HalfTrack_Prev
+    B105:29 03              AND #PHASE
+    B107:0A                 ASL
+    B108:05 FD              ORA rwts_SlotX16
+    B10A:A8                 TAY
+    B10B:B9 80 C0           LDA PHASE0_OFF,Y
+    B10E:20 1F B1           JSR _Delay
+    B111:F0 D9              BEQ _NextTrack          ;^ $B0EC always
+                    _PhaseOn:
+    B113:A5 FF              LDA rwts_HalfTrack_Have
+    B115:29 03              AND #PHASE_MASK
+    B117:0A                 ASL
+    B118:05 FD              ORA $FD                 ; TODO: FIXME rwts_drive_on ??
+    B11A:A8                 TAY
+    B11B:B9 81 C0           LDA PHASE0_ON,Y
+    B11E:60                 RTS
+                    _Delay:
+    B11F:A9 28              LDA #$28
+    B121:4C 16 B4           JMP _Wait
+
+    B124:38                 SEC
+    B125:60                 RTS
+
+                    RWTS_ReadPrologue
+    B126:A0 FC              LDY #$FC            ; save Sector $E3
+    B128:84 EB              STY $EB
+    B12A:C8                 INY
+    B12B:D0 04              INC $EB
+    B12F:F0 F3              BEQ                 ;^ $B124
+                    AddrProlog1:
+    B131:BD 8C C0           LDA DRIVE_DATA,X
+    B134:10 FB              BPL AddrProlog1
+
+
+    B136:C9 D5              CMP #$D5
+    B138:D0 F0              BNE                 ;^ $B12A
+
+    B140:CMP #$AA
+    B14B:CMP #$96
+    B158:2A                 ROL
+    B159:85 EB              STA $EB
+
+    B15B:BD 8C C0           LDA DRIVE_DATA,X
+    B15E:10 FB              BPL                 ;^ $B15B
+    B160:25 EB              AND $EB
+    B162:99 E2 00           STA $00E2,Y
+    B165:45 EC              EOR $EC
+    B167:88                 DEY
+    B168:10 E7              BPL                 ;^ $B151
+    B16A:A8                 TAY
+    B16B:D0 B7              BNE                 ;^ $B124
+                    AddrEpilog1:
+    B16D:BD 8C C0           LDA DRIVE_DATA,X
+    B170:10 FB              BPL AddrEpilog1     ;^ $B16D
+    B172:C9 DE              CMP #$DE
+    B174:90 AE              BCC                 ;^ $B124
+    B176:18                 CLC                 ; C=0 Read Good
+    B177:60                 RTS
+
+    B178:FF FF FF FF        DFB $FF,$FF,$FF,$FF
+    B17C:FF FF FF FF        DFB $FF,$FF,$FF,$FF
+    B180:00 00 00 00        DS $B196-*
+    B184:00 00 00 00
+    B188:00 00 00 00
+    B18C:00 00 00 00
+    B190:00 00 00 00
+    B194:00 00
+                                                ;Valid Disk Nibbles (6-bit * 4) Lookup Table
+                                                ;[+0 +1 +2 +3 +4 +5 +6 +7]
+                                                ;[+8 +9 +A +B +C +D +E +F]
+    B196:      00 04        DFB                 ; -- -- -- -- -- -- 96 97
+    B198:98 99 08 0C        DFB $98,$99,$08,$0C ; -- -- 9A 9B -- 9D 9E 9F
+    B19C:9C 10 14 18        DFB $9C,$10,$14,$18 ;
+    B1A0:A0 A1 A2 A3        DFB $A0,$A1,$A2,$A3 ; -- -- -- -- -- -- A6 A7
+    B1A4:A4 A5 1C 20        DFB $A4,$A5,$1C,$20
+    B1A8:A8 A9 AA 24        DFB $A8,$A9,$AA,$24 ; -- -- -- AB AC AD AE AF
+    B1AC:28 2C 30 34        DFB $28,$2C,$30,$34
+    B1B0:B0 B1 38 3C        DFB $B0,$B1,$38,$3C ; -- -- B2 B3 B4 B5 B6 B7
+    B1B4:40 44 48 4C        DFB $40,$44,$48,$4C
+    B1B8:B8 50 54 58        DFB $B8,$50,$54,$58 ; -- B9 BA BB BC BD BE BF
+    B1BC:5C 60 64 68        DFB $5C,$60,$64,$68
+    B1C0:C0 C1 C2 C3        DFB $C0,$C1,$C2,$C3 ; -- -- -- -- -- -- -- --
+    B1C4:C4 C5 C6 C7        DFB $C4,$C5,$C6,$C7
+    B1C8:C8 C9 CA 6C        DFB $C8,$C9,$CA,$6C ; -- -- -- CB -- CD CE CF
+    B1CC:CC 70 74 78        DFB $CC,$70,$74,$78
+    B1D0:D0 D1 D2 7C        DFB $D0,$D1,$D2,$7C ; -- -- -- D3 -- -- D6 D7
+    B1D4:D4 D5 80 84        DFB $D4,$D5,$80,$84
+    B1D8:D8 88 8C 90        DFB $D8,$88,$8C,$90 ; -- D9 DA DB DC DD DE DF
+    B1DC:94 98 9C A0        DFB $94,$98,$9C,$A0
+    B1E0:E0 E1 E2 E3        DFB $E0,$E1,$E2,$E3 ; -- -- -- -- -- E5 E6 E7
+    B1E4:E4 A4 A8 AC        DFB $E4,$A4,$A8,$AC
+    B1E8:E8 B0 B4 B8        DFB $E8,$B0,$B4,$B8 ; -- E9 EA EB EC ED EE EF
+    B1EC:B8 C0 C4 C8        DFB $B8,$C0,$C4,$C8
+    B1F0:F0 F1 CC D0        DFB $F0,$F1,$CC,$D0 ; -- -- F2 F3 F4 F5 F6 F7
+    B1F4:D4 D8 DC E0        DFB $D4,$D8,$DC,$E0
+    B1F8:F8 E4 E8 EC        DFB $F8,$E4,$E8,$EC ; -- F9 FA FB FC FD FE FF
+    B1FC:F0 F4 F8 FC        DFB $F0,$F4,$F8,$FC
+
+                                                ; Notes:
+                                                ; * 4 bytes/nibble
+                                                ; * 4'th byte not used -- used as padding since X*3 = x*2 + x = too slow
+                                                ; * Sequence in psuedo-base 4: 0,2,1,3
+    B200:00 00 00 96        DFB $00,$00,$00,$96 ; [00]
+    B204:02 00 00 97        DFB $02,$00,$00,$97 ; [01]
+    B208:01 00 00 9A        DFB $01,$00,$00,$9A ; [02]
+    B20C:03 00 00 9B        DFB $03,$00,$00,$9B ; [03]
+    B210:00 02 00 9D        DFB $00,$02,$00,$9D ; [04]
+    B214:02 02 00 9E        DFB $02,$02,$00,$9E ; [05]
+    B218:01 02 00 9F        DFB $01,$02,$00,$9F ; [06]
+    B21C:03 02 00 A6        DFB $03,$02,$00,$A6 ; [07]
+    B220:00 01 00 A7        DFB $00,$01,$00,$A7 ; [08]
+    B224:02 01 00 AB        DFB $02,$01,$00,$AB ; [09]
+    B228:01 01 00 AC        DFB $01,$01,$00,$AC ; [0A]
+    B22C:03 01 00 AD        DFB $03,$01,$00,$AD ; [0B]
+    B230:00 03 00 AE        DFB $00,$03,$00,$AE ; [0C]
+    B234:02 03 00 AF        DFB $02,$03,$00,$AF ; [0D]
+    B238:01 03 00 B2        DFB $01,$03,$00,$B2 ; [0E]
+    B23C:03 03 00 B3        DFB $03,$03,$00,$B3 ; [0F]
+
+    B240:00 00 02 B4        DFB $00,$00,$02,$B4 ; [10]
+    B244:02 00 02 B5        DFB $02,$00,$02,$B5 ; [11]
+    B248:01 00 02 B6        DFB $01,$00,$02,$B6 ; [12]
+    B24C:03 00 02 B7        DFB $03,$00,$02,$B7 ; [13]
+    B250:00 02 02 B9        DFB $00,$02,$02,$B9 ; [14]
+    B254:02 02 02 BA        DFB $02,$02,$02,$BA ; [15]
+    B258:01 02 02 BB        DFB $01,$02,$02,$BB ; [16]
+    B25C:03 02 02 BC        DFB $03,$02,$02,$BC ; [17]
+    B260:00 01 02 BD        DFB $00,$01,$02,$BD ; [18]
+    B264:02 01 02 BE        DFB $02,$01,$02,$BE ; [19]
+    B268:01 01 02 BF        DFB $01,$01,$02,$BF ; [1A]
+    B26C:03 01 02 CB        DFB $03,$01,$02,$CB ; [1B]
+    B270:00 03 02 CD        DFB $00,$03,$02,$CD ; [1C]
+    B274:02 03 02 CE        DFB $02,$03,$02,$CE ; [1D]
+    B278:01 03 02 CF        DFB $01,$03,$02,$CF ; [1E]
+    B27C:03 03 02 D3        DFB $03,$03,$02,$D3 ; [1F]
+
+    B280:00 00 01 D6        DFB $00,$00,$01,$D6 ; [20]
+    B284:02 00 01 D7        DFB $02,$00,$01,$D7 ; [21]
+    B288:01 00 01 D9        DFB $01,$00,$01,$D9 ; [22]
+    B28C:03 00 01 DA        DFB $03,$00,$01,$DA ; [23]
+    B290:00 02 01 DB        DFB $00,$02,$01,$DB ; [24]
+    B294:02 02 01 DC        DFB $02,$02,$01,$DC ; [25]
+    B298:01 02 01 DD        DFB $01,$02,$01,$DD ; [26]
+    B29C:03 02 01 DE        DFB $03,$02,$01,$DE ; [27]
+    B2A0:00 01 01 DF        DFB $00,$01,$01,$DF ; [28]
+    B2A4:02 01 01 E5        DFB $02,$01,$01,$E5 ; [29]
+    B2A8:01 01 01 E6        DFB $01,$01,$01,$E6 ; [2A]
+    B2AC:03 01 01 E7        DFB $03,$01,$01,$E7 ; [2B]
+    B2B0:00 03 01 E9        DFB $00,$03,$01,$E9 ; [2C]
+    B2B4:02 03 01 EA        DFB $02,$03,$01,$EA ; [2D]
+    B2B8:01 03 01 EB        DFB $01,$03,$01,$EB ; [2E]
+    B2BC:03 03 01 EC        DFB $03,$03,$01,$EC ; [2F]
+
+    B2C0:00 00 03 ED        DFB $00,$00,$03,$ED ; [30]
+    B2C4:02 00 03 EE        DFB $02,$00,$03,$EE ; [31]
+    B2C8:01 00 03 EF        DFB $01,$00,$03,$EF ; [32]
+    B2CC:03 00 03 F2        DFB $03,$00,$03,$F2 ; [33]
+    B2D0:00 02 03 F3        DFB $00,$02,$03,$F3 ; [34]
+    B2D4:02 02 03 F4        DFB $02,$02,$03,$F4 ; [35]
+    B2D8:01 02 03 F5        DFB $01,$02,$03,$F5 ; [36]
+    B2DC:03 02 03 F6        DFB $03,$02,$03,$F6 ; [37]
+    B2E0:00 01 03 F7        DFB $00,$01,$03,$F7 ; [38]
+    B2E4:02 01 03 F9        DFB $02,$01,$03,$F9 ; [39]
+    B2E8:01 01 03 FA        DFB $01,$01,$03,$FA ; [3A]
+    B2EC:03 01 03 FB        DFB $03,$01,$03,$FB ; [3B]
+    B2F0:00 03 03 FC        DFB $00,$03,$03,$FC ; [3C]
+    B2F4:02 03 03 FD        DFB $02,$03,$03,$FD ; [3D]
+    B2F8:01 03 03 FE        DFB $01,$03,$03,$FE ; [3E]
+    B2FC:03 03 03 FF        DFB $03,$03,$03,$FF ; [3F]
+
+TODO: FIXME: Convert ProDOS Block # to Sector # ?
+
+    B300:48                 PHA
+    B301:29 07              AND #$07
+    B303:8D 19 B3           STA _B319
+    B306:68                 PLA
+    B307:6A                 ROR
+    B308:4A                 LSR
+    B309:4A                 LSR
+    B30A:C5 ED              CMP $ED             ; TODO
+    B30C:F0 0A              BEQ                 ;v $B318
+    B30E:48                 PHA
+    B30F:20 33 B3           JSR RWTS_Read16     ; TODO: FIXME
+    B312:20 9E B3           JSR RWTS_B39E       ; TODO: FIXME
+    B315:68                 PLA
+    B316:85 ED              STA $ED
+    B318:A0 00              LDY #$00
+
+...
+
+                    RWTS_Read16:
+    B333:A2 0F              LDX #$0F            ; 16 sectors to load
+                    MapLog2Phys:
+    B335:BC A9 B3           LDY $B3A9,X         ; ProDOS Logical Sector
+    B338:B9 C9 B3           LDA $B3C9,Y
+    B33B:9D D9 B3           STA $B3D9,X
+    B33E:CA                 DEX
+    B33F:10 F4              BPL MapLog2Phys     ;^ $B335
+
+    B341:A6 FD              LDX rwts_SlotX16
+    B343:A9 40              LDA #$40
+    B345:85 E8              STA rwts_ReadCount
+    B347:D0 29              BNE                 ;v $B372 always, TODO: FIXME
+
+                    AttemptRead:
+    B349:C6 E8              DEC rwts_ReadCount  ; Exhausted read attempts?
+    B34B:F0 31              BEQ ReadError       ;v $B37E
+    B34D:20 26 B1           JSR RWTS_ReadPrologue
+    B350:B0 F7              BCS AttemptRead     ;^ $B349
+    B352:A5 E4              LDA $E4
+    B354:C5 ED              CMP $ED
+    B356:D0 39              BNE                 ;v $B391
+    B358:A4 E3              LDY rwts_SectorHave
+    B35A:B9 D9 B3           LDA rwts_SectorDestAddr,Y
+    B35D:F0 EA              BEQ AttemptRead     ;^ $B349, already read this sector?
+
+    B35F:85 E7              STA rwts_LoadAddr+1
+    B361:AD E9 B3           LDA rwts_DestAddrLow
+    B364:85 E6              STA rwts_LoadAddr
+    B366:20 11 B0           JSR RWTS_ReadSector
+    B369:B0 DE              BCS AttemptRead     ;^ $B349
+
+    B36B:A4 E3              LDY rwts_SectorHave
+    B36D:A9 00              LDA #$00            ; Mark sector not loaded
+    B36F:99 D9 B3           STA rwts_SectorDestAddr,Y
+    B372:A0 0F              LDY #$0F
+                    AreSectorsDone:
+    B374:B9 D9 B3           LDA rwts_SectorDestAddr,Y
+    B377:D0 D0              BNE AttemptRead     ;^ $B349
+    B379:88                 DEY
+    B37A:10 F8              BPL AreSectorsDone  ;^ $B374
+    B37C:18                 CLC
+    B37D:60                 RTS
+
+                    ReadError
+    B37E:38                 SEC
+    B37F:EA                 NOP                 ; *** SELF-MODIFIED to be RTS $60 @ $ TODO
+    B380:A0 00              LDY #$00            ; Br0derbund "ZAP" sound
+                    ^1
+    B382:AD 30 C0           LDA SQUEEKER
+    B385:98                 TYA
+                    ^2
+    B386:38                 SEC
+    B387:E9 01              SBC #$01
+    B389:D0 FB              BNE ^2              ;^ $B386
+    B38B:88                 DEY
+    B38C:D0 F4              BNE ^1              ;^ $B382
+    B38E:4C 33 B3           JMP RWTS_Read16     ;^ $B333
+
+    B391:A5 E4              LDA $E4             ; TODO
+    B393:0A                 ASL
+    B394:85 FF              STA
+    B396:A5 ED              LDA $ED
+    B398:20 E9 B0           JSR Do_Seek
+    B39B:4C 33 B3           JMP Read16Sectors
+
+    B39E:A0 0F              LDY #$0F            ; 16 Sectors to load -- TODO: CALLED from $B312
+
+                    rwts_Logical2Physical_A ; Map Logical->Physical Sectors
+                                                ; ProDOS order?? TODO
+    B3A9:00 07 0E 06        DFB $0,$7,$E,$6,$D,$5,$C,$4
+    B3AD:0D 05 0C 04
+    B3B1:0B 03 0A 02        DFB $B,$3,$A,$2,$9,$1,$8,$F
+    B3B5:09 01 08 0F
+                    rwts_Logical2Physical_B ; Map Logical->Physical Sectors
+                                                ; DOS order?? TODO
+    B3B9:00 0D 0B 09        DFB $0,$D,$B,$9,$7,$5,$3,$1
+    B3BD:07 05 03 01
+    B3C1:0E 0C 0A 08        DFB $E,$C,$A,$8,$6,$4,$2,$F
+    B3C5:06 04 02 0F
+                    rwts_SectorLoadOrder:
+    B3C9:00 00 00 00
+    B3CD:00 00 00 00
+    B3D1:00 00 00 00
+    B3D5:00 00 00 00
+                    ; This is a scatter-gather read!
+                    rwts_SectorDestAddr:
+    B3D9:00 00 00 00
+    B3DD:00 00 00 00
+    B3E1:00 00 00 00
+    B3E5:00 00 00 00
+
+                    rwts_DestAddrLow:
+    B3E9:00                 DFB $00
+
+
+                    ; ====================
+                    ; Y = Track
+                    ; JSR RWTS_B003
+                    ;     DFB Load Address 0
+                    ;     DFB Load Address 1
+                    ;     DFB Load Address 2
+                    ;     DFB Load Address 3
+                    ;     DFB Load Address 4
+                    ;     DFB Load Address 5
+                    ;     DFB Load Address 6
+                    ;     DFB Load Address 7
+                    ;     DFB Load Address 8
+                    ;     DFB Load Address 9
+                    ;     DFB Load Address A
+                    ;     DFB Load Address B
+                    ;     DFB Load Address C
+                    ;     DFB Load Address D
+                    ;     DFB Load Address E
+                    ;     DFB Load Address F
+                    ; ====================
+                    Do_LoadCode:
+    B3ED:84 ED              STY rwts_ED
+    B3EF:68                 PLA
+    B3F0:85 EB              STA rwts_Return
+    B3F2:68                 PLA
+    B3F3:85 EC              STA rwts_Return+1
+    B3F5:A2 00              LDX #$00
+                    RWTS_Load
+    B3F7:20 0B B4           JSR NextByte
+    B3FA:9D C9 B3           STA $B3C9,X
+    B3FD:E8                 INX
+    B3FE:E0 10              CPX #$10
+    B400:90 F5              BCC                 ;^ $B3F7
+    B402:A5 EC              LDA rwts_Return
+    B404:48                 PHA
+    B405:A5 EB              LDA rwts_Return+1
+    B407:48                 PHA
+    B408:4C 33 B3           JMP RWTS_Read16     ;^ $B333
+
+                    NextByte:
+    B40B:E6 EB              INC rwts_Return
+    B40D:D0 02              BNE GetByte         ; roll over to next page?
+    B40F:E6 EC              INC rwts_Return+1
+                    GetByte:
+    B411:A0 00              LDY #$00
+    B413:B1 EB              LDY (rwts_Return),Y
+    B415:60                 RTS
+
+
+                    ; ====================
+                    ;
+                    ; ====================
+    B451:
+
+    B568:60                 RTS
+    B569:00 00 00
+    B56C:00 00 00 00        DS $B7FF-*
+
+    B600:0 0 0 0 0 0 0 0                        ; Unused/Wasted
+    B608:0 0 0 0 0 0 0 0
+    B610:0 0 0 0 0 0 0 0
+    B618:0 0 0 0 0 0 0 0
+    B620:0 0 0 0 0 0 0 0
+    B628:0 0 0 0 0 0 0 0
+    B630:0 0 0 0 0 0 0 0
+    B638:0 0 0 0 0 0 0 0
+    B640:0 0 0 0 0 0 0 0
+    B648:0 0 0 0 0 0 0 0
+    B650:0 0 0 0 0 0 0 0
+    B658:0 0 0 0 0 0 0 0
+    B660:0 0 0 0 0 0 0 0
+    B668:0 0 0 0 0 0 0 0
+    B670:0 0 0 0 0 0 0 0
+    B678:0 0 0 0 0 0 0 0
+    B680:0 0 0 0 0 0 0 0
+    B688:0 0 0 0 0 0 0 0
+    B690:0 0 0 0 0 0 0 0
+    B698:0 0 0 0 0 0 0 0
+    B6A0:0 0 0 0 0 0 0 0
+    B6A8:0 0 0 0 0 0 0 0
+    B6B0:0 0 0 0 0 0 0 0
+    B6B8:0 0 0 0 0 0 0 0
+    B6C0:0 0 0 0 0 0 0 0
+    B6C8:0 0 0 0 0 0 0 0
+    B6D0:0 0 0 0 0 0 0 0
+    B6D8:0 0 0 0 0 0 0 0
+    B6E0:0 0 0 0 0 0 0 0
+    B6E8:0 0 0 0 0 0 0 0
+    B6F0:0 0 0 0 0 0 0 0
+    B6F8:0 0 0 0 0 0 0 0
+
+    B700:0 0 0 0 0 0 0 0
+    B708:0 0 0 0 0 0 0 0
+    B710:0 0 0 0 0 0 0 0
+    B718:0 0 0 0 0 0 0 0
+    B720:0 0 0 0 0 0 0 0
+    B728:0 0 0 0 0 0 0 0
+    B730:0 0 0 0 0 0 0 0
+    B738:0 0 0 0 0 0 0 0
+    B740:0 0 0 0 0 0 0 0
+    B748:0 0 0 0 0 0 0 0
+    B750:0 0 0 0 0 0 0 0
+    B758:0 0 0 0 0 0 0 0
+    B760:0 0 0 0 0 0 0 0
+    B768:0 0 0 0 0 0 0 0
+    B770:0 0 0 0 0 0 0 0
+    B778:0 0 0 0 0 0 0 0
+    B780:0 0 0 0 0 0 0 0
+    B788:0 0 0 0 0 0 0 0
+    B790:0 0 0 0 0 0 0 0
+    B798:0 0 0 0 0 0 0 0
+    B7A0:0 0 0 0 0 0 0 0
+    B7A8:0 0 0 0 0 0 0 0
+    B7B0:0 0 0 0 0 0 0 0
+    B7B8:0 0 0 0 0 0 0 0
+    B7C0:0 0 0 0 0 0 0 0
+    B7C8:0 0 0 0 0 0 0 0
+    B7D0:0 0 0 0 0 0 0 0
+    B7D8:0 0 0 0 0 0 0 0
+    B7E0:0 0 0 0 0 0 0 0
+    B7E8:0 0 0 0 0 0 0 0
+    B7F0:0 0 0 0 0 0 0 0
+    B7F8:0 0 0 0 0 0 0 0
+```
+
 
 # Boot Tracing Stage 2
 
