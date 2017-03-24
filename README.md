@@ -629,71 +629,72 @@ I'll use the prefix:
 * uppercase `RWTS` for functions
 
 ```asm
+                            rwts_ReadChecksum       = $E1
                             rwts_Sector_Have        = $E3
                             rwts_E4                 = $E4   ; ???
-                            rwts_LoadAddr           = $E6   ; Pointer to dest buf
+                            rwts_LoadAddr           = $E6   ; 16-bit Pointer to dest buf
                             rwts_ReadCount          = $E8   ; Attempts Remaining to read sector
                             rwts_HalfTrack_Want     = $EB
                             rwts_HalfTrack_Prev     = $EC   ; (mirror of $FF)
-                            rwts_ED                 = $ED   ; ??? previous track?
+                            rwts_Track              = $ED
 
-                            rwts_Return             = $EB
+                            rwts_Return             = $EB   ; 16-bit Pointer to caller
+
+                            rwts_temp               = $EC
 
                             rwts_SlotX16            = $FD
                             rwts_HalfTrack_Have     = $FF   ; Current track
 
-                            rwts_DestAddrLow        = $B3E9 ; ???
+                            rwts_DestAddr           = $B3E9 ; ProDOS block load dest
 
                             ORG $B000
 
-                    RWTS_ReadTrack
-    B000:4C 51 B4           JMP Do_ReadTrack        ; Y = Track, A = Addr
-                    RWTS_LoadCode
-    B003:4C ED B3           JMP Do_LoadCode         ; Y = Track, $11 bytes after Program Counter
-                    RWTS_?
-    B006:4C 22 B4           JMP Do_B422             ; TODO: FIXME
-                    RWTS_Seek
-    B009:4C E9 B0           JMP Do_Seek             ; A = Track
-                    RWTS_?
-    B00C:4C 62 B4           JMP Do_B462             ; TODO: FIXME
+    B000:4C 51 B4   RWTS_ReadTrack:      JMP Do_ReadTrack   ; [0] Y = Track, A = Addr
+    B003:4C ED B3   RWTS_LoadCode:       JMP Do_LoadCode    ; [1] Y = Track, $11 bytes after Program Counter
+    B006:4C 22 B4   RWTS_LoadBlocks:     JMP Do_LoadBlocks  ; [2] Addr = $A,Y, X = ??? TODO
+    B009:4C E9 B0   RWTS_Seek:           JMP Do_Seek        ; [3] A = Track
+    B00C:4C 62 B4   RWTS_ReadTrackQuiet: JMP Do_B462        ; [4] Y = Track, A = Addr, no zap if bad read
 
-    B00F:38                 SEC                     ; Error
+    B00F:38                 SEC                             ; Error TODO: Who calls us???
     B010:60                 RTS
 
                     ; ====================
                     ; X = Slot * $10
                     ; ====================
                     RWTS_ReadSector
-    B011:86 FD              STX $FD             ; $E6 = Pointer to Dest Address
+    B011:86 FD              STX rwts_SlotX16        ; $E6 = Pointer to Dest Address
     B013:8A                 TXA
-    B014:09 8C              ORA #<DRIVE_DATA    ; DRIVE_DATA = $C08C
-    B016:8D 70 B0           STA _B070
-    B019:8D 87 B0           STA _B087
-    B01C:8D 9D B0           STA _B09D
-    B01F:8D B1 B0           STA _B0B1
-    B022:8D C6 B0           STA _B0C6
+    B014:09 8C              ORA #<DRIVE_DATA        ; DRIVE_DATA = $C08C
+    B016:8D 70 B0           STA FixupA+1
+    B019:8D 87 B0           STA FixupB+1
+    B01C:8D 9D B0           STA _B09C+1
+    B01F:8D B1 B0           STA _B0B0+1
+    B022:8D C6 B0           STA _B0C5+1
+
     B025:A5 E6              LDA rwts_LoadAddr
     B027:A4 E7              LDY rwts_LoadAddr+1
     B029:8D C3 B0           STA _B0C2+1
     B02C:8C C4 B0           STY _B0C2+2
     B02F:38                 SEC
     B030:E9 54              SBC #$54
-    B032:B0 02              BCS                 ;v $B036 TODO
+    B032:B0 02              BCS                     ;v $B036 TODO
     B034:88                 DEY
     B035:38                 SEC
-    B036:8D AB B0           STA                 ; $B0AA+1
-    B039:8C AC B0           STA                 ; $B0AA+2
-    B03C:E9 57              SBC #$57
-    B03E:B0 01              BCS                 ;v $B041
 
-    B041:8D 84 B0           STA                 ; $B083+1
-    B044:8C B5 B0           STA                 ; $B083+2
+    B036:8D AB B0           STA                     ; $B0AA+1
+    B039:8C AC B0           STA                     ; $B0AA+2
+    B03C:E9 57              SBC #$57
+    B03E:B0 01              BCS                     ;v $B041
+
+    B041:8D 84 B0           STA                     ; $B083+1
+    B044:8C B5 B0           STA                     ; $B083+2
     B047:A0 20              LDY #$20
 
     B049:88                 DEY
                     DataProlog1:
     B04C:BD 8C C0           LDA DRIVE_DATA,X
     B04F:10 FB              BPL DataProlog1
+                    TestProlog1:
     B051:49 D5              EOR #$D5
     B053:D0 F4              BNE _B049
     B055:EA                 NOP
@@ -701,11 +702,39 @@ I'll use the prefix:
     B056:BD 8C C0           LDA DRIVE_DATA,X
     B059:10 FB              BPL DataProlog2         ;^ $B056
     B05B:C9 AA              CMP #$AA
-    B05D:D0 F2              BNE ;^ $B051
-
+    B05D:D0 F2              BNE TestProlog1         ;^ $B051
+    B05F:EA                 NOP
                     DataProlog3:
-    B065:                   CMP #$AD
-    B069:                   Decode #$56 nibbles into $2AA..$2FF
+    B060:BD 8C C0           LDA DRIVE_DATA,X
+    B063:10 FB              BPL DataProlog3
+                    TestProlog3:
+    B065:C9 AD              CMP #$AD
+    B067:D0 E8              BNE                     ;^ $B051
+    B069:A0 AA              LDY #$AA                ;Decode #$56 nibbles into $2AA..$2FF
+    B06B:A9 00              LDA #$00
+                    NextChecksum:
+    B06D:85 E1              STA rwts_ReadChecksum
+                    FixupA:
+    B06F:AE 8C C0           LDX DRIVE_DATA          ; *** SELF-MODIFIED CODE @ $B016
+    B072:10 FB              BPL FixupA              ; A = $96 .. $FF
+    B074:BD 00 B1           LDA DiskNibble64-$96,X  ; [nib]
+    B077:99 00 02           STA Decode200,Y
+    B07A:45 E1              EOR rwts_ReadChecksum
+    B07C:C8                 INY
+    B07D:D0 EE              BNE NextChecksum        ;^ $B06D
+
+    B07F:A0 AA              LDY #$AA
+    B081:D0 03              BNE FixupB              ;v $B086, always
+    B083:99 FF FF           STA $FFFF,Y             ; *** SELF-MODIFYING code!
+
+                    FixupB:
+    B086:AE 8C C0           LDX $C08C               ; *** SELF-MODIFIED CODE @ $B019
+    B089:10 FB              BPL FixupB
+    B08B:
+
+... TODO ...
+
+
                     DataEpilog1:
     B0DC:C9 DE              CMP #$DE
     B0DE:B0 02              BCS DataEpilogGood      ;v $B0E2
@@ -823,6 +852,8 @@ I'll use the prefix:
     B18C:00 00 00 00
     B190:00 00 00 00
     B194:00 00
+
+                    DiskNibble64:
                                                 ;Valid Disk Nibbles (6-bit * 4) Lookup Table
                                                 ;[+0 +1 +2 +3 +4 +5 +6 +7]
                                                 ;[+8 +9 +A +B +C +D +E +F]
