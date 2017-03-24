@@ -1573,28 +1573,28 @@ The rest of the code is pretty straightforward.
 2. Enter in this short ML (machine language program)
 
 ```asm
-    1F01:A9 60      LDA #$60    ; "RTS"
-    1F03:8D 46 08   STA $0846   ; 846:LDX $2B -> RTS
-    1F06:8D 73 08   STA $0873   ; 873:LDX $2B -> RTS
-    1F09:20 01 08   JSR $0801   ;
-    1F0C:A9 17      LDA #$17    ; A=Track
-    1F0E:A0 20      LDY #$20    ; Y=Dest
-    1F10:20 20 1F   JSR $1F20
-    1F13:A9 18      LDA #$18    ; A=Track
-    1F15:A0 30      LDY #$30    ; Y=Dest
-    1F17:20 20 1F   JSR $1F20
-    1F1A:4C 69 FF   JMP $FF69
+    1F01:A9 60              LDA #$60        ; "RTS"
+    1F03:8D 46 08           STA $0846       ; 846:LDX $2B -> RTS
+    1F06:8D 73 08           STA $0873       ; 873:LDX $2B -> RTS
+    1F09:20 01 08           JSR $0801       ;
+    1F0C:A9 17              LDA #$17        ; A = Track
+    1F0E:A0 20              LDY #$20        ; Y = Dest
+    1F10:20 20 1F           JSR $1F20
+    1F13:A9 18              LDA #$18        ; A = Track
+    1F15:A0 30              LDY #$30        ; Y = Dest
+    1F17:20 20 1F           JSR $1F20
+    1F1A:4C 69 FF           JMP $FF69
 
-    1F20:8D 57 08   STA $857    ; LDA #$0F Track
-    1F23:A2 00      LDX #$00
-    1F25:98         TYA
-    1F26:9D CE 08   STA $08CE,X
-    1F29:C8         INY         ; Dest Page
-    1F2A:E8         INX
-    1F2B:E0 10      CPX #$10    ; 16 sectors
-    1F2D:D0 F6      BNE $1F25
-    1F2F:A6 2B      LDX $2B
-    1F31:4C 48 08   JMP $0848
+    1F20:8D 57 08           STA $857        ; LDA #Track
+    1F23:A2 00              LDX #$00
+    1F25:98                 TYA
+    1F26:9D CE 08           STA $08CE,X
+    1F29:C8                 INY             ; Dest Page
+    1F2A:E8                 INX
+    1F2B:E0 10              CPX #$10        ; 16 sectors
+    1F2D:D0 F6              BNE $1F25
+    1F2F:A6 2B              LDX $2B
+    1F31:4C 48 08           JMP $0848
 ```
 
 Via:
@@ -1609,6 +1609,8 @@ Via:
     1F26:9D CE 08 C8 E8 E0 10
     1F2D:D0 F6 A6 2B 4C 48 08
 ```
+
+* Note: That A and Y are swapped comprared to RWTS_ReadTrack at $B000
 
 3. And save it:
 
@@ -1646,7 +1648,7 @@ For some unknown reason there is actually a complete _second_ copy of the logo o
 
 Hmm, why is our logo messed up??
 
-It turns out 4 tracks are mirrored !?!?!?
+It turns out there are 4 tracks that are mirrored !?!?!?
 
 |Track| Description                 |
 |:---:|:---------------------------:|
@@ -1724,8 +1726,28 @@ That resides at $BE89:
     BEA2:20 00 B0       JSR RTWS_LoadTrack
 ```
 
+Here is a easy way to view these:
 
-# Boot Tracing Stage 5
+```
+    CALL-151
+    9600<C600.C6FFM
+    96FA:9F
+    9F00:60 60
+    9600G
+
+    FC58G
+    2B:60
+    880:9F
+
+    BE86:AD 54 C0
+    BEA5:60
+    BE86G
+```
+
+
+
+
+# Boot Tracing Stage 4
 
 
 # "What this, 'Byte-Code', you say young chap?" Harrumph.
