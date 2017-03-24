@@ -33,8 +33,8 @@
   * COPY, eh?
   * ProDOS Hybrid!?
   * ProDOS Block Review
-  * Disk Usage Details
   * Disk Usage Summary
+  * Disk Usage Details
 * Easter Eggs
   * Source Code
   * Original File Names
@@ -2919,6 +2919,9 @@ Block2TrackSector:
 
 ## Disk Usage Summary
 
+
+## Disk Usage Details
+
 | T/S |Addr |Block|Offset|Description                   |
 |:---:|:---:|----:|-----:|:-----------------------------|
 |T00S0|$0800|  0a |  n/a | Boot Stage 1 - Boot Sector   |
@@ -3029,125 +3032,18 @@ T15S0 $B000 RWTS
 
     * $02AA .. $02FF used as disk nibbles decode buffer for $56 bytes
 
-    B000: JMP $B451 ; RWTS_ReadTrack    ; Y = Track, A = Addr
-    B003: JMP $B3ED ; RWTS_             ; TODO
-    B006: JMP $B422 ; RWTS_             ; TODO
-    B009: JMP $B0E9 ; RWTS_Seek         ; A = Track
-    B00C: JMP $B462
-    B00F: SEC RTS   ; Error
-
-    B051: CMP #$D5
-    B05B: CMP #$AA
-    B065: CMP #$AD
-    B069: Decode #$56 nibbles into $2AA..$2FF
-    B0DC: CMP #$DE
-    B0E9:
+            ; Disk Nibbles: Volume, Track, Sector, Checksum
           CHECKSUM        = $E1
-          HALF_TRACK_PREV = $EC (mirror of $FF)
-          HALF_TRACK_WANT = $EB
-          HALF_TRACK_HAVE = $FF     ; TODO: FIXME: RWTS_HALFTRACK
+          HAVE_SECTOR     = $E3
+
 ```
 
 T15S1 $B100 @ $B126:read sector prologue D5 AA 96 [xx yy zz] DE
 
 ```
-    B136:CMP #$D5
-    B140:CMP #$AA
-    B14B:CMP #$96
-    B172:CMP #$DE
 
-    Valid Disk Nibbles (6-bit * 4) Lookup Table
-                                 ;[+0 +1 +2 +3 +4 +5 +6 +7]
-                                 ;[+8 +9 +A +B +C +D +E +F]
-    B196:                  00 04 ; -- -- -- -- -- -- 96 97
-    B198:98 99 08 0C 9C 10 14 18 ; -- -- 9A 9B -- 9D 9E 9F
-    B1A0:A0 A1 A2 A3 A4 A5 1C 20 ; -- -- -- -- -- -- A6 A7
-    B1A8:A8 A9 AA 24 28 2C 30 34 ; -- -- -- AB AC AD AE AF
-    B1B0:B0 B1 38 3C 40 44 48 4C ; -- -- B2 B3 B4 B5 B6 B7
-    B1B8:B8 50 54 58 5C 60 64 68 ; -- B9 BA BB BC BD BE BF
-    B1C0:C0 C1 C2 C3 C4 C5 C6 C7 ; -- -- -- -- -- -- -- --
-    B1C8:C8 C9 CA 6C CC 70 74 78 ; -- -- -- CB -- CD CE CF
-    B1D0:D0 D1 D2 7C D4 D5 80 84 ; -- -- -- D3 -- -- D6 D7
-    B1D8:D8 88 8C 90 94 98 9C A0 ; -- D9 DA DB DC DD DE DF
-    B1E0:E0 E1 E2 E3 E4 A4 A8 AC ; -- -- -- -- -- E5 E6 E7
-    B1E8:E8 B0 B4 B8 B8 C0 C4 C8 ; -- E9 EA EB EC ED EE EF
-    B1F0:F0 F1 CC D0 D4 D8 DC E0 ; -- -- F2 F3 F4 F5 F6 F7
-    B1F8:F8 E4 E8 EC F0 F4 F8 FC ; -- F9 FA FB FC FD FE FF
 
 T15S2 $B200 Optimized 6&2 Decode Table
-
-    Notes:
-    * 4 bytes/nibble
-    * 4'th byte not used -- used as padding since X*3 = x*2 + x = too slow
-    * Sequence in psuedo-base 4: 0,2,1,3
-
-    B200:00 00 00 96 ; [00]
-    B204:02 00 00 97 ; [01]
-    B208:01 00 00 9A ; [02]
-    B20C:03 00 00 9B ; [03]
-    B210:00 02 00 9D ; [04]
-    B214:02 02 00 9E ; [05]
-    B218:01 02 00 9F ; [06]
-    B21C:03 02 00 A6 ; [07]
-    B220:00 01 00 A7 ; [08]
-    B224:02 01 00 AB ; [09]
-    B228:01 01 00 AC ; [0A]
-    B22C:03 01 00 AD ; [0B]
-    B230:00 03 00 AE ; [0C]
-    B234:02 03 00 AF ; [0D]
-    B238:01 03 00 B2 ; [0E]
-    B23C:03 03 00 B3 ; [0F]
-
-    B240:00 00 02 B4 ; [10]
-    B244:02 00 02 B5 ; [11]
-    B248:01 00 02 B6 ; [12]
-    B24C:03 00 02 B7 ; [13]
-    B250:00 02 02 B9 ; [14]
-    B254:02 02 02 BA ; [15]
-    B258:01 02 02 BB ; [16]
-    B25C:03 02 02 BC ; [17]
-    B260:00 01 02 BD ; [18]
-    B264:02 01 02 BE ; [19]
-    B268:01 01 02 BF ; [1A]
-    B26C:03 01 02 CB ; [1B]
-    B270:00 03 02 CD ; [1C]
-    B274:02 03 02 CE ; [1D]
-    B278:01 03 02 CF ; [1E]
-    B27C:03 03 02 D3 ; [1F]
-
-    B280:00 00 01 D6 ; [20]
-    B284:02 00 01 D7 ; [21]
-    B288:01 00 01 D9 ; [22]
-    B28C:03 00 01 DA ; [23]
-    B290:00 02 01 DB ; [24]
-    B294:02 02 01 DC ; [25]
-    B298:01 02 01 DD ; [26]
-    B29C:03 02 01 DE ; [27]
-    B2A0:00 01 01 DF ; [28]
-    B2A4:02 01 01 E5 ; [29]
-    B2A8:01 01 01 E6 ; [2A]
-    B2AC:03 01 01 E7 ; [2B]
-    B2B0:00 03 01 E9 ; [2C]
-    B2B4:02 03 01 EA ; [2D]
-    B2B8:01 03 01 EB ; [2E]
-    B2BC:03 03 01 EC ; [2F]
-
-    B2C0:00 00 03 ED ; [30]
-    B2C4:02 00 03 EE ; [31]
-    B2C8:01 00 03 EF ; [32]
-    B2CC:03 00 03 F2 ; [33]
-    B2D0:00 02 03 F3 ; [34]
-    B2D4:02 02 03 F4 ; [35]
-    B2D8:01 02 03 F5 ; [36]
-    B2DC:03 02 03 F6 ; [37]
-    B2E0:00 01 03 F7 ; [38]
-    B2E4:02 01 03 F9 ; [39]
-    B2E8:01 01 03 FA ; [3A]
-    B2EC:03 01 03 FB ; [3B]
-    B2F0:00 03 03 FC ; [3C]
-    B2F4:02 03 03 FD ; [3D]
-    B2F8:01 03 03 FE ; [3E]
-    B2FC:03 03 03 FF ; [3F]
 
     T15S3 $B300
     T15S4 $B400
