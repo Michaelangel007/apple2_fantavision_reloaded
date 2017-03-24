@@ -205,199 +205,204 @@ Now I could be a jerk and hand-wave it as
 but I'll be nice guy and provide a fully documented disassembly:
 
 ```asm
-                ; P5 PROM Drive Usage ZP and IO
-                        P5.Buff     = $26   ; 16-bit pointer to dest
-                        P5.SlotX16  = $2B   ; i.e. $60 = Slot 6
-                        P5.WantTrack= $41   ;
+                    ; Disk Drive P5 PROM Usage ZP and IO
+                            P5.Buff             = $26   ; 16-bit pointer to dest
+                            P5.SlotX16          = $2B   ; i.e. $60 = Slot 6
+                            P5.WantTrack        = $41   ;
 
-                        P5.SecLoaded= $3D   ;
-                        P5.SecTotal = $0800 ; Boot Sector contains total number of sectors to load
+                            P5.SecWant          = $3D   ;
+                            P5.SecTotal         = $0800 ; T00S0 @ $00: total number of sectors to load
 
-                        PHASEMSAK   = $03   ; 4 phases
-                        PHASEOFF    = $C080
-                        PHASEON     = $C081
-                        DRIVE_DATA  = $C08C
+                            PHASE_MASK          = $03   ; 4 phases
+                            PHASE0_OFF          = $C080
+                            PHASE0_ON           = $C081
 
-                ; Globals
-                        SEEK_HALFTRACK = $50
-                        HAVE_HALFTRACK = $51
-                        NumSecLeft     = $52
-                        BufZP          = $1000  ; Zero Page is saved here
+                            DRIVE_OFF           = $C088 ; Motor Off
+                            DRIVE_ON            = $C089 ; Motor On
+                            DRIVE_DATA          = $C08C
 
-                        RWTS_SLOTx16   = $FD
-                        RWTS_HALFTRACK = $FF    ;
+                    ; Globals
+                            boot_HalfTrack_Seek = $50
+                            boot_HalfTrack_Have = $51
+                            NumSecLeft          = $52
+                            BufZP               = $1000  ; Zero Page is saved here
 
-                        ReadBoot3   = $B500
-                        LoadBoot3   = $BC00
-                        ExecBoot3   = $BE00
+                            rwts_SlotX16        = $FD
+                            rwts_HalfTrack_Have = $FF    ;
 
-                ; Misc.
-                        RESET       = $3F2  ; Ctrl-Reset Vector + Checksum
-                        TXTHOLE31   = $4FB  ; 40x24 Text Sceen Hole
+                            ReadBoot3           = $B500
+                            LoadBoot3           = $BC00
+                            ExecBoot3           = $BE00
 
-                ; IO Switches
-                        STORE40     = $C000 ; W
-                        ALTZPOFF    = $C008
-                        CLR80VID    = $C00C
-                        CLRALTCHAR  = $C00E ; Turn off Mouse Text
-                        DHIRESOFF   = $C05F
+                    ; Misc.
+                            RESET               = $3F2  ; Ctrl-Reset Vector + Checksum
+                            TXTHOLE31           = $4FB  ; 40x24 Text Sceen Hole
 
-                        ROMIN       = $C081
+                    ; IO Switches
+                            STORE40     = $C000 ; W
+                            KEYBOARD    = $C000 ;R
+                            KEYSTROBE   = $C010
+                            ALTZPOFF    = $C008
+                            CLR80VID    = $C00C
+                            CLRALTCHAR  = $C00E ; Turn off Mouse Text
+                            DHIRESOFF   = $C05F
 
-                ; F800 ROM Entry Points
-                        F8.INIT     = $FB2F ;
-                        F8.HOME     = $FC58 ; Clear 40x24 text screen
-                        F8.SETNORM  = $FE84 ;
-                        F8.SETVID   = $FE93 ; PR#0
-                        F8.SETKBD   = $FE89 ; IN#0
+                            ROMIN       = $C081
 
-                        ORG $800
+                    ; F800 ROM Entry Points
+                            F8.INIT     = $FB2F ;
+                            F8.HOME     = $FC58 ; Clear 40x24 text screen
+                            F8.SETNORM  = $FE84 ;
+                            F8.SETVID   = $FE93 ; PR#0
+                            F8.SETKBD   = $FE89 ; IN#0
 
-0800:01                 DFB $01             ; Tell P5 PROM to read only 1 Sector
-                Boot1:                      ; A=01 X=60 Y=00 P=31 S=F0 Boot Stage #1 Entry Point from $C6F8
-0801:A9 60              LDA #$60            ; Save "RTS" @ $0801 so that when we call
-0803:8D 01 08           STA Boot1           ; `CallReadSec` it will return to NextSector @ $086F
+                            ORG $800
 
-0806:A2 00              LDX #$00            ; Save _absolute_ track the drive head is on
-0808:86 FF              STX RWTS_HALFTRACK  ; since we can only move _relative_ tracks
+    0800:01                 DFB $01                 ; Tell P5 PROM to read only 1 Sector
+                    Boot1:                          ; A=01 X=60 Y=00 P=31 S=F0 Boot Stage #1 Entry Point from $C6F8
+    0801:A9 60              LDA #$60                ; Poke "RTS" @ $0801 so that when we call
+    0803:8D 01 08           STA Boot1               ; `CallReadSec` it will return to NextSector @ $086F
 
-080A:           SaveZP:                     ; Copy $0000[ $00 .. $FF ] to $1000
-080A:B5 00              LDA $00,X           ; Just in case ALTZPON was accidently left on
-080C:9D 00 10           STA BufZP,X         ;
-080F:E8                 INX                 ;
-0810:D0 F8              BNE SaveZP          ;^ $080A
+    0806:A2 00              LDX #$00                ; Save _absolute_ track the drive head is on
+    0808:86 FF              STX rwts_HalfTrack_Have ; since we can only move _relative_ tracks
 
-0812:8D 08 C0           STA ALTZPOFF        ; //e+, //c, IIgs, Laser 128
+    080A:           SaveZP:                         ; Copy $0000[ $00 .. $FF ] to $1000
+    080A:B5 00              LDA $00,X               ; Just in case ALTZPON was accidently left on
+    080C:9D 00 10           STA BufZP,X             ;
+    080F:E8                 INX                     ;
+    0810:D0 F8              BNE SaveZP              ;^ $080A
 
-                LoadZP:                     ;
-0815:BD 00 10           LDA BufZP,X         ;
-0818:95 00              STA $00,X           ;
-081A:E8                 INX                 ;
-081B:D0 F8              BNE LoadZP          ;^ $0815
+    0812:8D 08 C0           STA ALTZPOFF            ; //e+, //c, IIgs, Laser 128
 
-081D:A9 FF              LDA #$FF            ; 
-081F:8D FB 04           STA TXTHOLE31       ; Screen Text Hole Slot 3, Temp 1
+                    LoadZP:                         ;
+    0815:BD 00 10           LDA BufZP,X             ;
+    0818:95 00              STA $00,X               ;
+    081A:E8                 INX                     ;
+    081B:D0 F8              BNE LoadZP              ;^ $0815
 
-0822:8D F3 03           STA RESET+1         ; Make Ctrl-Reset
-0825:8D F4 03           STA RESET+2         ; do warm restart @ TODO: FIXME:
+    081D:A9 FF              LDA #$FF                ;
+    081F:8D FB 04           STA TXTHOLE31           ; Screen Text Hole Slot 3, Temp 1
 
-0828:8D 00 C0           STA STORE40         ;
-082B:8D 0C C0           STA CLR80VID        ;
-082E:8D 0E C0           STA CLRALTCHAR      ;
-0831:8D 5F C0           STA DHIRESOFF       ;
-0834:8D 81 C0           STA ROMIN           ;
+    0822:8D F3 03           STA RESET+1             ; Make Ctrl-Reset
+    0825:8D F4 03           STA RESET+2             ; do warm restart @ TODO: FIXME:
 
-0837:20 2F FB           JSR F8.INIT         ;
-083A:20 58 FC           JSR F8.HOME         ; Clear 40x24 text screen
-083D:20 84 FE           JSR F8.SETNORM      ;
-0840:20 93 FE           JSR F8.SETVID       ; PR#0
-0843:20 89 FE           JSR F8.SETKBD       ; IN#0
+    0828:8D 00 C0           STA STORE40             ;
+    082B:8D 0C C0           STA CLR80VID            ;
+    082E:8D 0E C0           STA CLRALTCHAR          ;
+    0831:8D 5F C0           STA DHIRESOFF           ;
+    0834:8D 81 C0           STA ROMIN               ;
 
-0846:A6 2B              LDX P5SLOTx16       ; X=60 = Drive Slot * $10
-0848:8A                 TXA                 ; 
-0849:4A                 LSR                 ; 
-084A:4A                 LSR                 ; 
-084B:4A                 LSR                 ; 
-084C:4A                 LSR                 ; A=06
-084D:09 C0              ORA #$C0            ; A=C6 = $Cx00 = Memory-Mapped IO: i.e. $C6 = slot 6 P5 PROM
-084F:8D 6E 08           STA CallReadSec+2   ; *** SELF-MODIFYING Code !
+    0837:20 2F FB           JSR F8.INIT             ;
+    083A:20 58 FC           JSR F8.HOME             ; Clear 40x24 text screen
+    083D:20 84 FE           JSR F8.SETNORM          ;
+    0840:20 93 FE           JSR F8.SETVID           ; PR#0
+    0843:20 89 FE           JSR F8.SETKBD           ; IN#0
 
-0852:A9 0F              LDA #$0F            ; Num Sectors to Read
-0854:85 52              STA NumSecLeft      ; 
-0856:A9 15              LDA #$15            ; Track $15 contains Boot Stage 2
-0858:85 41              STA P5.WantTrack    ;   
-085A:0A                 ASL                 ; $15 * 2 = $2A Half-Tracks
-085B:20 81 08           JSR HalfTrackSeek   ;v $0881
+    0846:A6 2B              LDX P5SLOTx16           ; X=60 = Drive Slot * $10
+    0848:8A                 TXA                     ;
+    0849:4A                 LSR                     ;
+    084A:4A                 LSR                     ;
+    084B:4A                 LSR                     ;
+    084C:4A                 LSR                     ; A=06
+    084D:09 C0              ORA #$C0                ; A=C6 = $Cx00 = Memory-Mapped IO: i.e. $C6 = slot 6 P5 PROM
+    084F:8D 6E 08           STA CallReadSec+2       ; *** SELF-MODIFYING Code !
 
-                LoadSector:
-085E:A5 52              LDY NumSecLeft      ;
-0860:B9 BE 08           LDA LogicalSector,Y ;
-0863:85 3D              STA P5SECTOR        ;
-0865:B9 CE 08           LDA DestPage,Y      ;
-0868:F0 05              BEQ NextSector      ;v $086F Never read into Zero Page!
-086A:85 27              STA P5.Buff+1       ; Tell P5PROM where in mem we want to load
+    0852:A9 0F              LDA #$0F                ; Num Sectors to Read
+    0854:85 52              STA NumSecLeft          ;
+    0856:A9 15              LDA #$15                ; Track $15 contains Boot Stage 2
+    0858:85 41              STA P5.WantTrack        ;
+    085A:0A                 ASL                     ; $15 * 2 = $2A Half-Tracks
+    085B:20 81 08           JSR BS.HalfTrackSeek    ;v $0881
 
-                CallReadSec:                ; *** SELF-MODIFIED @ $084F
-086C:20 5C 00           JSR $005C           ; CALL P5 PROM Read Sector @ $C65C
+                    LoadSector:
+    085E:A5 52              LDY NumSecLeft          ;
+    0860:B9 BE 08           LDA LogicalSector,Y     ;
+    0863:85 3D              STA P5.SecWant          ;
+    0865:B9 CE 08           LDA DestPage,Y          ;
+    0868:F0 05              BEQ NextSector          ;v $086F Never read into Zero Page!
+    086A:85 27              STA P5.Buff+1           ; Tell P5 PROM where in mem we want to load
 
-                NextSector:
-086F:C6 52              DEC NumSecLeft      ;
-0871:10 EB              BPL LoadSector      ;^ $085E
+                    CallReadSec:                    ; *** SELF-MODIFIED @ $084F
+    086C:20 5C 00           JSR $005C               ; CALL P5 PROM Read Sector @ $C65C
 
-                TestBoot3:                  ; Boot Stage 2 done, do stage 3
-0873:A6 2B              LDX P5.SlotX16      ;
-0875:86 FD              STX RWTS_SLOTx16    ;
-0877:A9 BC              LDA #>LoadBoot3     ; Load T$22 4&4 "4 sectors" @ $BC00, $BD00, $BE00, $BF00
-0879:20 00 B5           JSR   ReadBoot3     ; Boot Stage 2 reads in encrypted Stage 3
-087C:B0 F5              BCS   TestBoot3     ;^ $0873 C=1 error, Hang if NibbleCheck1 fails
-087E:4C 00 BE           JMP   ExecBoot3     ;
+                    NextSector:
+    086F:C6 52              DEC NumSecLeft          ;
+    0871:10 EB              BPL LoadSector          ;^ $085E
 
-                HalfTrackSeek:              ; A = Half Track to Seek
-0881:85 50              STA SEEK_HALFTRACK  ; Save Half Track to seek
+                    TestBoot3:                      ; Boot Stage 2 done, do stage 3
+    0873:A6 2B              LDX P5.SlotX16          ;
+    0875:86 FD              STX rwts_SlotX16        ;
+    0877:A9 BC              LDA #>LoadBoot3         ; Load T$22 4&4 "4 sectors" @ $BC00, $BD00, $BE00, $BF00
+    0879:20 00 B5           JSR   ReadBoot3         ; Boot Stage 2 reads in encrypted Stage 3
+    087C:B0 F5              BCS   TestBoot3         ;^ $0873 C=1 error, Hang if NibbleCheck1 fails
+    087E:4C 00 BE           JMP   ExecBoot3         ;
 
-                NextTrack:                  ;
-0883:A5 FF              LDA RWTS_HALFTRACK  ; 6502 Math Reminder:
-0885:85 51              STA HAVE_HALFTRACK  ;   Clear Carry before Addition
-0887:38                 SEC                 ;   Set   Carry before Subtraction
-0888:E5 50              SBC SEEK_HALFTRACK  ; Already on requested track?
-088A:F0 2C              BEQ SeekDone        ;v $08B8 Yup! Nothing to do!
-088C:B0 04              BCS MoveTrackOut    ;v $0892 Move Track out to Track $00
+                    BS.HalfTrackSeek:               ; A = Half Track to Seek
+    0881:85 50              STA boot_HalfTrack_Seek ; Save Half Track to seek
 
-                MoveTrackIn:
-088E:E6 FF              INC RWTS_HALFTRACK  ; Move Track in  to Track $22
-0890:90 02              BCC DoSeek          ;v $0894 Always, could also do: INC RWTS_HALFTRACK
+                    BS.NextTrack:                   ;
+    0883:A5 FF              LDA rwts_HalfTrack_Have ; 6502 Math Reminder:
+    0885:85 51              STA boot_HalfTrack_Have ;   Clear Carry before Addition
+    0887:38                 SEC                     ;   Set   Carry before Subtraction
+    0888:E5 50              SBC boot_HalfTrack_Seek ; Already on requested track?
+    088A:F0 2C              BEQ SeekDone            ;v $08B8 Yup! Nothing to do!
+    088C:B0 04              BCS BS.MoveTrackOut     ;v $0892 Move Track out to Track $00
 
-                MoveTrackOut:
-0892:C6 FF              DEC RWTS_HALFTRACK  ; Intentional fall-into DoSeek
+                    BS.MoveTrackIn:
+    088E:E6 FF              INC rwts_HalfTrack_Have ; Move Track in  to Track $22
+    0890:90 02              BCC DoSeek              ;v $0894 Always, could also do: INC rwts_HalfTrack_Have
 
-                DoSeek:                     ; Common code
-0894:20 AD 08           JSR PhaseOn         ;v
-0897:20 B9 08           JSR Delay           ;v
-                PhaseOff:
-089A:A5 51              LDA HAVE_HALFTRACK  ;
-089C:29 03              AND #PHASEMASK      ; Drive Stepper Motor = 4 Phases
-089E:0A                 ASL                 ; 1 phase = 1/2 track
-089F:05 2B              ORA P5.SlotX16      ;
-08A1:A8                 TAY                 ;
-08A2:B9 80 C0           LDA PHASEOFF,Y      ; Turn stepper motor off
-08A5:20 B9 08           JSR Delay           ;v
-08A8:F0 D9              BEQ NextTrack       ;^ $0883 A=00, always
-08AA:20 B9 08           JSR Delay           ;v       *** DEAD CODE ??? Never reached!
-                PhaseOn:
-08AD:A5 FF              LDA RWTS_HALFTRACK  ;
-08AF:29 03              AND #PHASEMASK      ;
-08B1:0A                 ASL                 ; 1 phase = 1/2 track
-08B2:05 2B              ORA P5.SlotX16      ;
-08B4:A8                 TAY                 ;
-08B5:B9 81 C0           LDA PHASEON,Y       ; Turn stepper motor on
-                SeekDone:
-08B8:60                 RTS                 ;
-                Delay:     
-08B9:A9 28              LDA #$28            ; You _could_ minimize the delay time like in DOS 3.3
-08BB:4C A8 FC           JMP WAIT            ; but that bloats the code
+                    BS.MoveTrackOut:
+    0892:C6 FF              DEC rwts_HalfTrack_Have ; Intentional fall-into DoSeek
 
-                LogicalSector:              ; Logical->Phystical Sector = Interleave 2
+                    DoSeek:                         ; Boot Sector Common code
+    0894:20 AD 08           JSR BS.PhaseOn          ;v
+    0897:20 B9 08           JSR BS.Delay            ;v
+                    BS.PhaseOff:
+    089A:A5 51              LDA boot_HalfTrack_Have ;
+    089C:29 03              AND #PHASE_MASK         ; Drive Stepper Motor = 4 Phases
+    089E:0A                 ASL                     ; 1 phase = 1/2 track
+    089F:05 2B              ORA P5.SlotX16          ;
+    08A1:A8                 TAY                     ;
+    08A2:B9 80 C0           LDA PHASE0_OFF,Y        ; Turn stepper motor off
+    08A5:20 B9 08           JSR BS.Delay            ;v
+    08A8:F0 D9              BEQ BS.NextTrack        ;^ $0883 A=00, always
+    08AA:20 B9 08           JSR BS.Delay            ;v *** DEAD CODE ??? Never reached!
+                    BS.PhaseOn:
+    08AD:A5 FF              LDA rwts_HalfTrack_Have ;
+    08AF:29 03              AND #PHASE_MASK         ;
+    08B1:0A                 ASL                     ; 1 phase = 1/2 track
+    08B2:05 2B              ORA P5.SlotX16          ;
+    08B4:A8                 TAY                     ;
+    08B5:B9 81 C0           LDA PHASE0_ON,Y         ; Turn stepper motor on
+                    SeekDone:
+    08B8:60                 RTS                     ;
+                    BS.Delay:
+    08B9:A9 28              LDA #$28                ; You _could_ minimize the delay time like in DOS 3.3
+    08BB:4C A8 FC           JMP WAIT                ; but that bloats the code
 
-08BE:00 0D 0B 09        DFB $00,$0D,$0B,$09,$07,$05,$03,$01
-08C2:07 05 03 01
-08C6:0E 0C 0A 08        DFB $0E,$0C,$0A,$08,$06,$04,$02,$0F
-08CA:06 04 02 0F
+                    LogicalSector:              ; Logical->Physical Sector = Interleave 2, DOS order?? TODO
 
-                DestPage:
-08CE:B0 B1 B2 B3        DFB $B0,$B1,$B2,$B3,$B4,$B5,$B6,$B7 ; "Pages" of 16-bit address
-08D2:B4 B5 B6 B7
-08D6:18 19 1A 1B        DFB $18,$19,$1A,$1B,$1C,$1D,$1E,$1F ; to load into
-08DA:1C 1D 1E 1F
-                        DS $900-*           ; unused/wasted
-08DE:00 00                                  ;
-08E0:00 00 00 00                            ;
-08E4:00 00 00 00                            ;
-08E8:00 00 00 00                            ;
-08EC:00 00 00 00                            ;
-08F0:00 00 00 00                            ;
-08F4:00 00 00 00                            ;
-08F8:00 00 00 00                            ;
-08FC:00 00 00 00                            ;
+    08BE:00 0D 0B 09        DFB $0,$D,$B,$9,$7,$5,$3,$1
+    08C2:07 05 03 01
+    08C6:0E 0C 0A 08        DFB $E,$C,$A,$8,$6,$4,$2,$F
+    08CA:06 04 02 0F
+
+                    DestPage:
+    08CE:B0 B1 B2 B3        DFB $B0,$B1,$B2,$B3,$B4,$B5,$B6,$B7 ; "Pages" of 16-bit address
+    08D2:B4 B5 B6 B7
+    08D6:18 19 1A 1B        DFB $18,$19,$1A,$1B,$1C,$1D,$1E,$1F ; to load into
+    08DA:1C 1D 1E 1F
+                            DS $900-*               ; unused/wasted
+    08DE:00 00                                      ;
+    08E0:00 00 00 00                                ;
+    08E4:00 00 00 00                                ;
+    08E8:00 00 00 00                                ;
+    08EC:00 00 00 00                                ;
+    08F0:00 00 00 00                                ;
+    08F4:00 00 00 00                                ;
+    08F8:00 00 00 00                                ;
+    08FC:00 00 00 00                                ;
 ```
 
 ## P5 Boot PROM
