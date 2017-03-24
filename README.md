@@ -2986,6 +2986,7 @@ our efforts are rewarded with this:
 
 ## Notes
 
+```
 T00S8  n/a  ProDOS Block 3B ProDOS Volume Directory 2
                 M.MORFIC
                 M.VOLCANO
@@ -3012,7 +3013,7 @@ T00SB  n/a  ProDOS Block 2A ProDOS Volume Directory 1
                 M.TREE
                 M.OBJECTS
                 M.DIVE
-
+```
 
 ## ProDOS Block Review
 
