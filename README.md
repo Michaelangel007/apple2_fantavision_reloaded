@@ -419,100 +419,100 @@ it comes from the P5 PROM ReadSector routine @ $C65C.
 On my //e it looks this:
 
 ```asm
-                        ORG $C65C
+                            ORG $C65C
 
-                P5.ReadSector
-C65C:18         ^0      CLC             ; C=0 Look Address D5,AA,96
-C65D:08         ^1      PHP             ; C=1 look Data    D5,AA,AD
+                    P5.ReadSector
+    C65C:18         ^0      CLC             ; C=0 Look Address D5,AA,96
+    C65D:08         ^1      PHP             ; C=1 look Data    D5,AA,AD
 
-C65E:BD 8C C0   ^2      LDA DRIVE_DATA,X
-C661:10 FB              BPL ^2          ;^ $C65E
-C663:49 D5      ^3      EOR #$D5        ; Address 1st Prologue Field
-C665:D0 F7              BNE ^2          ;^ $C65E
+    C65E:BD 8C C0   ^2      LDA DRIVE_DATA,X
+    C661:10 FB              BPL ^2          ;^ $C65E
+    C663:49 D5      ^3      EOR #$D5        ; Address 1st Prologue Field
+    C665:D0 F7              BNE ^2          ;^ $C65E
 
-C667:BD 8C C0   ^4      LDA DRIVE_DATA,X
-C66A:10 FB              BPL ^4          ;^ $C667
-C66C:C9 AA              CMP #$AA        ; Address 2nd Prologue Field
-C66E:D0 F3              BNE ^3          ;^ $C663
-C670:EA                 NOP
+    C667:BD 8C C0   ^4      LDA DRIVE_DATA,X
+    C66A:10 FB              BPL ^4          ;^ $C667
+    C66C:C9 AA              CMP #$AA        ; Address 2nd Prologue Field
+    C66E:D0 F3              BNE ^3          ;^ $C663
+    C670:EA                 NOP
 
-C671:BD 8C C0   ^5      LDA DRIVE_DATA,X
-C674:10 FB              BPL ^5          ;^ $C671
-C676:C9 96              CMP #$96        ; Address 3rd Prologue Field, NOTE: C=1 for $C68C !
-C678:F0 09              BEQ ^6          ;v $C683
+    C671:BD 8C C0   ^5      LDA DRIVE_DATA,X
+    C674:10 FB              BPL ^5          ;^ $C671
+    C676:C9 96              CMP #$96        ; Address 3rd Prologue Field, NOTE: C=1 for $C68C !
+    C678:F0 09              BEQ ^6          ;v $C683
 
-C67A:28                 PLP             ;Looking for Address or Data prologue?
-C67B:90 DF              BCC ^0          ;^ $C65C
-C67D:49 AD              EOR #$AD        ; Prologue Data Field: 3rd
-C67F:F0 25              BEQ ^10         ;v $C6A6
-C681:D0 D9              BNE ^0          ;^ $C65C
-C683:A0 03      ^6      LDY #$03        ; Read 3 nibbles: Vol,Track,Sec, skip Checksum
-C685:85 40      ^7      STA TrackHave   ; Eventually contains Track but init #$96 from $C676
+    C67A:28                 PLP             ;Looking for Address or Data prologue?
+    C67B:90 DF              BCC ^0          ;^ $C65C
+    C67D:49 AD              EOR #$AD        ; Prologue Data Field: 3rd
+    C67F:F0 25              BEQ ^10         ;v $C6A6
+    C681:D0 D9              BNE ^0          ;^ $C65C
+    C683:A0 03      ^6      LDY #$03        ; Read 3 nibbles: Vol,Track,Sec, skip Checksum
+    C685:85 40      ^7      STA TrackHave   ; Eventually contains Track but init #$96 from $C676
 
-C687:BD 8C C0   ^8      LDA DRIVE_DATA,X
-C68A:10 FB              BPL ^8          ;^ $C687  mask = $FF  since: C=1 from $C676
-C68C:2A                 ROL             ; ... 4&4 encoded: 1a1c1e1g, C=1 since A > $80
-C68D:85 3C              STA $3C         ; ... 1st half  A= a1c1e1gC
+    C687:BD 8C C0   ^8      LDA DRIVE_DATA,X
+    C68A:10 FB              BPL ^8          ;^ $C687  mask = $FF  since: C=1 from $C676
+    C68C:2A                 ROL             ; ... 4&4 encoded: 1a1c1e1g, C=1 since A > $80
+    C68D:85 3C              STA $3C         ; ... 1st half  A= a1c1e1gC
 
-C68F:BD 8C C0   ^9      LDA DRIVE_DATA,X
-C692:10 FB              BPL ^9          ;^ $C68F        &= 1b1d1f1h
-C694:25 3C              AND $3C         ; ... 2nd half   = abcdefgh
-C696:88                 DEY
-C697:D0 EC              BNE ^7          ;^ $C685
-C699:28                 PLP             ; Don't care about carry, restore stack
-C69A:C5 3D              CMP SectorWant  ; A=SectorHave == SectorWant? (init $00 from $C654)
-C69C:D0 BE              BNE ^0          ;^ $C65C
-C69E:A5 40              LDA TrackHave   ; (read from prologue)
-C6A0:C5 41              CMP TrackWant   ;
-C6A2:D0 B8              BNE ^0          ;^ $C65C !=
-C6A4:B0 B7              BCS ^1          ;^ $C65D <=
-C6A6:A0 56      ^10     LDY #$56        ; Decode $56 nibbles in 6&2
-C6A8:84 3C      ^11     STY $3C
+    C68F:BD 8C C0   ^9      LDA DRIVE_DATA,X
+    C692:10 FB              BPL ^9          ;^ $C68F        &= 1b1d1f1h
+    C694:25 3C              AND $3C         ; ... 2nd half   = abcdefgh
+    C696:88                 DEY
+    C697:D0 EC              BNE ^7          ;^ $C685
+    C699:28                 PLP             ; Don't care about carry, restore stack
+    C69A:C5 3D              CMP P5.SecWant  ; A=SectorHave == SectorWant? (init $00 from $C654)
+    C69C:D0 BE              BNE ^0          ;^ $C65C
+    C69E:A5 40              LDA TrackHave   ; (read from prologue)
+    C6A0:C5 41              CMP TrackWant   ;
+    C6A2:D0 B8              BNE ^0          ;^ $C65C !=
+    C6A4:B0 B7              BCS ^1          ;^ $C65D <=
+    C6A6:A0 56      ^10     LDY #$56        ; Decode $56 nibbles in 6&2
+    C6A8:84 3C      ^11     STY $3C
 
-C6AA:BC 8C C0   ^12     LDY DRIVE_DATA,X
-C6AD:10 FB              BPL ^12         ;^ $C6AA
-C6AF:59 D6 02           EOR $36C-$96,Y  ; [$96] $36C:00, $36C-$96=$2D6
-C6B2:A4 3C              LDY $3C         ; [$FF] $3D5:3F, $2D6+$FF=$3D5
-C6B4:88                 DEY
-C6B5:99 00 03           STA $0300,Y     ; Buf1 = [$300 .. $35B]
-C6B8:D0 EE              BNE ^11         ;^ $C6A8
+    C6AA:BC 8C C0   ^12     LDY DRIVE_DATA,X
+    C6AD:10 FB              BPL ^12         ;^ $C6AA
+    C6AF:59 D6 02           EOR $36C-$96,Y  ; [$96] $36C:00, $36C-$96=$2D6
+    C6B2:A4 3C              LDY $3C         ; [$FF] $3D5:3F, $2D6+$FF=$3D5
+    C6B4:88                 DEY
+    C6B5:99 00 03           STA $0300,Y     ; Buf1 = [$300 .. $35B]
+    C6B8:D0 EE              BNE ^11         ;^ $C6A8
 
-C6BA:84 3C      ^13     STY $3C         ; Y = #FF
-C6BC:BC 8C C0   ^14     LDY DRIVE_DATA,X
-C6BF:10 FB              BPl ^14         ;^ $C6BC
-C6C1:59 D6 02           EOR $36C-$96,Y
-C6C4:A4 3C              LDY $3C
-C6C6:91 26              STA ($26),Y
-C6C8:C8                 INY
-C6C9:D0 EF              BNE ^13         ;^ $C6BA
-C6CB:BC 8C C0   ^15     LDY DRIVE_DATA,X
-C6CE:10 FB              BPL ^15
-C6D0:59 D6 02           EOR $36C-$96,Y
-C6D3:D0 87      ^16     BNE             ;^ $C65C
+    C6BA:84 3C      ^13     STY $3C         ; Y = #FF
+    C6BC:BC 8C C0   ^14     LDY DRIVE_DATA,X
+    C6BF:10 FB              BPl ^14         ;^ $C6BC
+    C6C1:59 D6 02           EOR $36C-$96,Y
+    C6C4:A4 3C              LDY $3C
+    C6C6:91 26              STA ($26),Y
+    C6C8:C8                 INY
+    C6C9:D0 EF              BNE ^13         ;^ $C6BA
+    C6CB:BC 8C C0   ^15     LDY DRIVE_DATA,X
+    C6CE:10 FB              BPL ^15
+    C6D0:59 D6 02           EOR $36C-$96,Y
+    C6D3:D0 87      ^16     BNE             ;^ $C65C
 
-C6D5:A0 00              LDY #$00
-C6D7:A2 56      ^17     LDX #$56
-C6D9:CA         ^18     DEX
-C6DA:30 FB              BMI ^17         ; $C6D7
-C6DC:B1 26              LDA ($26),Y
-C6DE:5E 00 03           LSR $0300,X
-C6E1:2A                 ROL
-C6E2:5E 00 03           LSR $0300,X
-C6E5:2A                 ROL
-C6E6:91 26              STA (P5.Buff),Y
-C6E8:C8                 INY
-C6E9:D0 EE              BNE ^18         ;^ $C6D9
+    C6D5:A0 00              LDY #$00
+    C6D7:A2 56      ^17     LDX #$56
+    C6D9:CA         ^18     DEX
+    C6DA:30 FB              BMI ^17         ; $C6D7
+    C6DC:B1 26              LDA ($26),Y
+    C6DE:5E 00 03           LSR $0300,X
+    C6E1:2A                 ROL
+    C6E2:5E 00 03           LSR $0300,X
+    C6E5:2A                 ROL
+    C6E6:91 26              STA (P5.Buff),Y
+    C6E8:C8                 INY
+    C6E9:D0 EE              BNE ^18         ;^ $C6D9
 
-C6EB:E6 27              INC P5.Buff+1   ; DestAddr += $0100
-C6ED:E6 3D              INC P5.SecLoaded; SectorsLoaded++
-C6EF:A5 3D              LDA P5.SecLoaded 
-C6F1:CD 00 08           CMP P5.SecTotal ; SectorsLoaded <= SectorsTotal ?
-C6F4:A6 2B              LDX P5.SLOTx16  ;
-C6F6:90 DB              BCC ^16         ;^ $C6D3
+    C6EB:E6 27              INC P5.Buff+1   ; DestAddr += $0100
+    C6ED:E6 3D              INC P5.SecWant  ; SectorsLoaded++
+    C6EF:A5 3D              LDA P5.SecWant  ;    also alias for NextSectorToLoad
+    C6F1:CD 00 08           CMP P5.SecTotal ; SectorsLoaded <= SectorsTotal ?
+    C6F4:A6 2B              LDX P5.SlotX16  ;
+    C6F6:90 DB              BCC ^16         ;^ $C6D3
 
-C6F8:4C 01 08           JMP $0801       ; $0800 = Num of Sectors to read
-C6FB:00                 DS $C700-*      ; unused last 5 bytes
-C6FC:00 00 00 00
+    C6F8:4C 01 08           JMP $0801       ; $0800 = Num of Sectors to read
+    C6FB:00                 DS $C700-*      ; unused last 5 bytes
+    C6FC:00 00 00 00
 ```
 
 Let's map out the Track/Sector (T/S) boot stages
