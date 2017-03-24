@@ -2749,6 +2749,29 @@ We need to change byte @ $B99B from $AA to $AB.
 
 Technically we only need to change one of these.
 
+1. Boot a DOS 3.3 Master disk
+2. `LOAD COPYA`
+3. Make these changes to the Applesoft program
+
+```
+166 B=169:GOSUB 400:B=0:GOSUB 400`
+167 ET=34
+168 POKE 721,ET:POKE 722,ET:POKE 863,ET
+400 POKE 47514,B:POKE 47422,B:RETURN
+401 REM $B99A:C9 AA
+402 REM $B93E:C9 AA
+```
+
+4. Grab a blank disk, label it `Fanta.COPYA`
+5. Put your original `Fantavision` disk in Drive 1
+6. Put your blank `Fanta.COPYA` disk in Drive 2
+7. `RUN`
+
+It will boot but fail to load due to missing the encrypted track $22.
+Let's fire up `Copy ][` Sector Editor and make the _modifications_
+to skip reading track 22.
+
+
 
 
 ## ProDOS Hybrid!?
