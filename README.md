@@ -52,7 +52,13 @@ released a fantastic animation program called `Fantavision`
 
 * ![Logo](pics/logo.png)
 
+It had a "mouse cursor" and pull-down menus on the Apple II back in 1985 all 
+in glorious 6 color 280x192 resolution.
+
 * ![Logo](pics/about.png)
+
+But isn't there more then 6 colors in that picture?
+Technically, no, but dithering creates false colors.
 
 * TODO: PIC: Disk
 
