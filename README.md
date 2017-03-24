@@ -699,7 +699,7 @@ I'll use the prefix:
     B055:EA                 NOP
                     DataProlog2:
     B056:BD 8C C0           LDA DRIVE_DATA,X
-    B059:10 FB              BPL DataProlog2     ;^ $B056
+    B059:10 FB              BPL DataProlog2         ;^ $B056
     B05B:C9 AA              CMP #$AA
     B05D:D0 F2              BNE ;^ $B051
 
@@ -716,7 +716,7 @@ I'll use the prefix:
     B0E3:68                 PLA
     B0E4:A0 55              LDY #$55
     B0E6:91 E6              STY (rwts_LoadAddr),Y
-    B0E8:60                 RTS                     ; TODO: VERIFY BYTE
+    B0E8:60                 RTS
 
                     Do_Seek:
     B0E9:0A                 ASL
@@ -751,7 +751,7 @@ I'll use the prefix:
     B113:A5 FF              LDA rwts_HalfTrack_Have
     B115:29 03              AND #PHASE_MASK
     B117:0A                 ASL
-    B118:05 FD              ORA $FD                 ; TODO: FIXME rwts_drive_on ??
+    B118:05 FD              ORA $rwts_SlotX16
     B11A:A8                 TAY
     B11B:B9 81 C0           LDA PHASE0_ON,Y
     B11E:60                 RTS
@@ -759,28 +759,45 @@ I'll use the prefix:
     B11F:A9 28              LDA #$28
     B121:4C 16 B4           JMP _Wait
 
+                    LostPrologue:
     B124:38                 SEC
     B125:60                 RTS
 
                     RWTS_ReadPrologue
     B126:A0 FC              LDY #$FC            ; save Sector $E3
-    B128:84 EB              STY $EB
+    B128:84 EB              STY $EB             ; TODO rwts_find
+                    FindAddr:
     B12A:C8                 INY
     B12B:D0 04              INC $EB
-    B12F:F0 F3              BEQ                 ;^ $B124
+    B12F:F0 F3              BEQ LostPrologue    ;^ $B124
                     AddrProlog1:
     B131:BD 8C C0           LDA DRIVE_DATA,X
     B134:10 FB              BPL AddrProlog1
-
-
+                    TestProlog1:
     B136:C9 D5              CMP #$D5
-    B138:D0 F0              BNE                 ;^ $B12A
+    B138:D0 F0              BNE FindAddr        ;^ $B12A
+    B13A:EA                 NOP
+                    AddrProlog2:
+    B13B:BD 8C C0           LDA DRIVE_DATA,X
+    B13E:10 FB              BPL AddrProlog2
+                    TestProlog2:
+    B140:C9 AA              CMP #$AA
+    B142:D0 F2              BNE TestProlgo1     ;^ $B136
+    B144:A0 03              LDY #$03            ; Vol, Track, Sector, Checksum
 
-    B140:CMP #$AA
-    B14B:CMP #$96
+                    AddrProlog3:
+    B146:BD 8C C0           LDA DRIVE_DATA,X
+    B149:10 FB              BPL AddrProlog3
+    B14B:C9 96              CMP #$96
+    B14D:D0 E7              BNE TestProlog1     ;^ $B136
+    B14F:A9 00              LDA #$00
+    B151:85 EC              STA $EC
+
+                    AddrVTSC:
+    B153:BD 8C C0           LDA DRIVE_DATA,X
+    B156:10 FB              BPL AddrVTSC
     B158:2A                 ROL
     B159:85 EB              STA $EB
-
     B15B:BD 8C C0           LDA DRIVE_DATA,X
     B15E:10 FB              BPL                 ;^ $B15B
     B160:25 EB              AND $EB
@@ -909,25 +926,33 @@ I'll use the prefix:
     B2F8:01 03 03 FE        DFB $01,$03,$03,$FE ; [3E]
     B2FC:03 03 03 FF        DFB $03,$03,$03,$FF ; [3F]
 
-TODO: FIXME: Convert ProDOS Block # to Sector # ?
-
-    B300:48                 PHA
-    B301:29 07              AND #$07
-    B303:8D 19 B3           STA _B319
-    B306:68                 PLA
-    B307:6A                 ROR
-    B308:4A                 LSR
-    B309:4A                 LSR
-    B30A:C5 ED              CMP $ED             ; TODO
-    B30C:F0 0A              BEQ                 ;v $B318
+                    RWTS_GetProDosSectors:
+    B300:48                 PHA                 ; === T15S3 ===
+    B301:29 07              AND #$07            ; A = 0000_0fgh
+    B303:8D 19 B3           STA SectorProDOS+1  ; *** SELF-MODIFYING! ProDOS Block = Sectors XX and YY
+    B306:68                 PLA                 ; A = abcd_efgh
+    B307:6A                 ROR                 ; A = 0abc_defg C=h
+    B308:4A                 LSR                 ; A = 00ab_cdef
+    B309:4A                 LSR                 ; A = 000a_bcde
+    B30A:C5 ED              CMP rwts_Track
+    B30C:F0 0A              BEQ SectorProDOS    ;v $B318 On correct ProDOS Track
     B30E:48                 PHA
-    B30F:20 33 B3           JSR RWTS_Read16     ; TODO: FIXME
-    B312:20 9E B3           JSR RWTS_B39E       ; TODO: FIXME
+    B30F:20 33 B3           JSR RWTS_Read16
+    B312:20 9E B3           JSR RWTS_UnloadSectors
     B315:68                 PLA
-    B316:85 ED              STA $ED
-    B318:A0 00              LDY #$00
+    B316:85 ED              STA rwts_Track
 
-...
+                    SectorProDOS:
+    B318:A0 00              LDY #$00            ; *** SELF-MODIFIED by $B303
+    B31A:Be B9 B3           LDX rwts_SectorsProDOS,Y    ; First Half of Block
+    B31D:AD EA B3           LDA rwts_DestAddr+1
+    B320:EE EA B3           INC rwts_DestAddr+1         ; store at next page
+    B323:9D C9 B3           STA rwts_SectorLoadOrder,X
+    B326:BE C1 B3           LDX rwts_SectorProDOS+8,Y   ; Second Half of Block
+    B329:AD EA B3           LDA rwts_DestAddr+1
+    B32C:EE EA B3           INC rwts_DestAddr+1
+    B32F:9D C9 B3           STA rwts_SectorLoadOrder+8,X
+    B332:60                 RTS
 
                     RWTS_Read16:
     B333:A2 0F              LDX #$0F            ; 16 sectors to load
@@ -949,14 +974,14 @@ TODO: FIXME: Convert ProDOS Block # to Sector # ?
     B34D:20 26 B1           JSR RWTS_ReadPrologue
     B350:B0 F7              BCS AttemptRead     ;^ $B349
     B352:A5 E4              LDA $E4
-    B354:C5 ED              CMP $ED
+    B354:C5 ED              CMP rwts_Track
     B356:D0 39              BNE                 ;v $B391
     B358:A4 E3              LDY rwts_SectorHave
     B35A:B9 D9 B3           LDA rwts_SectorDestAddr,Y
     B35D:F0 EA              BEQ AttemptRead     ;^ $B349, already read this sector?
 
     B35F:85 E7              STA rwts_LoadAddr+1
-    B361:AD E9 B3           LDA rwts_DestAddrLow
+    B361:AD E9 B3           LDA rwts_DestAddr
     B364:85 E6              STA rwts_LoadAddr
     B366:20 11 B0           JSR RWTS_ReadSector
     B369:B0 DE              BCS AttemptRead     ;^ $B349
@@ -975,7 +1000,8 @@ TODO: FIXME: Convert ProDOS Block # to Sector # ?
 
                     ReadError
     B37E:38                 SEC
-    B37F:EA                 NOP                 ; *** SELF-MODIFIED to be RTS $60 @ $ TODO
+                    ReadSound:
+    B37F:EA                 NOP                 ; *** SELF-MODIFIED to be RTS $60 @ $B464
     B380:A0 00              LDY #$00            ; Br0derbund "ZAP" sound
                     ^1
     B382:AD 30 C0           LDA SQUEEKER
@@ -990,81 +1016,99 @@ TODO: FIXME: Convert ProDOS Block # to Sector # ?
 
     B391:A5 E4              LDA $E4             ; TODO
     B393:0A                 ASL
-    B394:85 FF              STA
-    B396:A5 ED              LDA $ED
+    B394:85 FF              STA rwts_HalfTrack_Have
+    B396:A5 ED              LDA rwts_Track
     B398:20 E9 B0           JSR Do_Seek
     B39B:4C 33 B3           JMP Read16Sectors
 
-    B39E:A0 0F              LDY #$0F            ; 16 Sectors to load -- TODO: CALLED from $B312
+                    RWTS_UnloadSectors              ; Called @ $B312
+    B39E:A0 0F              LDY #$0F                ; 16 Sectors to load -- TODO: CALLED from $B312
+    B3A0:A9 00              LDA #$00
+                    MakeSectorUnloaded
+    B3A2:99 C9 B3           STA rwts_SectorLoadOrder,Y
+    B3A5:88                 DEY
+    B3A6:10 FA              BPL MakeSectorUnloaded  ;^ $B3A2
+    B3A8:60                 RTS
 
-                    rwts_Logical2Physical_A ; Map Logical->Physical Sectors
-                                                ; ProDOS order?? TODO
+                    ; Map Logical Sectors -> Physical Sectors
+                    rwts_SectorsDOS33:
     B3A9:00 07 0E 06        DFB $0,$7,$E,$6,$D,$5,$C,$4
     B3AD:0D 05 0C 04
     B3B1:0B 03 0A 02        DFB $B,$3,$A,$2,$9,$1,$8,$F
     B3B5:09 01 08 0F
-                    rwts_Logical2Physical_B ; Map Logical->Physical Sectors
-                                                ; DOS order?? TODO
+
+                    ; Map Logical Blocks -> Physical Sectors
+                    ;     const uint_8 BlockToSectorProDOS[16]
+                    rwts_SectorsProDOS:
     B3B9:00 0D 0B 09        DFB $0,$D,$B,$9,$7,$5,$3,$1
     B3BD:07 05 03 01
     B3C1:0E 0C 0A 08        DFB $E,$C,$A,$8,$6,$4,$2,$F
     B3C5:06 04 02 0F
+
+                    ; One of the above tables is copied here
                     rwts_SectorLoadOrder:
     B3C9:00 00 00 00
     B3CD:00 00 00 00
     B3D1:00 00 00 00
     B3D5:00 00 00 00
+
                     ; This is a scatter-gather read!
+                    ; 00 = finished loading this page
+                    ; xx = Dest Page to load at
+                    ;   uint_8 DestAddr[ 16 ];
                     rwts_SectorDestAddr:
     B3D9:00 00 00 00
     B3DD:00 00 00 00
     B3E1:00 00 00 00
     B3E5:00 00 00 00
 
-                    rwts_DestAddrLow:
+                    rwts_DestAddr:
     B3E9:00                 DFB $00
-
+    B3EA:00                 DFB $00
+    B3EB:00         rwts_B3EB   DFB $00         ; TODO
+    B3EC:00         rwts_B3EC   DFB $00         ; TODO
 
                     ; ====================
                     ; Y = Track
                     ; JSR RWTS_B003
-                    ;     DFB Load Address 0
-                    ;     DFB Load Address 1
-                    ;     DFB Load Address 2
-                    ;     DFB Load Address 3
-                    ;     DFB Load Address 4
-                    ;     DFB Load Address 5
-                    ;     DFB Load Address 6
-                    ;     DFB Load Address 7
-                    ;     DFB Load Address 8
-                    ;     DFB Load Address 9
-                    ;     DFB Load Address A
-                    ;     DFB Load Address B
-                    ;     DFB Load Address C
-                    ;     DFB Load Address D
-                    ;     DFB Load Address E
-                    ;     DFB Load Address F
+                    ;     DFB Load Address Sector 0
+                    ;     DFB Load Address Sector 1
+                    ;     DFB Load Address Sector 2
+                    ;     DFB Load Address Sector 3
+                    ;     DFB Load Address Sector 4
+                    ;     DFB Load Address Sector 5
+                    ;     DFB Load Address Sector 6
+                    ;     DFB Load Address Sector 7
+                    ;     DFB Load Address Sector 8
+                    ;     DFB Load Address Sector 9
+                    ;     DFB Load Address Sector A
+                    ;     DFB Load Address Sector B
+                    ;     DFB Load Address Sector C
+                    ;     DFB Load Address Sector D
+                    ;     DFB Load Address Sector E
+                    ;     DFB Load Address Sector F
                     ; ====================
                     Do_LoadCode:
-    B3ED:84 ED              STY rwts_ED
+    B3ED:84 ED              STY rwts_Track
     B3EF:68                 PLA
     B3F0:85 EB              STA rwts_Return
     B3F2:68                 PLA
     B3F3:85 EC              STA rwts_Return+1
     B3F5:A2 00              LDX #$00
-                    RWTS_Load
-    B3F7:20 0B B4           JSR NextByte
-    B3FA:9D C9 B3           STA $B3C9,X
+                    GetInterleave
+    B3F7:20 0B B4           JSR GetNextAddr
+    B3FA:9D C9 B3           STA rwts_SectorLoadOrder,X
     B3FD:E8                 INX
     B3FE:E0 10              CPX #$10
-    B400:90 F5              BCC                 ;^ $B3F7
-    B402:A5 EC              LDA rwts_Return
+    B400:90 F5              BCC GetInterleave   ;^ $B3F7, === T15S4 ===
+
+    B402:A5 EC              LDA rwts_Return     ; Restore caller
     B404:48                 PHA
     B405:A5 EB              LDA rwts_Return+1
     B407:48                 PHA
     B408:4C 33 B3           JMP RWTS_Read16     ;^ $B333
 
-                    NextByte:
+                    GetNextAddr:
     B40B:E6 EB              INC rwts_Return
     B40D:D0 02              BNE GetByte         ; roll over to next page?
     B40F:E6 EC              INC rwts_Return+1
@@ -1073,11 +1117,98 @@ TODO: FIXME: Convert ProDOS Block # to Sector # ?
     B413:B1 EB              LDY (rwts_Return),Y
     B415:60                 RTS
 
+                    RWTS_Delay:
+    B416:38                 SEC                 ; C=1 before subtract
+                    BusyWait1
+    B417:48                 PHA
+                    BusyWait2:
+    B418:E9 01              SBC #$01
+    B41A:D0 FC              BNE BusyWait2       ;^ $B418
+    B41C:68                 PLA
+    B41D:E9 01              SBC #$01
+    B41F:D0 F6              BNE BusyWait1       ;^ $B417
+    B421:60                 RTS
 
                     ; ====================
-                    ;
+                    ; Load @ $A,Y
+                    ; A = Mem Hi
+                    ; Y = Mem Lo
+                    ; X = Num of ProDOS Blocks ?
                     ; ====================
-    B451:
+                    Do_LoadBlocks:
+    B422:8C E9 B3           STY rwts_DestAddr
+    B425:8D EA B3           STA rwts_DestAddr+1
+    B428:8E EB B3           STX rwts_B3EB
+    B42B:20 9E B3           JSR RWTS_UnloadSectors
+    B42E:A0 00              LDY #$00
+    B430:8C EC B3           STY rwts_B3EC
+                    ReadBlock
+    B433:AC EC B3           LDY rwts_B3EC
+    B436:E6 01              INC $01
+    B438:B1 00              LDA ($00),Y         ; A=???
+    B43A:4A                 LSR                 ; C=even
+    B43B:C6 01              DEC $01
+    B43D:B1 00              LDA ($00),Y
+    B43F:B0 02              BCS                 ;v $B443 >= ?
+    B441:F0 0B              BEQ                 ;v $B44E == done
+
+    B443:20 00 B3           JSR RWTS_GetProDosSectors
+    B446:EE EC B3           INC rwts_B3EC
+    B449:CE EB B3           DEC rwts_B3EB
+    B44C:D0 E5              BNE ReadBlock       ;^ $B433
+
+                    JumpRead16:
+    B44E:4C 33 B3           JMP RWTS_Read16
+
+                    ; ====================
+                    ; A = Dest Address
+                    ; Y = Source Track
+                    ; ====================
+                    Do_ReadTrack:
+    B451:84 ED              STY rwts_Track
+    B453:A0 00              LDY #$00
+                    NextSector:
+    B455:99 C9 B3           STA rwts_SectorLoadOrder,Y
+    B458:18                 CLC
+    B459:69 01              ADC #$01            ; Fill memory in sequential sector order
+    B45B:C8                 INY
+    B45C:C0 10              CPY #$10            ; Finished 16 sectors?
+    B45E:90 F5              BCC NextSector      ;^ $B455
+    B460:B0 EC              BCS JumpRead16      ;^ $B44E, always
+
+                    ; ====================
+                    ; A = Dest Address
+                    ; Y = Source Track
+                    ; ====================
+                    Do_ReadTrackQuiet:
+    B462:A2 60              LDX #$60            ; $60 = RTS
+    B464:8E 7F B3           STX ReadSound       ; Disable SFX ZAP for bad read
+    B467:20 51 B4           JSR RWTS_B451
+    B46A:A9 EA              LDA #$EA            ; $EA = NOP
+    B46C:8D 7F B3           STA ReadSound       ; Re-enable SFZ ZAP for bad read
+    B46F:60
+                            DS $B500-*          ; unused/wasted
+    B470:0 0 0 0 0 0 0 0
+    B478:0 0 0 0 0 0 0 0
+    B480:0 0 0 0 0 0 0 0
+    B488:0 0 0 0 0 0 0 0
+    B490:0 0 0 0 0 0 0 0
+    B498:0 0 0 0 0 0 0 0
+    B4A0:0 0 0 0 0 0 0 0
+    B4A8:0 0 0 0 0 0 0 0
+    B4B0:0 0 0 0 0 0 0 0
+    B4B8:0 0 0 0 0 0 0 0
+    B4C0:0 0 0 0 0 0 0 0
+    B4C8:0 0 0 0 0 0 0 0
+    B4D0:0 0 0 0 0 0 0 0
+    B4D8:0 0 0 0 0 0 0 0
+    B4E0:0 0 0 0 0 0 0 0
+    B4E8:0 0 0 0 0 0 0 0
+    B4F0:0 0 0 0 0 0 0 0
+    B4F8:0 0 0 0 0 0 0 0
+
+    B500:
+
 
     B568:60                 RTS
     B569:00 00 00
@@ -1149,6 +1280,8 @@ TODO: FIXME: Convert ProDOS Block # to Sector # ?
     B7F0:0 0 0 0 0 0 0 0
     B7F8:0 0 0 0 0 0 0 0
 ```
+
+Whew!
 
 
 # Boot Tracing Stage 2
