@@ -3558,25 +3558,25 @@ Fantavision also has Roland Gustafsson classic 'RW18' error "ZAP" @ $B380.
 (Track $15, Sector $3)
 
 ```asm
-                    Read16Sec:
-    B333:A2 0F              LDX #$0F        ; 16 sectors to load from track
-                                            ; ...
-    B34B:F0 31              BEQ ReadError   ; if failed to read disk ...
+                    RWTS_Read16:
+    B333:A2 0F              LDX #$0F            ; 16 sectors to load
+                                                ; ...
+    B34B:F0 31              BEQ ReadError       ; if failed to read disk ...
 
                     ReadError:
     B37E:38                 SEC
-    B37F:EA                 NOP             ; *** SELF-MODIFIED to be RTS $60
-    B380:A0 00              LDY #$00        ; Br0derbund "ZAP" sound
+    B37F:EA                 NOP                 ; *** SELF-MODIFIED to be RTS $60
+    B380:A0 00              LDY #$00            ; Br0derbund "ZAP" sound
                     ^1
     B382:AD 30 C0           LDA $C030
     B385:98                 TYA
                     ^2
     B386:38                 SEC
     B387:E9 01              SBC #$01
-    B389:D0 FB              BNE ^2          ;^ $B386
+    B389:D0 FB              BNE ^2              ;^ $B386
     B38B:88                 DEY
-    B38C:D0 F4              BNE ^1          ;^ $B382
-    B38E:4C 33 B3           JMP $B333       ;^ $B333
+    B38C:D0 F4              BNE ^1              ;^ $B382
+    B38E:4C 33 B3           JMP RWTS_Read16     ;^ $B333
 ```
 
 
