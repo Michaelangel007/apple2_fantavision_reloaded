@@ -2920,17 +2920,17 @@ The Data fields are read in DOS 3.3's function `READ16` @ $B8DC but we are
 only interested in the Data Epilog portion @ $B92F:
 
 ```asm
-392F:BD 8C C0       155 READ7       LDA Q6L,X
-3932:10 FB          156             BPL READ7       *** NO PAGE CROSS! ***
-3934:C9 DE          157             CMP #$DE        FIRST BIT SLIP MARK?
-3936:D0 0A          158             BNE RDERR       (ERR IF NOT)
-3938:EA             159             NOP             DELAY BETWEEN NIBLS.
-3939:BD 8C C0       160 READ8       LDA Q6L,X
-393C:10 FB          161             BPL READ8       *** NO PAGE CROSS! ***
-393E:C9 AA          162             CMP #$AA        SECOND BIT SLIP MARK?
-3940:F0 5C          163             BEQ RDEXIT      (DONE IF IT IS)
-3942:38             164 RDERR       SEC             INDICATE 'ERROR EXIT'.
-3943:60             165             RTS             FROM READ16 OR RDADR16.
+    392F:BD 8C C0       155 READ7       LDA Q6L,X
+    3932:10 FB          156             BPL READ7       *** NO PAGE CROSS! ***
+    3934:C9 DE          157             CMP #$DE        FIRST BIT SLIP MARK?
+    3936:D0 0A          158             BNE RDERR       (ERR IF NOT)
+    3938:EA             159             NOP             DELAY BETWEEN NIBLS.
+    3939:BD 8C C0       160 READ8       LDA Q6L,X
+    393C:10 FB          161             BPL READ8       *** NO PAGE CROSS! ***
+    393E:C9 AA          162             CMP #$AA        SECOND BIT SLIP MARK?
+    3940:F0 5C          163             BEQ RDEXIT      (DONE IF IT IS)
+    3942:38             164 RDERR       SEC             INDICATE 'ERROR EXIT'.
+    3943:60             165             RTS             FROM READ16 OR RDADR16.
 ```
 
 The Address fields are read in DOS 3.3's function `RDADR16` @ $B944 but we are
