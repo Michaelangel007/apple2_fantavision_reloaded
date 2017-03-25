@@ -1472,7 +1472,7 @@ Let's update our Boot Stages Diagram:
         ; 2          T15SF 1F00
         ; ---------------------
         ; 1     0873
-        ; 2     B500 T22Sx BC00 $F5,$F4,$CF, [ 4&4:512,$D5 ] x4
+        ; 2     B500 T22Sx BC00 Disk: $F5,$F4,$CF, [ 4&4:512,$D5 ] x4
         ; 2          T22Sx BD00
         ; 2          T22Sx BE00
         ; 2          T22Sx BF00
