@@ -1,3 +1,5 @@
+Last updated March 25, 2017.
+
 # Fantavision (Reloaded)
 
 # Table of Contents
@@ -2919,7 +2921,7 @@ Q. Why does the P5 PROM read these sectors but not DOS or ProDOS ?
 A. We're getting ahead of ourselvs but the P5 PROM:
 
 * **only** checks the 3 disk nibbles od the Prolog fields, and
-* _ignores_ the Epilig fields entirely!
+* _ignores_ the Epilog fields entirely!
 
 
 
@@ -4126,4 +4128,6 @@ TODO
 # To Do
 
 * [ ] `Fantavision.BIN` loadable under DOS 3.3
+* [ ] Movie Format
+* [ ] Movie Player
 * [ ] `Assembly Source Listing` for Fantavision
