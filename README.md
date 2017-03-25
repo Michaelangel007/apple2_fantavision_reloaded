@@ -3211,6 +3211,7 @@ Put our `Fanta.COPYA` in Slot 6, Drive 1, and reboot.
 
 /Oblg. _"I'm making a note here: HUGE SUCCESS."
 
+10 minutes of work, 10 hours to write all this crap up. :-)
 
 
 ## ProDOS Hybrid!?
