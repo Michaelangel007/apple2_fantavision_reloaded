@@ -3095,9 +3095,6 @@ Block2TrackSector:
 
 ## Disk Usage Summary
 
-
-## Disk Usage Details
-
 | T/S |Addr |Block|Offset|Description                   |
 |:---:|:---:|----:|-----:|:-----------------------------|
 |T00S0|$0800|  0a |  n/a | Boot Stage 1 - Boot Sector   |
@@ -3134,453 +3131,548 @@ Block2TrackSector:
 |T01SE| n/a |  8b |#0300 | `/FANTAVISION/FORMAT`, Zero  |
 |T01SF| n/a | 15b |#0300 | `/FANTAVISION/M.SPIDER`      |
 | --- | --- |  -- | ---  | ---                          |
+|T02S0| n/a |     |#0400 | /FANTAVISION/M.SPIDER #0400      |
+|T02S1| n/a |     | n/a  |                                  |
+|T02S2| n/a |     | n/a  |                                  |
+|T02S3| n/a |     | n/a  |                                  |
+|T02S4| n/a |     |#0700 | `/FANTAVISION/M.CANCAN`, Zero    |
+|T02S5| n/a |     |#0600 | `/FANTAVISION/M.CANCAN`          |
+|T02S6| n/a |     |#0500 | `/FANTAVISION/M.CANCAN`          |
+|T02S7| n/a |     |#0400 | `/FANTAVISION/M.CANCAN`          |
+|T02S8| n/a |     |#0300 | `/FANTAVISION/M.CANCAN`, Zero    |
+|T02S9| n/a |     |#0200 | `/FANTAVISION/M.CANCAN`          |
+|T02SA| n/a |     |#0100 | `/FANTAVISION/M.CANCAN`          |
+|T02SB| n/a |     |#0000 | `/FANTAVISION/M.CANCAN`, 0000:03 03 04 04 |
+|T02SC| n/a |     |#0700 | `/FANTAVISION/M.SPIDER`          |
+|T02SD| n/a |     |#0600 | `/FANTAVISION/M.SPIDER`          |
+|T02SE| n/a |     |#0500 | `/FANTAVISION/M.SPIDER`          |
+|T02SF| n/a |     | ???  | `/FANTAVISION/M.TREE`, Zero      |
+| --- | --- |  -- | ---  | ---                          |
+|T03S0| n/a |     | ???  |                              |
+|T03S1| n/a |     | ???  |                              |
+|T03S2| n/a |     | ???  |                              |
+|T03S3| n/a |     | ???  |                              |
+|T03S4| n/a |     | ???  |                              |
+|T03S5| n/a |     | ???  |                              |
+|T03S6| n/a |     | ???  | Zero                         |
+|T03S7| n/a |     | ???  |                              |
+|T03S8| n/a |     | ???  |                              |
+|T03S9| n/a |     | ???  |                              |
+|T03SA| n/a |     | ???  |                              |
+|T03SB| n/a |     | ???  |                              |
+|T03SC| n/a |     | ???  |                              |
+|T03SD| n/a |     | ???  |                              |
+|T03SE| n/a |     | ???  |                              |
+|T03SF| n/a |     | ???  | Zero                         |
+| --- | --- |  -- | ---  | ---                          |
+|T04S0| n/a |     | ???  |                              |
+|T04S1| n/a |     | ???  |                              |
+|T04S2| n/a |     | ???  |                              |
+|T04S3| n/a |     | ???  |                              |
+|T04S4| n/a |     | ???  |     Zero                     |
+|T04S5| n/a |     | ???  |                              |
+|T04S6| n/a |     | ???  |     Zero                     |
+|T04S7| n/a |     | ???  |                              |
+|T04S8| n/a |     | ???  |     Zero                     |
+|T04S9| n/a |     | ???  |                              |
+|T04SA| n/a |     | ???  |                              |
+|T04SB| n/a |     | ???  |                              |
+|T04SC| n/a |     | ???  |                              |
+|T04SD| n/a |     | ???  |                              |
+|T04SE| n/a |     | ???  |                              |
+|T04SF| n/a |     | ???  |                              |
+| --- | --- |  -- | ---  | ---                          |
 
 ```
-    |T02S0| /FANTAVISION/M.SPIDER #0400
-    |T02S1|
-    |T02S2|
-    |T02S3|
-    |T02S4| /FANTAVISION/M.CANCAN #0700, Zero
-    |T02S5| /FANTAVISION/M.CANCAN #0600
-    |T02S6| /FANTAVISION/M.CANCAN #0500
-    |T02S7| /FANTAVISION/M.CANCAN #0400
-    |T02S8| /FANTAVISION/M.CANCAN #0300, Zero
-    |T02S9| /FANTAVISION/M.CANCAN #0200
-    |T02SA| /FANTAVISION/M.CANCAN #0100
-    |T02SB| /FANTAVISION/M.CANCAN #0000, 0000:03 03 04 04 ...
-    |T02SC| /FANTAVISION/M.SPIDER #0700
-    |T02SD| /FANTAVISION/M.SPIDER #0600
-    |T02SE| /FANTAVISION/M.SPIDER #0500
-    |T02SF| /FANTAVISION/M.TREE   #????? Zero
-
-    |T03S0|
-    |T03S1|
-    |T03S2|
-    |T03S3|
-    |T03S4|
-    |T03S5|
-    |T03S6| Zero
-    |T03S7|
-    |T03S8|
-    |T03S9|
-    |T03SA|
-    |T03SB|
-    |T03SC|
-    |T03SD|
-    |T03SE|
-    |T03SF| Zero
-
-    T04S4 Zero
-    T04S6 Zero
-    T04S8 Zero
-
-    T05S8 Zero
-    T05SC Zero
-    T05SF Zero
-
-    T06SC Zero
-    T06SE Zero
-    T07S8 Zero
-    T07SF Zero
-
-    T08Sx Mirror of Track $1A
-    T09Sx Mirror of Track $19
-    T0ASx Mirror of Track $18 @ $3000
-    T0BSx Mirror of Track $17 @ $2000
-
-    T0CSx ???
-    T0CSE Zero
-    T0DS0 00:69, remaining Zero
-
-    T0FSx Blank / Not used
-    T10Sx Blank / Not used
-    T11Sx Blank / Not used
-
-    T12S0 $????
-    T13S0 $????
-    T14S0 $????
+|T05S0
+|T05S1
+|T05S2
+|T05S3
+|T05S4
+|T05S5
+|T05S6
+|T05S7
+|T05S8 Zero
+|T05S9
+|T05SA
+|T05SB
+|T05SC Zero
+|T05SD
+|T05SE
+|T05SF Zero
+| --- | --- |  -- | ---  | ---                          |
+|T05S0|
+|T05S1|
+|T05S2|
+|T05S3|
+|T05S4|
+|T05S5|
+|T05S6|
+|T05S7|
+|T05S8|
+|T05S9|
+|T05S9|
+|T05SA|
+|T06SC| Zero
+|T05SD|
+|T06SE| Zero
+|T05SF|
+| --- | --- |  -- | ---  | ---                          |
+|T07S8|     | Zero
+|T07SF|     |Zero
+| --- | --- |  -- | ---  | ---                          |
 ```
 
-T15S0 $B000 RWTS
+End of ProDOS Files
+
+|  T/S  |Addr |Description                  |
+|:-----:|:---:|:----------------------------|
+| T08Sx | n/a | Mirror of Track $1A         |
+| T09Sx | n/a | Mirror of Track $19         |
+| T0ASx | n/a | Mirror of Track $18 @ $3000 |
+| T0BSx | n/a | Mirror of Track $17 @ $2000 |
+| ----- | --- | ---                         |
+| T0CS0 | n/a | ???                         |
+| T0CS1 | n/a | ???                         |
+| T0CS2 | n/a | ???                         |
+| T0CS3 | n/a | ???                         |
+| T0CS4 | n/a | ???                         |
+| T0CS5 | n/a | ???                         |
+| T0CS6 | n/a | ???                         |
+| T0CS7 | n/a | ???                         |
+| T0CS8 | n/a | ???                         |
+| T0CS9 | n/a | ???                         |
+| T0CSA | n/a | ???                         |
+| T0CSB | n/a | ???                         |
+| T0CSC | n/a | ???                         |
+| T0CSD | n/a | ???                         |
+| T0CSE | n/a | Zero                        |
+| ----- | --- | ---                         |
+| T0DS0 | n/a | 00:69, remaining Zero       |
+| T0DSx | n/a | ???                         |
+| ----- | --- | ---                         |
+| T0ES0 | n/a | ???                         |
+| T0ES1 | n/a | ???                         |
+| T0ES2 | n/a | ???                         |
+| T0ES3 | n/a | ???                         |
+| T0ES4 | n/a | ???                         |
+| T0ES5 | n/a | ???                         |
+| T0ES6 | n/a | ???                         |
+| T0ES7 | n/a | ???                         |
+| T0ES8 | n/a | ???                         |
+| T0ES9 | n/a | ???                         |
+| T0ESA | n/a | ???                         |
+| T0ESB | n/a | ???                         |
+| T0ESC | n/a | ???                         |
+| T0ESD | n/a | ???                         |
+| T0ESE | n/a | ???                         |
+| T0ESF | n/a | ???                         |
+| ----- | --- | ---                         |
+| T0FSx | n/a | Blank / Not used            |
+| T10Sx | n/a | Blank / Not used            |
+| T11Sx | n/a | Blank / Not used            |
+| ----- | --- | ---                         |
+| T12S0 | n/a | $????                       |
+| T13S0 | n/a | $????                       |
+| T14S0 | n/a | $????                       |
+
+* Boot Stage 2
+
+|  T/S  |Addr |Description                  |
+|:-----:|:---:|:----------------------------|
+| T15S0 |$B000| RWTS                        |
+| T15S1 |$B100| RWTS                        |
+| T15S2 |$B200| RWTS 6-bit to 7-Bit Optimized 6&2 Decode Table |
+| T15S3 |$B300| RWTS                        |
+| T15S4 |$B400| RWTS                        |
+| T15S5 |$B500| RWTS                        |
+| T15S6 |$B600| Zero, Unused                |
+| T15S7 |$B700| Zero, Unused                |
+| T15S8 |$1800| `FORMAT` ???                |
+| T15S9 |$1900|                             |
+| T15SA |$1A00|                             |
+| T15SB |$1B00|                             |
+| T15SC |$1C00|                             |
+| T15SD |$1D00|                             |
+| T15SE |$1E00|                             |
+| T15SF |$1F00|                             |
+
+* Fantavision Program
+
+|  T/S  |Addr |Description                  |
+|:-----:|:---:|:----------------------------|
+| T16S0 |$0800| Applesoft Utility!! "= [ FANTAVISION MENU ] ="                    |
+| T16S1 |$0900|                                                                   |
+| T16S2 |$0A00|                                                                   |
+| T16S3 |$0B00|                                                                   |
+| T16S4 |$0C00| MOUSE,GRAPHICS TABLET,KOALA PAD,JOYSTICK,CREATE A SHOW DISK, QUIT THIS MENU |
+| T16S5 |$0D00|                                                                   |
+| T16S6 |$0E00|                                                                   |
+| T16S7 |$0F00| "INSERT THE MATINEE IN DRIVE 1,", "AND A BLANK DISK IN DRIVE 2."  |
+| T16S8 |$1000| "DESTROY"                                                         |
+| T16S9 |$1100| "INSERT THE DESIRED DISK", "UNABLE TO FORMAT."                    |
+| T16SA |$1200| "DRIVE TOO FAST", "DRIVE TOO SLOW", "CAN'T DESTROY FANTAVISION!"  |
+| T16SB |$1300| last 5 bytes: "5400",0                                            |
+| T16SC |$1400| Blank / Unused                                                    |
+| T16SD |$1500| Blank / Unused                                                    |
+| T16SE |$1600| Blank / Unused                                                    |
+| T16SF |$1700| Blank - reserved for Applesoft variaibles, HIMEM: 2*4096          |
+| ----- | --- | ---- |
+| T17S0 |$2000| Logo |
+| T17S1 |$2100| Logo |
+| T17S2 |$2200| Logo |
+| T17S3 |$2300| Logo |
+| T17S4 |$2400| Logo |
+| T17S5 |$2500| Logo |
+| T17S6 |$2600| Logo |
+| T17S7 |$2700| Logo |
+| T17S8 |$2800| Logo |
+| T17S9 |$2900| Logo |
+| T17SA |$2A00| Logo |
+| T17SB |$2B00| Logo |
+| T17SC |$2C00| Logo |
+| T17SD |$2D00| Logo |
+| T17SE |$2E00| Logo |
+| T17SF |$2F00| Logo |
+| ----- | --- | ---- |
+| T18S0 |$3000| Logo |
+| T18S1 |$3100| Logo |
+| T18S2 |$3200| Logo |
+| T18S3 |$3300| Logo |
+| T18S4 |$3400| Logo |
+| T18S5 |$3500| Logo |
+| T18S6 |$3600| Logo |
+| T18S7 |$3700| Logo |
+| T18S8 |$3800| Logo |
+| T18S9 |$3900| Logo |
+| T18SA |$3A00| Logo |
+| T18SB |$3B00| Logo |
+| T18SC |$3C00| Logo |
+| T18SD |$3D00| Logo |
+| T18SE |$3E00| Logo |
+| T18SF |$3F00| Logo |
+| ----- | --- | ---- |
+| T19S0 |$4000| Main.2                                    |
+| T19S1 |$4100|                                           |
+| T19S2 |$4200| "MOVIE MATINEE DISK BLANK SHOW DISKETTE"  |
+| T19S3 |$4300| Source Assembly Fragment 1                |
+| T19S4 |$4400| Table, Source Assembly Fragment 2         |
+| T19S5 |$4500|                                           |
+| T19S6 |$4600|                                           |
+| T19S7 |$4700|                                           |
+| T19S8 |$4800|                                           |
+| T19S9 |$4900| "FANTAVISIONFORMAT"                       |
+| T19SA |$4A00|                                           |
+| T19SB |$4B00|                                           |
+| T19SC |$4C00|                                           |
+| T19SD |$4D00|                                           |
+| T19SE |$4E00|                                           |
+| T19SF |$4F00|                                           |
+| ----- | --- | ---- |
+| T1AS0 |$5000|
+| T1AS1 |$5100|
+| T1AS2 |$5200|
+| T1AS3 |$5300|
+| T1AS4 |$5400|
+| T1AS5 |$5500|
+| T1AS6 |$5600|
+| T1AS7 |$5700|
+| T1AS8 |$5800|
+| T1AS9 |$5900| @ $4E: "(C) 1985 BY SCOTT ANDERSON"
+| T1ASA |$5A00|
+| T1ASB |$5B00|
+| T1ASC |$5C00|
+| T1ASD |$5D00|
+| T1ASE |$5E00| @ $6F: "(C) 1984 BY SCOTT ANDERSON"
+| T1ASF |$5F00|
+| ----- | --- | ---- |
+| T1BS0 |$6000|
+| T1BS1 |$6100|
+| T1BS2 |$6200|
+| T1BS3 |$6300| @ $E2: "(C) 1984 BY SCOTT ANDERSON"
+| T1BS4 |$6400|
+| T1BS5 |$6500| @ $8D: "(C) 1984 BY SCOTT ANDERSON"
+| T1BS6 |$6600|
+| T1BS7 |$6700|
+| T1BS8 |$6800|
+| T1BS9 |$6900|
+| T1BSA |$6A00| Icons??
+| T1BSB |$6B00| Icons??
+| T1BSC |$6C00|
+| T1BSD |$6D00|
+| T1BSE |$6E00|
+| T1BSF |$6F00|
+| ----- | --- | ---- |
+| T1CS0 |$7000|                                 |
+| T1CS0 |$7100|                                 |
+| T1CS2 |$7200| @59 HGR LookUP Y Table low byte                 |
+| T1CS3 |$7300| @00 HGR Lookup Y Table, Low byte and High Bytes |
+| T1CS4 |$7400|                                 |
+| T1CS5 |$7500|                                 |
+| T1CS6 |$7600|                                 |
+| T1CS7 |$7700|                                 |
+| T1CS8 |$7800|                                 |
+| T1CS9 |$7900| @74 Main menu: File, and Edit   |
+| T1CSA |$7A00| Main menu: Goodies              |
+| T1CSB |$7B00|                                 |
+| T1CSC |$7C00|                                 |
+| T1CSD |$7D00|                                 |
+| T1CSE |$7E00|                                 |
+| T1CSF |$7F00|                                 |
+| ----- | --- | ---- |
+| T1DS0 |$8000| |
+| T1DS1 |$8100| |
+| T1DS2 |$8200| |
+| T1DS3 |$8300| |
+| T1DS4 |$8400| |
+| T1DS5 |$8500| |
+| T1DS6 |$8600| |
+| T1DS7 |$8700| |
+| T1DS8 |$8800| |
+| T1DS9 |$8900| |
+| T1DSA |$8A00| |
+| T1DSB |$8B00| |
+| T1DSC |$8C00| |
+| T1DSD |$8D00| |
+| T1DSE |$8E00| |
+| T1DSF |$8F00| |
+| ----- | --- | ---- |
+| T1ES0 |$9000| |
+| T1ES1 |$9100| |
+| T1ES2 |$9200| |
+| T1ES3 |$9300| |
+| T1ES4 |$9400| |
+| T1ES5 |$9500| |
+| T1ES6 |$9600| |
+| T1ES7 |$9700| |
+| T1ES8 |$9800| |
+| T1ES9 |$9900| |
+| T1ESA |$9A00| |
+| T1ESB |$9B00| |
+| T1ESC |$9C00| |
+| T1ESD |$9D00| |
+| T1ESE |$9E00| |
+| T1ESF |$9F00| |
+| ----- | --- | ---- |
+| T1FS0 |$A000| |
+| T1FS1 |$A100| |
+| T1FS2 |$A200| |
+| T1FS3 |$A300| |
+| T1FS4 |$A400| |
+| T1FS5 |$A500| |
+| T1FS6 |$A600| UNUSED Make Scripts                                     |
+| T1FS7 |$A700| DOS 3.3: FTOC Track/Sector List: T1BS04 T1BS03 T1BS02   |
+| T1FS8 |$A800| @ $2D: DOS3.3 FILENAME: "UP.D2"                         |
+| T1FS9 |$A900| DOS 3.3: FTOC Track/Sector List: T1CS0E                 |
+| T1FSA |$AA00| @ $82: DOS3.3 FILENAME: "PATCH"                         |
+| T1FSB |$AB00| |
+| T1FSC |$AC00| |
+| T1FSD |$AD00| |
+| T1FSE |$AE00| |
+| T1FSF |$AF00| |
+| ----- | --- | ---- |
+| T20S0 |$0800| Backup Version A                         |
+| T20S1 |$0900| Backup Version A                         |
+| T20S2 |$0A00| Backup Version A                         |
+| T20S3 |$0B00| Backup Version A                         |
+| T20S4 |$0C00| Backup Version A                         |
+| T20S5 |$0D00| Backup Version A                         |
+| T20S6 |$0E00| Backup Version A                         |
+| T20S7 |$0F00| Backup Version A                         |
+| T20S8 |$3800| Logo bottom 1/4, same as T18S8 and T21S8 |
+| T20S9 |$3900| Logo bottom 1/4, same as T18S9 and T21S9 |
+| T20SA |$3A00| Logo bottom 1/4, same as T18SA and T21SA |
+| T20SB |$3B00| Logo bottom 1/4, same as T18SB and T21SB |
+| T20SC |$3C00| Logo bottom 1/4, same as T18SC and T21SC |
+| T20SD |$3D00| Logo bottom 1/4, same as T18SD and T21SD |
+| T20SE |$3E00| Logo bottom 1/4, same as T18SE and T21SE |
+| T20SF |$3F00| Logo bottom 1/4, same as T18SF and T21SF |
+| ----- | --- | ---- |
+| T21S0 |$0800| Backup Version B                |
+| T21S1 |$0900| Backup Version B                |
+| T21S2 |$0A00| Backup Version B                |
+| T21S3 |$0B00| Backup Version B                |
+| T21S4 |$0C00| Backup Version B                |
+| T21S5 |$0D00| Backup Version B                |
+| T21S6 |$0E00| Backup Version B                |
+| T21S7 |$0F00| Backup Version B                |
+| T21S8 |$3800| Logo bottom 1/4, same as T18S8  |
+| T21S9 |$3900| Logo bottom 1/4, same as T18S9  |
+| T21SA |$3A00| Logo bottom 1/4, same as T18SA  |
+| T21SB |$3B00| Logo bottom 1/4, same as T18SB  |
+| T21SC |$3C00| Logo bottom 1/4, same as T18SC  |
+| T21SD |$3D00| Logo bottom 1/4, same as T18SD  |
+| T21SE |$3E00| Logo bottom 1/4, same as T18SE  |
+| T21SF |$3F00| Logo bottom 1/4, same as T18SF  |
+| ----- | --- | ---- |
+| T22S- |$BC00|              |
+| T22S- |$BD00|              |
+| T22S- |$BE00| Boot Stage 4 |
+| T22S- |$BF00|              |
+
+* NOTE: Track $22 has a single "BIG" sector of 4 pages.
+
+
+## Disk Usage Details
+
+* T1CS2 $7200 @59 HGR LookUP Y Table low byte
+  * Relocated to LC: $FE00
 
 ```
-    NOTES:
+        59: $00,$00,$00,$00,$00,$00,$00,$00 ;   0 ..   7
+        61: $80,$80,$80,$80,$80,$80,$80,$80 ;   8 ..  15
+        69: $00,$00,$00,$00,$00,$00,$00,$00 ;  16 ..  23
+        71: $80,$80,$80,$80,$80,$80,$80,$80 ;  24 ..  31
+        79: $00,$00,$00,$00,$00,$00,$00,$00 ;  32 ..  39
+        81: $80,$80,$80,$80,$80,$80,$80,$80 ;  40 ..  47
+        89: $00,$00,$00,$00,$00,$00,$00,$00 ;  48 ..  55
+        91: $80,$80,$80,$80,$80,$80,$80,$80 ;  56 ..  63
 
-    * $02AA .. $02FF used as disk nibbles decode buffer for $56 bytes
+        99: $28,$28,$28,$28,$28,$28,$28,$28 ;  64 ..  71
+        A1: $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8 ;  72 ..  79
+        A9: $28,$28,$28,$28,$28,$28,$28,$28 ;  80 ..  87
+        B1: $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8 ;  88 ..  95
+        B9: $28,$28,$28,$28,$28,$28,$28,$28 ;  96 .. 103
+        C1: $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8 ; 104 .. 111
+        C9: $28,$28,$28,$28,$28,$28,$28,$28 ; 112 .. 119
+        D1: $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8 ; 120 .. 127
 
-            ; Disk Nibbles: Volume, Track, Sector, Checksum
-          CHECKSUM        = $E1
-          HAVE_SECTOR     = $E3
-
+        D9: $50,$50,$50,$50,$50,$50,$50,$50 ; 128 .. 135
+        E1: $D0,$D0,$D0,$D0,$D0,$D0,$D0,$D0 ; 136 .. 143
+        E9: $50,$50,$50,$50,$50,$50,$50,$50 ; 144 .. 151
+        F1: $D0,$D0,$D0,$D0,$D0,$D0,$D0,$D0 ; 152 .. 159
+        F9: $50,$50,$50,$50,$50,$50,$50     ; 160 .. 166 *** spans sector
 ```
 
-T15S1 $B100 @ $B126:read sector prologue D5 AA 96 [xx yy zz] DE
+
+* T1CS3 $7300 @00 HGR Lookup Y Table, Low byte and High Bytes
 
 ```
-
-
-T15S2 $B200 Optimized 6&2 Decode Table
-
-    T15S3 $B300
-    T15S4 $B400
-    T15S5 $B500
-    T15S6 $B600 Zero, Unused
-    T15S7 $B700 Zero, Unused
-
-    T15S8 $1800 FORMAT???
-    T15S9 $1900
-    T15SA $1A00
-    T15SB $1B00
-    T15SC $1C00
-    T15SD $1D00
-    T15SE $1E00
-    T15SF $1F00
-
-    T16S0 $0800 Applesoft Utility!! "= [ FANTAVISION MENU ] ="
-    T16S1 $0900
-    T16S2 $0A00
-    T16S3 $0B00
-    T16S4 $0C00 MOUSE,GRAPHICS TABLET,KOALA PAD,JOYSTICK,CREATE A SHOW DISK, QUIT THIS MENU
-    T16S5 $0D00
-    T16S6 $0E00
-    T16S7 $0F00 "INSERT THE MATINEE IN DRIVE 1,", "AND A BLANK DISK IN DRIVE 2."
-    T16S8 $1000 "DESTROY"
-    T16S9 $1100 "INSERT THE DESIRED DISK", "UNABLE TO FORMAT."
-    T16SA $1200 "DRIVE TOO FAST", "DRIVE TOO SLOW", "CAN'T DESTROY FANTAVISION!"
-    T16SB $1300 last 5 bytes: "5400",0
-    T16SC $1400 Blank / Unused
-    T16SD $1500 Blank / Unused
-    T16SE $1600 Blank / Unused
-    T16SF $1700 Blank - reserved for Applesoft variaibles, HIMEM: 2*4096
-
-    T17S0 $2000 Logo
-    T17S1 $2100 Logo
-    T17S2 $2200 Logo
-    T17S3 $2300 Logo
-    T17S4 $2400 Logo
-    T17S5 $2500 Logo
-    T17S6 $2600 Logo
-    T17S7 $2700 Logo
-    T17S8 $2800 Logo
-    T17S9 $2900 Logo
-    T17SA $2A00 Logo
-    T17SB $2B00 Logo
-    T17SC $2C00 Logo
-    T17SD $2D00 Logo
-    T17SE $2E00 Logo
-    T17SF $2F00 Logo
-    T18S0 $3000 Logo
-    T18S1 $3100 Logo
-    T18S2 $3200 Logo
-    T18S3 $3300 Logo
-    T18S4 $3400 Logo
-    T18S5 $3500 Logo
-    T18S6 $3600 Logo
-    T18S7 $3700 Logo
-    T18S8 $3800 Logo
-    T18S9 $3900 Logo
-    T18SA $3A00 Logo
-    T18SB $3B00 Logo
-    T18SC $3C00 Logo
-    T18SD $3D00 Logo
-    T18SE $3E00 Logo
-    T18SF $3F00 Logo
-
-    T19S0 $4000
-    T19S1 $4100
-    T19S2 $4200 "MOVIE MATINEE DISK BLANK SHOW DISKETTE"
-    T19S3 $4300 Source Assembly Fragment 1
-    T19S4 $4400 Table, Source Assembly Fragment 2
-    T19S5 $4500
-    T19S6 $4600
-    T19S7 $4700
-    T19S8 $4800
-    T19S9 $4900 "FANTAVISIONFORMAT"
-    T19SA $4A00
-    T19SB $4B00
-    T19SC $4C00
-    T19SD $4D00
-    T19SE $4E00
-    T19SF $4F00
-
-    T1AS0 $5000
-    T1AS1 $5100
-    T1AS2 $5200
-    T1AS3 $5300
-    T1AS4 $5400
-    T1AS5 $5500
-    T1AS6 $5600
-    T1AS7 $5700
-    T1AS8 $5800
-    T1AS9 $5900 @ $4E: "(C) 1985 BY SCOTT ANDERSON"
-    T1ASA $5A00
-    T1ASB $5B00
-    T1ASC $5C00
-    T1ASD $5D00
-    T1ASE $5E00 @ $6F: "(C) 1984 BY SCOTT ANDERSON"
-    T1ASF $5F00
-
-    T1BS0 $6000
-    T1BS1 $6100
-    T1BS2 $6200
-    T1BS3 $6300 @ $E2: "(C) 1984 BY SCOTT ANDERSON"
-    T1BS4 $6400
-    T1BS5 $6500 @ $8D: "(C) 1984 BY SCOTT ANDERSON"
-    T1BS6 $6600
-    T1BS7 $6700
-    T1BS8 $6800
-    T1BS9 $6900
-    T1BSA $6A00 Icons??
-    T1BSB $6B00 Icons??
-    T1BSC $6C00
-    T1BSD $6D00
-    T1BSE $6E00
-    T1BSF $6F00
-
-    T1CS0 $7000
-    T1CS0 $7100
-    T1CS2 $7200 @59 HGR LookUP Y Table low byte
-
-    Relocated to LC: $FE00
-
-    59: $00,$00,$00,$00,$00,$00,$00,$00 ;   0 ..   7
-    61: $80,$80,$80,$80,$80,$80,$80,$80 ;   8 ..  15
-    69: $00,$00,$00,$00,$00,$00,$00,$00 ;  16 ..  23
-    71: $80,$80,$80,$80,$80,$80,$80,$80 ;  24 ..  31
-    79: $00,$00,$00,$00,$00,$00,$00,$00 ;  32 ..  39
-    81: $80,$80,$80,$80,$80,$80,$80,$80 ;  40 ..  47
-    89: $00,$00,$00,$00,$00,$00,$00,$00 ;  48 ..  55
-    91: $80,$80,$80,$80,$80,$80,$80,$80 ;  56 ..  63
-
-    99: $28,$28,$28,$28,$28,$28,$28,$28 ;  64 ..  71
-    A1: $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8 ;  72 ..  79
-    A9: $28,$28,$28,$28,$28,$28,$28,$28 ;  80 ..  87
-    B1: $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8 ;  88 ..  95
-    B9: $28,$28,$28,$28,$28,$28,$28,$28 ;  96 .. 103
-    C1: $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8 ; 104 .. 111
-    C9: $28,$28,$28,$28,$28,$28,$28,$28 ; 112 .. 119
-    D1: $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8 ; 120 .. 127
-
-    D9: $50,$50,$50,$50,$50,$50,$50,$50 ; 128 .. 135
-    E1: $D0,$D0,$D0,$D0,$D0,$D0,$D0,$D0 ; 136 .. 143
-    E9: $50,$50,$50,$50,$50,$50,$50,$50 ; 144 .. 151
-    F1: $D0,$D0,$D0,$D0,$D0,$D0,$D0,$D0 ; 152 .. 159
-    F9: $50,$50,$50,$50,$50,$50,$50     ; 160 .. 166 *** spans sector
-
-    T1CS3 $7300 @00 HGR Lookup Y Table, Low byte and High Bytes
-    00:                             $50 ;        167 *** spans sector
-    01: $D0,$D0,$D0,$D0,$D0,$D0,$D0,$D0 ; 168 .. 175
-    09: $50,$50,$50,$50,$50,$50,$50,$50 ; 176 .. 183
-    11: $D0,$D0,$D0,$D0,$D0,$D0,$D0,$D0 ; 184 .. 191
+        00:                             $50 ;        167 *** spans sector
+        01: $D0,$D0,$D0,$D0,$D0,$D0,$D0,$D0 ; 168 .. 175
+        09: $50,$50,$50,$50,$50,$50,$50,$50 ; 176 .. 183
+        11: $D0,$D0,$D0,$D0,$D0,$D0,$D0,$D0 ; 184 .. 191
+```
 
     HGR Lookup Y Table
     Relocated to LC: $FF00
 
-    59:00 04 08 0C 10 14 18 1C ;   0 ..   7
-    61:00 04 08 0C 10 14 18 1C ;   8 ..  15
-    69:01 05 09 0D 11 15 19 1D ;  16 ..  23
-    71:01 05 09 0D 11 15 19 1D ;  24 ..  31
-    79:02 06 0A 0E 12 16 1A 1E ;  32 ..  39
-    81:02 06 0A 0E 12 16 1A 1E ;  40 ..  47
-    89:03 07 0B 0F 13 17 1B 1F ;  48 ..  55
-    91:03 07 0B 0F 13 17 1B 1F ;  56 ..  63
+```
+        59:00 04 08 0C 10 14 18 1C ;   0 ..   7
+        61:00 04 08 0C 10 14 18 1C ;   8 ..  15
+        69:01 05 09 0D 11 15 19 1D ;  16 ..  23
+        71:01 05 09 0D 11 15 19 1D ;  24 ..  31
+        79:02 06 0A 0E 12 16 1A 1E ;  32 ..  39
+        81:02 06 0A 0E 12 16 1A 1E ;  40 ..  47
+        89:03 07 0B 0F 13 17 1B 1F ;  48 ..  55
+        91:03 07 0B 0F 13 17 1B 1F ;  56 ..  63
 
-    99:00 04 08 0C 10 14 18 1C ;  64 ..  71
-    A1:00 04 08 0C 10 14 18 1C ;  72 ..  79
-    A9:01 05 09 0D 11 15 19 1D ;  80 ..  87
-    B1:01 05 09 0D 11 15 19 1D ;  88 ..  95
-    B9:02 06 0A 0E 12 16 1A 1E ;  96 .. 103
-    C1:02 06 0A 0E 12 16 1A 1E ; 104 .. 111
-    C9:03 07 0B 0F 13 17 1B 1F ; 112 .. 119
-    D1:03 07 0B 0F 13 17 1B 1F ; 120 .. 127
+        99:00 04 08 0C 10 14 18 1C ;  64 ..  71
+        A1:00 04 08 0C 10 14 18 1C ;  72 ..  79
+        A9:01 05 09 0D 11 15 19 1D ;  80 ..  87
+        B1:01 05 09 0D 11 15 19 1D ;  88 ..  95
+        B9:02 06 0A 0E 12 16 1A 1E ;  96 .. 103
+        C1:02 06 0A 0E 12 16 1A 1E ; 104 .. 111
+        C9:03 07 0B 0F 13 17 1B 1F ; 112 .. 119
+        D1:03 07 0B 0F 13 17 1B 1F ; 120 .. 127
 
-    D9:00 04 08 0C 10 14 18 1C ; 128 .. 135
-    E1:00 04 08 0C 10 14 18 1C ; 136 .. 143
-    E9:01 05 09 0D 11 15 19 1D ; 144 .. 151
-    F1:01 05 09 0D 11 15 19 1D ; 152 .. 159
-    F9:02 06 0A 0E 12 16 1A    ; 160 .. 166 *** spans sector
-
-    T1CS4 $7400
-    00:                     1E ;        167 *** spans sector
-    01:02 06 0A 0E 12 16 1A 1E ; 168 .. 175
-    09:03 07 0B 0F 13 17 1B 1F ; 176 .. 183
-    11:03 07 0B 0F 13 17 1B 1F ; 184 .. 191
-
-    LC:$FEC0:
-
-    LC:$FEDB
-        FEDD: BE C0 FE  LDX $FEC0,Y
-        FEE0: BD 00 FB  LDA $FB00,X
-        FEE3: 10 02     BPL $FEE7
-        FEE5: A9 13     LDA #$13
-        FEE7: 29 3F     AND #$3F
-        FEE9: D0 02     BNE $FEED
-        FEEB: A9 20     LDA #$20
-        FEED: 99 00 04  STA $0400,Y
-        FEF0: 88        DEY
-        FEF1: 10 EA     BPL $FEDD
-        FEF3: 60        RTS
-
-    T1CS5 $7500
-    T1CS6 $7600
-    T1CS7 $7700
-    T1CS8 $7800
-    T1CS9 $7900? @74 Main menu: File, and Edit
-
-    Note: K = Next key frame
-
-    33: Pointer $DCF2
-    35: Pointer $DCF3
-    37: Pointer $0700
-    39: Pointer $DCF7
-    3B: Pointer $DCFB
-    3D: Pointer $1C08
-    3F: Pointer $DD71
-    41: Pointer $DD75
-    43: Pointer $4606
-    45: Pointer $DDA5
-    47: Pointer $DDAC
-    49: Pointer $7005
-    4B: Pointer $3FC0 TODO: HGR Screen Hole
-
-    50: "File" MENU
-    54: "L" @ $DD1B accelerator = File | Load Movie
-    58: "S" @ $DD25 accelerator = File | Save Movie
-    5C:0x18 @ $DD2F accelerator = File | Clear Movie (Ctrl-X), can use Y/N
-    60: "D" @ $DD3A accelerator = File | Load Backdrop
-    64: "B" @ $DD47 accelerator = File | Save Backdrop -> "Screen name:"
-    68: "W" @ $DD54 accelerator = File | Clear Backdrop
-    6C: "F" @ $DD62 accelerator = File | Format Disk
-    70: "Q" @ $DD6D accelerator = File | Quit
-    74: "Load Movie"
-        "Save Movie"
-        "Clear Movie"
-        "Load Backdrop"
-        "Save Backdrop"
-        "Clear Backdrop"
-        "Format Disk"
-        "Quit"
-        "Edit" MENU
-    CE: "Z" @ $DD8D accelerator = Edit | Undo
-    D2: "X" @ $DD91 accelerator = Edit | Cut
-    D6: "C" @ $DD94 accelerator = Edit | Copy
-    DA: "V" @ $DD98 accelerator = Edit | Paste
-    DE: "K" @ $DD9D accelerator = Edit | Clone
-    E2: "^" @ $DDA2 accelerator = Edit | Zap frame (Shift-6)
-    E6: "Undo"
-        "Cut"
-        "Copy"
-        "Paste"
-        "Clone"
-        "Zap"
-        "Go" MENU
-
-    T1CSA $7A00 Main menu: Goodies
-
-    00: "oodies"
-    05:0x1A @ $DDC0 accelerator = Goodies | Zoom   (Ctrl-Z), top menu: Right/Left  Left/Right
-    09:0x14 @ $DDC4 accelerator = Goodies | Turn   (Ctrl-T), top menu: Counter-Clockwise / Clockwise
-    0D:0x0C @ $DDC8 accelerator = Goodies | Lean   (Ctrl-L), top menu: Left/Right
-    11:0x06 @ $DDCC accelerator = Goodies | Flip   (Ctrl-F), top menu: Left/Right  Up/Down
-    15:0x13 @ $DDD0 accelerator = Goodies | Squash (Ctrl-S), top menu: Up / Down"
-    19: "Zoom"
-        "Turn"
-        "Lean"
-        "Flip"
-        "Squash"
-
-    T1DS0 $8000
-    T1DS1 $8100
-    T1DS2 $8200
-    T1DS3 $8300
-    T1DS4 $8400
-    T1DS5 $8500
-    T1DS6 $8600
-    T1DS7 $8700
-    T1DS8 $8800
-    T1DS9 $8900
-    T1DSA $8A00
-    T1DSB $8B00
-    T1DSC $8C00
-    T1DSD $8D00
-    T1DSE $8E00
-    T1DSF $8F00
-
-    T1ES0 $9000
-    T1ES1 $9100
-    T1ES2 $9200
-    T1ES3 $9300
-    T1ES4 $9400
-    T1ES5 $9500
-    T1ES6 $9600
-    T1ES7 $9700
-    T1ES8 $9800
-    T1ES9 $9900
-    T1ESA $9A00
-    T1ESB $9B00
-    T1ESC $9C00
-    T1ESD $9D00
-    T1ESE $9E00
-    T1ESF $9F00
-
-    T1FS0 $A000
-    T1FS1 $A100
-    T1FS2 $A200
-    T1FS3 $A300
-    T1FS4 $A400
-    T1FS5 $A500
-    T1FS6 $A600 UNUSED Make Scripts
-    T1FS7 $A700 DOS 3.3: FTOC Track/Sector List: T1BS04 T1BS03 T1BS02
-    T1FS8 $A800 @ $2D: DOS3.3 FILENAME: "UP.D2"
-    T1FS9 $A900 DOS 3.3: FTOC Track/Sector List: T1CS0E
-    T1FSA $AA00 @ $82: DOS3.3 FILENAME: "PATCH"
-    T1FSB $AB00
-    T1FSC $AC00
-    T1FSD $AD00
-    T1FSE $AE00
-    T1FSF $AF00
-
-    T20S0 $0800 Backup Version A
-    T20S1 $0900 Backup Version A
-    T20S2 $0A00 Backup Version A
-    T20S3 $0B00 Backup Version A
-    T20S4 $0C00 Backup Version A
-    T20S5 $0D00 Backup Version A
-    T20S6 $0E00 Backup Version A
-    T20S7 $0F00 Backup Version A
-    T20S8 $3800 Logo bottom 1/4, same as T18S8 and T21S8
-    T20S9 $3900 Logo bottom 1/4, same as T18S9 and T21S9
-    T20SA $3A00 Logo bottom 1/4, same as T18SA and T21SA
-    T20SB $3B00 Logo bottom 1/4, same as T18SB and T21SB
-    T20SC $3C00 Logo bottom 1/4, same as T18SC and T21SC
-    T20SD $3D00 Logo bottom 1/4, same as T18SD and T21SD
-    T20SE $3E00 Logo bottom 1/4, same as T18SE and T21SE
-    T20SF $3F00 Logo bottom 1/4, same as T18SF and T21SF
-
-    T21S0 $0800 Backup Version B
-    T21S1 $0900 Backup Version B
-    T21S2 $0A00 Backup Version B
-    T21S3 $0B00 Backup Version B
-    T21S4 $0C00 Backup Version B
-    T21S5 $0D00 Backup Version B
-    T21S6 $0E00 Backup Version B
-    T21S7 $0F00 Backup Version B
-    T21S8 $3800 Logo bottom 1/4, same as T18S8
-    T21S9 $3900 Logo bottom 1/4, same as T18S9
-    T21SA $3A00 Logo bottom 1/4, same as T18SA
-    T21SB $3B00 Logo bottom 1/4, same as T18SB
-    T21SC $3C00 Logo bottom 1/4, same as T18SC
-    T21SD $3D00 Logo bottom 1/4, same as T18SD
-    T21SE $3E00 Logo bottom 1/4, same as T18SE
-    T21SF $3F00 Logo bottom 1/4, same as T18SF
-
-    T22S? $BC00
-    T22S? $BD00
-    T22S? $BE00 Boot Stage 4
-    T22S? $BF00
+        D9:00 04 08 0C 10 14 18 1C ; 128 .. 135
+        E1:00 04 08 0C 10 14 18 1C ; 136 .. 143
+        E9:01 05 09 0D 11 15 19 1D ; 144 .. 151
+        F1:01 05 09 0D 11 15 19 1D ; 152 .. 159
+        F9:02 06 0A 0E 12 16 1A    ; 160 .. 166 *** spans sector
 ```
 
-* NOTE: Track $22 has a single sector of 4 pages.
+    T1CS4 $7400
+        00:                     1E ;        167 *** spans sector
+        01:02 06 0A 0E 12 16 1A 1E ; 168 .. 175
+        09:03 07 0B 0F 13 17 1B 1F ; 176 .. 183
+        11:03 07 0B 0F 13 17 1B 1F ; 184 .. 191
+
+        LC:$FEC0:
+
+        LC:$FEDB
+            FEDD: BE C0 FE  LDX $FEC0,Y
+            FEE0: BD 00 FB  LDA $FB00,X
+            FEE3: 10 02     BPL $FEE7
+            FEE5: A9 13     LDA #$13
+            FEE7: 29 3F     AND #$3F
+            FEE9: D0 02     BNE $FEED
+            FEEB: A9 20     LDA #$20
+            FEED: 99 00 04  STA $0400,Y
+            FEF0: 88        DEY
+            FEF1: 10 EA     BPL $FEDD
+            FEF3: 60        RTS
+
+* T1CS9 $7900 @74 Main menu: File, and Edit
+  * Note: K = Next key frame
+
+```
+        33: Pointer $DCF2
+        35: Pointer $DCF3
+        37: Pointer $0700
+        39: Pointer $DCF7
+        3B: Pointer $DCFB
+        3D: Pointer $1C08
+        3F: Pointer $DD71
+        41: Pointer $DD75
+        43: Pointer $4606
+        45: Pointer $DDA5
+        47: Pointer $DDAC
+        49: Pointer $7005
+        4B: Pointer $3FC0 TODO: HGR Screen Hole
+
+        50: "File" MENU
+        54: "L" @ $DD1B accelerator = File | Load Movie
+        58: "S" @ $DD25 accelerator = File | Save Movie
+        5C:0x18 @ $DD2F accelerator = File | Clear Movie (Ctrl-X), can use Y/N
+        60: "D" @ $DD3A accelerator = File | Load Backdrop
+        64: "B" @ $DD47 accelerator = File | Save Backdrop -> "Screen name:"
+        68: "W" @ $DD54 accelerator = File | Clear Backdrop
+        6C: "F" @ $DD62 accelerator = File | Format Disk
+        70: "Q" @ $DD6D accelerator = File | Quit
+        74: "Load Movie"
+            "Save Movie"
+            "Clear Movie"
+            "Load Backdrop"
+            "Save Backdrop"
+            "Clear Backdrop"
+            "Format Disk"
+            "Quit"
+            "Edit" MENU
+        CE: "Z" @ $DD8D accelerator = Edit | Undo
+        D2: "X" @ $DD91 accelerator = Edit | Cut
+        D6: "C" @ $DD94 accelerator = Edit | Copy
+        DA: "V" @ $DD98 accelerator = Edit | Paste
+        DE: "K" @ $DD9D accelerator = Edit | Clone
+        E2: "^" @ $DDA2 accelerator = Edit | Zap frame (Shift-6)
+        E6: "Undo"
+            "Cut"
+            "Copy"
+            "Paste"
+            "Clone"
+            "Zap"
+            "Go" MENU
+```
+
+*   T1CSA $7A00 Main menu: Goodies
+
+```
+        00: "oodies"
+        05:0x1A @ $DDC0 accelerator = Goodies | Zoom   (Ctrl-Z), top menu: Right/Left  Left/Right
+        09:0x14 @ $DDC4 accelerator = Goodies | Turn   (Ctrl-T), top menu: Counter-Clockwise / Clockwise
+        0D:0x0C @ $DDC8 accelerator = Goodies | Lean   (Ctrl-L), top menu: Left/Right
+        11:0x06 @ $DDCC accelerator = Goodies | Flip   (Ctrl-F), top menu: Left/Right  Up/Down
+        15:0x13 @ $DDD0 accelerator = Goodies | Squash (Ctrl-S), top menu: Up / Down"
+        19: "Zoom"
+            "Turn"
+            "Lean"
+            "Flip"
+            "Squash"
+
+```
+
+
 
 
 # Easter Eggs
