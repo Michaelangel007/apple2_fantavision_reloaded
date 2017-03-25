@@ -1408,7 +1408,6 @@ Let's disassemble $B500 ...
     B53D:C9 CF              CMP #$CF        ; $CF
     B53F:D0 F3              BNE $B534
 
-        :
     B541:BD 8C C0   LDA $C08C,X     ;+
     B544:10 FB      BPL $B541       ;^
     B546:2A         ROL
