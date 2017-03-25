@@ -621,7 +621,7 @@ However, we need to stop after boot stage 2 has loaded:
 ```
     1EEEG
     C0E8:1
-    4000<B000.B7FFM
+    4000<B000.BFFFM
 ```
 
 Boot to our `Fanta.Work` disk ...
