@@ -46,6 +46,7 @@
   * Original File Names
   * Deleted Files!?
 * In Search of a Better Beep, or two
+* To Do
 
 # Introduction
 
@@ -4114,5 +4115,7 @@ Fantavision also has Roland Gustafsson classic 'RW18' error "ZAP" @ $B380.
     B38E:4C 33 B3           JMP RWTS_Read16     ;^ $B333
 ```
 
+# To Do
 
-
+* [ ] `Fantavision.BIN` loadable under DOS 3.3
+* [ ] `Assembly Source Listing` for Fantavision
