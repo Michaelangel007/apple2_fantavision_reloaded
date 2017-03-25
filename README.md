@@ -2798,7 +2798,7 @@ From the Boot Sector and Boot Stage 2 @ $BE27 we can build this disk -> memory m
 | $1D | $8000 .. $8FFF |
 | $1E | $9000 .. $9FFF |
 | $1F | $A000 .. $AFFF |
-
+| $22 | $BC00 .. $BFFF |
 
 
 # Disk Information
