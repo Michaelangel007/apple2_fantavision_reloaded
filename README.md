@@ -2626,15 +2626,15 @@ Let's write a program to generate a nice table for us:
 Enter in the raw machine code:
 
 ```
-300:A9 D0 85 FE 85 FF A9 80
-308:85 FC 20 DA FD A9 A0 20
-310:ED FD A0 00 B1 FE 48 E6
-318:FE D0 02 E6 FF 09 80 20
-320:ED FD 68 10 ED 20 8E FD
-328:AD 00 C0 10 0B 8D 10 C0
-330:AD 00 C0 10 FB 8D 10 C0
-338:E6 FC A5 FC C9 EB D0 CA
-340:60
+    300:A9 D0 85 FE 85 FF A9 80
+    308:85 FC 20 DA FD A9 A0 20
+    310:ED FD A0 00 B1 FE 48 E6
+    318:FE D0 02 E6 FF 09 80 20
+    320:ED FD 68 10 ED 20 8E FD
+    328:AD 00 C0 10 0B 8D 10 C0
+    330:AD 00 C0 10 FB 8D 10 C0
+    338:E6 FC A5 FC C9 EB D0 CA
+    340:60
 ```
 
 Which generates this table:
