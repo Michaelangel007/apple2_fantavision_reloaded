@@ -640,7 +640,7 @@ I'll use the prefix:
 * uppercase `RWTS` for functions
 
 ```asm
-                            rwts_ReadChecksum       = $E1
+                            rwts_ReadChecksum       = $E1   ; Addrress Prologue, Volume, Track, Sector, Checksum
                             rwts_Sector_Have        = $E3
                             rwts_E4                 = $E4   ; ???
                             rwts_LoadAddr           = $E6   ; 16-bit Pointer to dest buf
@@ -729,7 +729,7 @@ I'll use the prefix:
     B06F:AE 8C C0           LDX DRIVE_DATA          ; *** SELF-MODIFIED CODE @ $B016
     B072:10 FB              BPL FixupA              ; A = $96 .. $FF
     B074:BD 00 B1           LDA DiskNibble64-$96,X  ; [nib]
-    B077:99 00 02           STA Decode200,Y
+    B077:99 00 02           STA Decode200,Y         ; $02AA .. $02FF buffer of $56 bytes
     B07A:45 E1              EOR rwts_ReadChecksum
     B07C:C8                 INY
     B07D:D0 EE              BNE NextChecksum        ;^ $B06D
@@ -803,7 +803,7 @@ I'll use the prefix:
     B124:38                 SEC
     B125:60                 RTS
 
-                    RWTS_ReadPrologue
+                    RWTS_ReadPrologue           ; read sector prologue D5 AA 96 [xx yy zz] DE
     B126:A0 FC              LDY #$FC            ; save Sector $E3
     B128:84 EB              STY $EB             ; TODO rwts_find
                     FindAddr:
