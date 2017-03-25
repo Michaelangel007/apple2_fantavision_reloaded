@@ -2977,6 +2977,215 @@ Let's fire up `Copy ][` Sector Editor and make the _modifications_
 to skip reading track 22.
 
 
+## Kracking Fantavision
+
+Back in the day all the kids pretending to be cool used to use "3l33t" (elite) speak.
+The spelling of "cracked" -- kracked -- is simply part of this "culture"
+or "warez scene" as it was (self) called.
+"Cracking" is the (fine) art of removing copy protection.
+
+How can we bypass the two nibble counts used?
+
+Recall that Boot Stage 2 at $B500, reads in the 4&4 encypted Boot Stage 3
+into $BC00 .. $BFFF. The code at $BC00 .. $BD26 is used by the Backup Utility
+to write out $BE00 .. $BF00 onto track $22.  Since our disk is normal
+DOS3.3 / ProDOS format we don't care about these two pages $BC and $BD.
+The only relevent code is $BE00 .. $BF5F
+
+Now it seems silly to waste an entire track $22 just for two sectors worth of data
+at $BE00 .. $BFFF. It turns out when we analyzed the `RWTS` that there
+were two unused pages:
+
+| Track | Sector | Address |
+|:-----:|:------:|:-------:|
+| $15   | $6     |  $B600  |
+| $15   | $7     |  $B700  |
+
+We can store the decoded $BE00 .. $BFFF @ $B600, have the boot sector move
+them "up" in memory to their final (original) destination @ $BE00, by-pass
+the second Nibble Count and Bob's our uncle.
+
+We have a choice of where to put the memory mover:
+
+* At $08E0 .. $08FF, the unused padding of the boot sector, or
+* At $B500
+
+I'm going to use $B500 since that keeps the "spirit" of $B500 "decoding"
+Boot Stage 3 into $BE00. :-)
+
+
+### Cracking in 3 Easy Payments, er Steps
+
+These steps are quite detailed but should be rather straight-forward.
+Just take your time and you'll do fine.
+
+### Cracking Step 1: The Easy Stuff
+
+If we want to keep the original code at $B500 (sentimental reasons, perhaps?)
+we could stash this on the unused bytes on Track $15, Sector $5 @ $B580 -- but
+we'd have to update the boot sector @ $087A:00 -> 80 to call our new mover:
+
+From:
+
+```asm
+    879:20 00 B5
+```
+
+To:
+
+```asm
+    879:20 80 B5
+```
+
+Normally I like making the minimal number of changes possible
+but let's keep the original code.
+
+```asm
+                    ORG $B580
+
+                    Krack:
+    B580:A2 00              LDX #$00                ; Copy 256 bytes/page, 2x Pages
+                                                    ; We probably should also
+                                                    ;     LDY #$00
+                    CopyPages:                      ; restore $B600..$B7FF:00
+    B582:BD 00 B6           LDA $B600,X             ; for completness via:
+    B585:9D 00 BE           STA $BE00,X             ;     TAY
+    B588:BD 00 B7           LDA $B700,X             ;     STA $B600,X
+    B58B:9D 00 BF           STA $BF00,X             ;     STA $B700,X
+    B58E:E8                 INX
+    B58F:D0 F1              BNE CopyPages           ;^ $B502
+    B591:18                 CLC                     ; C=0 good "read" for $087C
+    B592:60                 RTS                     ;
+```
+
+Hold off entering this in for now, we'll queue this up in a minute.
+
+### Cracking Step 2: The Tedious Stuff
+
+Since I'm lazy I don't feel like manually entering in T15S6 ($BE00)
+and T15S7 ($BF00).  Now we can't just do a manual sector copy off the
+original Fantavision disk since Track $22 doesn't have any traditional sectors!
+
+Instead, we'll want to save $BE00 .. $BFFF on our `Fanta.Work` disk -- but with
+a twist.  Due to DOS 3.3 retarded _amateur design_ it stores 4 bytes IN the binary file.
+
+What we want is the DOS 3.3 file such that $BE00 is aligned on the
+_start_ of a sector -- that way we can manually copy the two sectors.
+All we need do is save a dummy $100-4 = $FC prefix to force the alignment.
+
+If you already have `B3.FANTAVISION_T22_BC00` skip to step 7.
+Otherwise, if you missed saving Boot Stage 3 here is a quick way to save it:
+
+1. Remove any disk in Slot 6, Drive 1
+2. Insert Fantavision in Slot 6, Drive 1
+3. Enter in these instructions:
+
+```
+    CALL-151
+    9600<C600.C6FFM
+    96FA:9F
+    9F00:60 60
+    9600G
+    FC58G
+    2B:60
+    801G
+
+    2000<B000.BFFFM
+```
+
+4. Replace disk in Slot 6, Drive 1, with `Fanta.Work`
+5. `C600`
+6. `BSAVE B3.FANTAVISION_T22_BC00,A$2C00,L$400`
+    Optional skip 7 :-)
+7. `BLOAD B3.FANTAVISION_T22_BC00,A$2C00`
+8. `BSAVE B3.KRACK_T22_B600,A$2B04,L$4FC`
+
+  Now move your `Fanta.Work` disk to Drive 2, and fire up Copy \]\[+ in Drive 1.
+
+9. Now the hard part -- where was our $BC00 code saved on `Fanta.Work` ?
+  *  `Track/Sector Map` > `Disk B`
+  * Make a note of which file it is, i.e. `K`
+  * `RETURN` to continue
+  * `RETURN` to see the files allocated. On my disk it was saved at Track $F, Sector $F .. Sector $A
+  * `RETURN` to return to the menu
+
+10. `Sector Edit` > `Disk B`
+11. Optional Read Track $11, Sector $F and/or Sector $E.
+  * Look for our filename: `B3.KRACK_T22_B600`, and move back 3 bytes
+12. `R` to read Track T1, Sector S1 for the FTOC. At address $12 is the Track/Sector we want
+13. `R` to read Track T2, Sector S2. i.e. Track $0F, Sector $B
+14. Remove `Fanta.Work`
+15. Replace with `Fanta.COPYA`
+16. `W` to Track $15, Sector $6
+
+17. Remove `Fanta.COPYA`
+18. Replace with `Fanta.Work`
+19. `R` to read Track T2, Sector S2-1. i.e. Track $0F, Sector $A
+20. Remove `Fanta.Work`
+21. Replace with `Fanta.COPYA`
+22. `W` to write Track $15, Sector $7
+
+Here is a little table to help:
+
+| Disk      | Read  | Write |
+|:----------|:-----:|:-----:|
+|Fanta.Work | T0FSB | n/a   |
+|Fanta.COPYA| n/a   | T15S6 |
+|Fanta.Work | T0FSA | n/a   |
+|Fanta.COPYA| n/a   | T15S7 |
+
+Don't forgot we need to modify T15S5 with our `mini $BE00 loader`
+
+23. `R` to read Track $15, Sector $5
+24. `H` to enter in the bytes from Step 1,
+
+```asm
+    B500:A2 00 BD 00 B6 9D 00 BE
+    B508:BD 00 B7 9D 00 BF E8 D0
+    B510:F1 18 60
+```
+
+25. `W` to write Track $15, Sector $5
+
+26. Lastly, let's patch T00S0 to call our new mover.
+  * `R` Track $00, Sector $0
+  * `A` Address $7A
+  * `H` Hex: $80
+27. And `W` to write it.
+
+Whew!  One more step.
+
+
+### Cracking Step 3: Skip Nibble Count 2
+
+The astute reader will notice this is titled "Skip Nibble Count 2".
+What happened to Nibble Count 1? We already handled that in the
+previous instructions.  Pay attention! :-)
+
+Seriously though, we just have one more tiny patch to make:
+
+The code at $BE00 calls nibble check 2 @ $BEAA
+
+```
+    BEAA:4C AD BE           JMP DoNibbleCheck2
+                    DoNibbleCheck2:
+    BEAD:A0 00              LDY #$00
+```
+
+This routine ends at $BF0F -- so let's jump there instead skipping the whole thing. :-)
+
+1. `R` Track $15, Sector $6
+2. `A` Address $AB
+3. `H` Hex: $0F $BF
+2. `W` Track $15, Sector $6
+
+And now for the moment of truth ...
+
+Put our `Fanta.COPYA` in Slot 6, Drive 1, and reboot.
+
+* ![Main](pics/main.png)
+
+Success!
 
 
 ## ProDOS Hybrid!?
