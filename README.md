@@ -1634,6 +1634,10 @@ This is the disassembly:
     BEA0:A0 18              LDY #$18            ; Y = Track Logo Bot
     BEA2:20 00 B0           JSR RWTS_LoadTrack
 
+    BEA5:A9 22              LDA #$22
+    BEA7:20 09 B0           JSR RWTS_Seek
+    BEAA:4C AD BE           JMP DoNibbleCheck2
+
                             RTS
 ```
 
