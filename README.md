@@ -46,6 +46,7 @@
   * Original File Names
   * Deleted Files!?
 * In Search of a Better Beep, or two
+* Cramming everything on side A?
 * To Do
 
 # Introduction
@@ -4114,6 +4115,13 @@ Fantavision also has Roland Gustafsson classic 'RW18' error "ZAP" @ $B380.
     B38C:D0 F4              BNE ^1              ;^ $B382
     B38E:4C 33 B3           JMP RWTS_Read16     ;^ $B333
 ```
+
+# Cramming everything on side A?
+
+So we have a TON of unused space now. How much of side B can we fit onto side A ?
+
+TODO
+
 
 # To Do
 
