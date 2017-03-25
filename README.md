@@ -1485,12 +1485,25 @@ There are many different ways to remove the protection.
 The simpliest is to format track $22 normally,
 and modify $B500 to load them in. See [Kracking](#Kracking-Fantavision)
 
+That is exactly what Black Bag's "Kracked" version of Fantavision does.
 
 ## Stupid Kids and their Graffiti
 
-That is exactly what Black Bag's "Kracked" version of Fantavision does.
-
 * ![Black Bag Krack](pics/logo_blackbag.png)
+
+Really? You had to deface the logo?
+
+No, I'm NOT talking about the "Names", but _these_ changes:
+
+* the `S` in Software
+* the `f` in Software
+* Adding stray pixels?
+
+Here is a "difference" between the Original and Black Bag logos:
+
+* ![Black Bag Difference](pics/logo_difference_blackbag.png)
+
+What were talkin about? Oh yeah, the specifics of the Black Bag krack.
 
 On Track $15, Sector $5 @ $B500 it uses:
 
