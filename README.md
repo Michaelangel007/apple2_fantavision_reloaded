@@ -3209,7 +3209,8 @@ Put our `Fanta.COPYA` in Slot 6, Drive 1, and reboot.
 
 * ![Main](pics/main.png)
 
-Success!
+/Oblg. _"I'm making a note here: HUGE SUCCESS."
+
 
 
 ## ProDOS Hybrid!?
