@@ -3209,7 +3209,7 @@ Put our `Fanta.COPYA` in Slot 6, Drive 1, and reboot.
 
 * ![Main](pics/main.png)
 
-/Oblg. _"I'm making a note here: HUGE SUCCESS."
+/Oblg. _"I'm making a note here: HUGE SUCCESS."_
 
 10 minutes of work, 10 hours to write all this crap up. :-)
 
