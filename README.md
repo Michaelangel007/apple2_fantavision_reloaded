@@ -2400,14 +2400,28 @@ DecodeToken:
 0EAE:20         JSR $0AC5 ; TODO: FIXME
 ```
 
-To 'fake' the backup used:
+To 'fake' the `backup used` we can enter in this patch:
 
-```
-BD1:A9
-BD3:EA
+```asm
+    BD1:A9
+    BD3:EA
 
-800G
+    800G
 ```
+
+Sure enough we get this backup used screen:
+
+* ![Backup used](pics/backup_used.png)
+
+And just for kicks, let's use an original version that already _has_ been
+backed up.
+
+```asm
+    9600<C600.C6FFM
+    96FA:
+```
+
+
 
 
 ### Backup 2 Disasembly
