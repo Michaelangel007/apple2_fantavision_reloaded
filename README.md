@@ -2782,7 +2782,7 @@ The Applesoft "Fantavision Menu" returns via CALL 768
 
 ## Boot Stage Memory Map
 
-From $BE27 we can build this memory map
+From the Boot Sector and Boot Stage 2 @ $BE27 we can build this disk -> memory map
 
 |Track|Address|
 |:---:|:-----:|
