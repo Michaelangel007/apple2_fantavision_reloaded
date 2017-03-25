@@ -636,6 +636,13 @@ Boot to our `Fanta.Work` disk ...
     BSAVE B2.FANTAVISION_T15_B000,A$4000,L$800
 ```
 
+We'll also want to save Boot Stage 3 while we're here to use later:
+
+```
+    BSAVE B3.FANTAVISION_T22_BC00,A$4C00,L$400
+```
+
+
 # RWTS
 
 Let's take a moment to analyze this mini-RWTS @ $B000
