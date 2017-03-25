@@ -3226,9 +3226,22 @@ our efforts are rewarded with this:
 ## Notes
 
 ```
-T00S8  n/a  ProDOS Block 3B ProDOS Volume Directory 2
-                M.MORFIC
-                M.VOLCANO
+T00SB  n/a  ProDOS Block 2A ProDOS Volume Directory 1, VOLUME: "FANTAVISION"
+                FORMAT
+                M.SPIDER
+                M.CANCAN
+                M.TREE
+                M.OBJECTS
+                M.DIVE
+
+T00SA  n/a  ProDOS Block 2B ProDOS Volume Directory 1
+                M.FACE
+                M.PEOPLE
+                M.REDWHITEBLUE
+                M.ENGLISHFONT
+                M.SLANTFONT
+                M.ORBITFONT
+
 T00S9  n/a  ProDOS Block 3A ProDOS Volume Directory 2
                 M.DOTS2FONT
                 M.CIRCUITFONT
@@ -3237,21 +3250,10 @@ T00S9  n/a  ProDOS Block 3A ProDOS Volume Directory 2
                 M.LAND
                 M.APPLE2
                 M.SHADOWTRIXKS
-T00SA  n/a  ProDOS Block 2B ProDOS Volume Directory 1
-                M.FACE
-                M.PEOPLE
-                M.REDWHITEBLUE
-                M.ENGLISHFONT
-                M.SLANTFONT
-                M.ORBITFONT
-T00SB  n/a  ProDOS Block 2A ProDOS Volume Directory 1
-                VOLUME: "FANTAVISION"
-                FORMAT
-                M.SPIDER
-                M.CANCAN
-                M.TREE
-                M.OBJECTS
-                M.DIVE
+
+T00S8  n/a  ProDOS Block 3B ProDOS Volume Directory 2
+                M.MORFIC
+                M.VOLCANO
 ```
 
 ## ProDOS Block Review
