@@ -28,9 +28,15 @@
 * Boot Tracing Stage 5
 * Boot Tracing Stage 6
   * Boot Stage Memory Map
+
 * Disk Information
   * Notes
   * COPY, eh?
+  * "Kracking" Fantavision
+    * Cracking in 3 Easy Payments, er Steps
+    * Cracking Step 1: The Easy Stuff
+    * Cracking Step 2: The Tedious Stuff
+    * Cracking Step 3: Skip Nibble Count 2
   * ProDOS Hybrid!?
   * ProDOS Block Review
   * Disk Usage Summary
