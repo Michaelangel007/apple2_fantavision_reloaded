@@ -2269,7 +2269,7 @@ DecodeToken:
 092D:A9 00          LDA #0          ; Track $00
 092F:20 09 B0       JSR RWTS_Seek
 0932:46 6D          LSR $6D
-0934:A9 B8          LDA #$B8        ; Load @ $B800
+0934:A9 B8          LDA #$B8        ; Load @ $B800, compare with Boot Sector $0877: Load #$BC
 0936:4C 00 B5       JMP ReadBoot3   ; Carry Clear = Original, Set = Copy
 
 0939:20 22 09       JSR DiskLoadNibbleCheck
