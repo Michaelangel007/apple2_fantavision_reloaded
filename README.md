@@ -2238,6 +2238,13 @@ DecodeToken:
 08D4:D0 F6          BNE $08CC
 08D6:60             RTS
 
+                GetKey
+08ED:2C 10 C0       BIT KEYSTROBE
+08F0:AD 00 C0       LDA KEYBOARD
+08F3:10 FB          BNE $8F0
+08F5:2C 10 C0       BIT KEYSTROBE
+08F8:60             RTS
+
 08F9:           Seperator
 08F9:               JSR DecodeToken
 08FC:0A             DFB CMD_REP
@@ -2277,13 +2284,6 @@ DecodeToken:
 0949:C6 60          DEC $60
 094D:BD 88 C0       LDA DRIVE_OFF,X
 0950:60             RTS
-
-                GetKey
-08ED:2C 10 C0       BIT KEYSTROBE
-08F0:AD 00 C0       LDA KEYBOARD
-08F3:10 FB          BNE $8F0
-08F5:2C 10 C0       BIT KEYSTROBE
-08F8:60             RTS
 
 0AB7:           BottomSeperator
 0AB7:20 03 08       JSR DecodeToken
