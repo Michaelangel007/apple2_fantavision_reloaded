@@ -2834,8 +2834,8 @@ Prologue                         Epilogue
 ```
 
 Everything looks kosher with _Fantavision_ -- except
-Fantavision has changed the epilog disk nibbles from the
-standard `DE AA EB` to the non-standard `DE AB`
+the changed Epilog disk nibbles from the
+standard `DE AA EB` to the non-standard `DE AB`!
 
 Returning to the Sector Editor we can press `P` to patch DOS 3.3
 and use `RETURN` to cycle through the fields until we get to
