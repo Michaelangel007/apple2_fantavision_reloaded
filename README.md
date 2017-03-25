@@ -1,4 +1,4 @@
-# Fantavision Reloaded
+# Fantavision (Reloaded)
 
 # Table of Contents
 
