@@ -1483,7 +1483,7 @@ Let's update our Boot Stages Diagram:
 
 There are many different ways to remove the protection.
 The simpliest is to format track $22 normally,
-and modify $B500 to load them in.
+and modify $B500 to load them in. See [Kracking](#Kracking-Fantavision)
 
 
 ## Stupid Kids and their Graffiti
