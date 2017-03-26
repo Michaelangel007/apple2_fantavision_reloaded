@@ -528,7 +528,16 @@ On my //e it looks this:
                             P5.Dest             = $26   ; 16-bit pointer to dest
                             P5.SlotX16          = $2B   ; i.e. $60 = Slot 6
 
-                            ; Magic Numbers "disk nisk nibbles"
+                            P5.Nibs             = $3C   ; counter for $56 nibbles
+
+                            P5.SecHave          = $3C   ; last rest Vol, Track, Sec stored here
+                            P5.SecWant          = $3D   ;
+                            P5.SecTotal         = $0800 ; T00S0 @ $00: total number of sectors to load
+
+                            P5.TrackHave        = $40
+                            P5.TrackWant        = $41   ;
+
+                            ; Magic Numbers "disk nibbles"
                             ADDR_PROLOG_1       = $D5
                             ADDR_PROLOG_2       = $AA
                             ADDR_PROLOG_3       = $96
@@ -568,18 +577,18 @@ On my //e it looks this:
     C687:BD 8C C0   ^8      LDA DRIVE_DATA,X
     C68A:10 FB              BPL ^8          ;^ $C687  mask = $FF  since: C=1 from $C676
     C68C:2A                 ROL             ; ... 4&4 encoded: 1a1c1e1g, C=1 since A > $80
-    C68D:85 3C              STA $3C         ; ... 1st half  A= a1c1e1gC
+    C68D:85 3C              STA P5.SecHave  ; ... 1st half  A= a1c1e1gC
 
     C68F:BD 8C C0   ^9      LDA DRIVE_DATA,X
     C692:10 FB              BPL ^9          ;^ $C68F        &= 1b1d1f1h
-    C694:25 3C              AND $3C         ; ... 2nd half   = abcdefgh
+    C694:25 3C              AND P5.SecHave  ; ... 2nd half   = abcdefgh
     C696:88                 DEY
     C697:D0 EC              BNE ^7          ;^ $C685
     C699:28                 PLP             ; Don't care about carry, restore stack
     C69A:C5 3D              CMP P5.SecWant  ; A=SectorHave == SectorWant? (init $00 from $C654)
     C69C:D0 BE              BNE ^0          ;^ $C65C
     C69E:A5 40              LDA P5.TrackHave    ; (read from prologue)
-    C6A0:C5 41              CMP TrackWant   ;
+    C6A0:C5 41              CMP P5.TrackWant
     C6A2:D0 B8              BNE ^0          ;^ $C65C !=
     C6A4:B0 B7              BCS ^1          ;^ $C65D >=
     C6A6:A0 56      ^10     LDY #$56        ; Decode $56 nibbles in 6&2
