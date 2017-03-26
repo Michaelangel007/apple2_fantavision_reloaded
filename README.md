@@ -524,6 +524,16 @@ it comes from the P5 PROM ReadSector routine @ $C65C.
 On my //e it looks this:
 
 ```asm
+                            P5.Buff             = $26   ; 16-bit pointer to dest
+                            P5.SlotX16          = $2B   ; i.e. $60 = Slot 6
+
+                            ; Magic Numbers "disk nisk nibbles"
+                            ADDR_PROLOG_1       = $D5
+                            ADDR_PROLOG_2       = $AA
+                            ADDR_PROLOG_3       = $96
+
+                            DATA_PROLOG_3       = $AD
+
                             ORG $C65C
 
                     P5.ReadSector
@@ -532,23 +542,23 @@ On my //e it looks this:
 
     C65E:BD 8C C0   ^2      LDA DRIVE_DATA,X
     C661:10 FB              BPL ^2          ;^ $C65E
-    C663:49 D5      ^3      EOR #$D5        ; Address 1st Prologue Field
+    C663:49 D5      ^3      EOR #ADDR_PROLOG_1
     C665:D0 F7              BNE ^2          ;^ $C65E
 
     C667:BD 8C C0   ^4      LDA DRIVE_DATA,X
     C66A:10 FB              BPL ^4          ;^ $C667
-    C66C:C9 AA              CMP #$AA        ; Address 2nd Prologue Field
+    C66C:C9 AA              CMP #ADDR_PROLOG_2
     C66E:D0 F3              BNE ^3          ;^ $C663
     C670:EA                 NOP
 
     C671:BD 8C C0   ^5      LDA DRIVE_DATA,X
     C674:10 FB              BPL ^5          ;^ $C671
-    C676:C9 96              CMP #$96        ; Address 3rd Prologue Field, NOTE: C=1 for $C68C !
+    C676:C9 96              CMP #ADDR_PROLOG_3  ; NOTE: C=1 for $C68C !
     C678:F0 09              BEQ ^6          ;v $C683
 
     C67A:28                 PLP             ;Looking for Address or Data prologue?
     C67B:90 DF              BCC ^0          ;^ $C65C
-    C67D:49 AD              EOR #$AD        ; Prologue Data Field: 3rd
+    C67D:49 AD              EOR #DATA_PROLOG_3
     C67F:F0 25              BEQ ^10         ;v $C6A6
     C681:D0 D9              BNE ^0          ;^ $C65C
     C683:A0 03      ^6      LDY #$03        ; Read 3 nibbles: Vol,Track,Sec, skip Checksum
