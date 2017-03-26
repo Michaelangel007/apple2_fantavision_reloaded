@@ -2205,32 +2205,31 @@ Comparing the two jump tables:
 
 We find they are identical (barring the +2 offset.)
 
-Let's decode the byte code tokens:
+Let's decode the byte code tokens @ $0845:
 
-```
-    0845 FunctionJumpTable
-    0845: [$00] CMD_DONE  $0886 Return to caller, like 6502: $00 BRK
-    0847: [$01] CMD_TEXT  $FB36 SETTXT-3
-    0849: [$02] CMD_HOME  $FC58 HOME
-    084B: [$03] CMD_NORM  $088F Switch to Normal Text
-    084D: [$04] CMD_INV   $0892 Switch to Inverse Text
-    084F: [$05] CMD_05    $089C
-    0851: [$06] CMD_EOL   $FC9C CLREOL
-    0853: [$07] CMD_CLR   $FC42 CLREOP
-    0855: [$08] CMD_HTAB  $08A2 xx -> $24 = x-1
-    0857: [$09] CMD_VTAB  $08A9 -> Call $FB5B TABV yy+1
-    0859: [$0A] CMD_REP   $08B1 xx yy Print char XX repeated YY times
-    085B: [$0B] CMD_0B    $03EA
-    085D: [$0C] CMD_PR0   $FE93 SETVID (PR#0)
-    085F: [$0D] CMD_POKE  $08C0 lo hi val, like 6502: $8D STA $abs
-    0861: [$0E] CMD_DUP_E $08C9 Duplicate of CMD_PTR$
-    0863: [$0F] CMD_DUP_F $08C9 Duplicate of CMD_PTR$
-    0865: [$10] CMD_PTR$  $08C9 Print Pointer to String
-    0867: [$11] CMD_JSR2  $08D7 JSR address at next two bytes
-    0869: [$12] CMD_INKEY $08ED Wait for keypress
-    086B: [$13] CMD_BEEP  $0902 Soft Beep
-          [$20] CMD_JSR -> remapped to [$11] JSR yy xx
-```
+|Code|Byte Code|Command  |Dispatch|Description                            |
+|:--:|:-------:|:--------|:------:|:--------------------------------------|
+|0845| [ $00 ] |CMD_DONE |  $0886 |Return to caller, like 6502: $00 BRK   |
+|0847| [ $01 ] |CMD_TEXT |  $FB36 |SETTXT-3                               |
+|0849| [ $02 ] |CMD_HOME |  $FC58 |HOME                                   |
+|084B| [ $03 ] |CMD_NORM |  $088F |Switch to Normal Text                  |
+|084D| [ $04 ] |CMD_INV  |  $0892 |Switch to Inverse Text                 |
+|084F| [ $05 ] |CMD_05   |  $089C |                                       |
+|0851| [ $06 ] |CMD_EOL  |  $FC9C |CLREOL                                 |
+|0853| [ $07 ] |CMD_CLR  |  $FC42 |CLREOP                                 |
+|0855| [ $08 ] |CMD_HTAB |  $08A2 |xx -> $24 = x-1                        |
+|0857| [ $09 ] |CMD_VTAB |  $08A9 |-> Call $FB5B TABV yy+1                |
+|0859| [ $0A ] |CMD_REP  |  $08B1 |xx yy Print char XX repeated YY times  |
+|085B| [ $0B ] |CMD_0B   |  $03EA |                                       |
+|085D| [ $0C ] |CMD_PR0  |  $FE93 |SETVID (PR#0)                          |
+|085F| [ $0D ] |CMD_POKE |  $08C0 |lo hi val, like 6502: $8D STA $abs     |
+|0861| [ $0E ] |CMD_DUP_E|  $08C9 |Duplicate of CMD_PTR$                  |
+|0863| [ $0F ] |CMD_DUP_F|  $08C9 |Duplicate of CMD_PTR$                  |
+|0865| [ $10 ] |CMD_PTR$ |  $08C9 |Print Pointer to String                |
+|0867| [ $11 ] |CMD_JSR2 |  $08D7 |JSR address at next two bytes          |
+|0869| [ $12 ] |CMD_INKEY|  $08ED |Wait for keypress                      |
+|086B| [ $13 ] |CMD_BEEP |  $0902 |Soft Beep                              |
+|    | [ $20 ] |CMD_JSR  |        | -> remapped to [$11] JSR yy xx        |
 
 
 ### Backup 1 Disasembly
@@ -2503,13 +2502,14 @@ Sure enough we get this backup used screen:
 * ![Backup used](pics/backup_used.png)
 
 And just for kicks, let's use an original version that already _has_ been
-backed up.
+backed up and "trick" it so that the code thinks it is still a virgin master.
 
 ```asm
     9600<C600.C6FFM
     96FA:
 ```
 
+TODO: FIXME
 
 
 
