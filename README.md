@@ -52,12 +52,13 @@ _"Everything you probably didn't want to know about Fantavision."_ :-)
 * In Search of a Better Beep, or two
 * Cramming everything on side A?
 * TODOs
+* Credits
 
 # Introduction
 
 _"Get off my LAN, Grandpa"_
 
-* -- Any kid born in the new millennium with WIFI.
+* -- Any Generation Z kid born in the new millennium with WIFI.
 
 Before Macromedia's [Flash](https://en.wikipedia.org/wiki/Adobe_Flash)
 became ubiquitous back in 1985 
