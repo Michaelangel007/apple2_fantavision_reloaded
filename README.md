@@ -63,7 +63,7 @@ _"Get off my LAN, Grandpa"_
 * -- Any Generation Z kid born in the new millennium with WIFI.
 
 Before Macromedia's [Flash](https://en.wikipedia.org/wiki/Adobe_Flash)
-became ubiquitous back in 1985 
+became ubiquitous back in 1985
 [Brøderbund](https://en.wikipedia.org/wiki/Broderbund)
 released a fantastic animation program called `Fantavision`
 
@@ -283,7 +283,7 @@ Now that we have the boot sector saved let's tear into it and see what it is doi
 Now I could be a jerk and hand-wave it as
 
 * _"Implementation Details"_ or the equally annoying
-* _"Left as an Exercise for the Reader"_ 
+* _"Left as an Exercise for the Reader"_
 
 but I'll be nice guy and provide a fully documented disassembly:
 
@@ -624,9 +624,9 @@ Let's map out the Track/Sector (T/S) boot stages
         ; 2          T15S2 1E00
         ; 2          T15SF 1F00
         ; ---------------------
-        ; 2     B500       
+        ; 2     B500
         ; ---------------------
-        ; ?     BE00 T??S? 
+        ; ?     BE00 T??S?
         ; ---------------------
 
 ```
@@ -1433,22 +1433,22 @@ Let's disassemble $B500 ...
     B508:A6 FD              LDX rwts_SlotX16    ;
     B50A:A9 80              LDA #$80            ; Attempt to read $8080 disk nibbles
     B50C:85 3E              STA Count           ; Count
-    B50E:85 3F              STA Count+1         ; 
+    B50E:85 3F              STA Count+1         ;
     B510:A9 04              LDA #$04            ; Num "Sectors" or Pages to read
-    B512:85 3B              STA NumSectors      ; 
+    B512:85 3B              STA NumSectors      ;
     B514:A0 00              LDY #$00            ; Num disk nibbles read (actually is 1/2)
                     _B516:
     B516:A9 00              LDA #$00            ; *** SELF-MODIFIED @ $B500 *** Dest Addr to Load at
-    B518:84 3C              STY $3C             ; 
+    B518:84 3C              STY $3C             ;
     B51A:85 3D              STA DestPage        ; DestPage
 
                     NextCount:
     B51C:C6 3E              DEC Count           ; Force read counter
     B51E:D0 06              BNE DoNibbleCheck1  ; to read at least once
-    B520:C6 3F              DEC Count+1         ; 
-    B522:D0 02              BNE DoNibbleCheck1  ; 
+    B520:C6 3F              DEC Count+1         ;
+    B522:D0 02              BNE DoNibbleCheck1  ;
     B524:38                 SEC                 ; FAIL nibble check 1
-    B525:60                 RTS                 ; 
+    B525:60                 RTS                 ;
 
                     DoNibbleCheck1:
                     WaitNib1a:                  ;        ^
@@ -2040,7 +2040,7 @@ back in 1985!
 is probably the most famous program to use byte-code -- back in 1980 -- predating
 even Fantavisio by 5 years.
 
-  * The [Z-Machine](https://en.wikipedia.org/wiki/Z-machine) was created in 1979. 
+  * The [Z-Machine](https://en.wikipedia.org/wiki/Z-machine) was created in 1979.
 
 * [UCSD Pascal](https://en.wikipedia.org/wiki/UCSD_Pascal) is probably the second most famous example -- back in 1978 !
 
@@ -2247,8 +2247,8 @@ DecodeToken:
 0806:                PLA           
 0807:                STA $71       ; Save ReturnAddrHi
 0809:           _809 JSR $086D     
-080C:20 14 08       JSR $0814     
-080F:4C 09 08       JMP $0809     
+080C:20 14 08       JSR $0814      
+080F:4C 09 08       JMP $0809      
 
                     _812 LDA #$8D      ; CR ?
                     _814 BPL $0834     ; Never
@@ -2280,11 +2280,11 @@ DecodeToken:
                     _844 RTS           
 
                     GetNextToken:      ; Leaves Token in A and X
-                    _86D LDY #$00     
+                    _86D LDY #$00      
                          INC $70       
                          BNE $0875     
                          INC $71       
-                    _875 LDA ($70),Y  
+                    _875 LDA ($70),Y   
                          TAX                TAX
 0878:RTS                RTS
 
