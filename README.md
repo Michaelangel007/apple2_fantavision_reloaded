@@ -3097,17 +3097,17 @@ The Address fields are read in DOS 3.3's function `RDADR16` @ $B944 but we are
 only interested in the Address Epilog portions @ $ B98B:
 
 ```asm
-398B:BD 8C C0       093 RDA6        LDA Q6L,X       FIRST BIT-SLIP NIBL.
-398E:10 FB          094             BPL RDA6        *** NO PAGE CROSS! ***
-3990:C9 DE          095             CMP #$DE
-3992:D0 AE          096             BNE RDERR       ERROR IF NONMATCH.
-3994:EA             097             NOP             DELAY BETWEEN NIBLS.
-3995:BD 8C C0       098 RDA7        LDA Q6L,X       SECOND BIT-SLIP NIBL.
-3998:10 FB          099             BPL RDA7        *** NO PAGE CROSS! ***
-399A:C9 AA          100             CMP #$AA
-399C:D0 A4          101             BNE RDERR       ERROR IF NONMATCH.
-399E:18             102 RDEXIT      CLC             CLEAR CARRY ON
-399F:60             103             RTS             NORMAL READ EXITS.
+    398B:BD 8C C0       093 RDA6        LDA Q6L,X       FIRST BIT-SLIP NIBL.
+    398E:10 FB          094             BPL RDA6        *** NO PAGE CROSS! ***
+    3990:C9 DE          095             CMP #$DE
+    3992:D0 AE          096             BNE RDERR       ERROR IF NONMATCH.
+    3994:EA             097             NOP             DELAY BETWEEN NIBLS.
+    3995:BD 8C C0       098 RDA7        LDA Q6L,X       SECOND BIT-SLIP NIBL.
+    3998:10 FB          099             BPL RDA7        *** NO PAGE CROSS! ***
+    399A:C9 AA          100             CMP #$AA
+    399C:D0 A4          101             BNE RDERR       ERROR IF NONMATCH.
+    399E:18             102 RDEXIT      CLC             CLEAR CARRY ON
+    399F:60             103             RTS             NORMAL READ EXITS.
 ```
 
 We need to change byte @ $B99B from $AA to $AB.
