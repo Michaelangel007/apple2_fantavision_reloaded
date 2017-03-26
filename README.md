@@ -4337,7 +4337,7 @@ I always thought that this was a pretty neat vector animation program for the Ap
 
 * 2000: Fantavision 7.5 Fantavision now supports many more video formats, and very high quality video. The Fantavision file format is declared a standard by the ISO.
 
-**sigh.**
+**Sigh.**
 
 Instead we got Flash dominating the Web (since HTML/Javascript sucked so bad)
 and Steve Jobs ranting how [Flash sucks](http://www.apple.com/hotnews/thoughts-on-flash/)
