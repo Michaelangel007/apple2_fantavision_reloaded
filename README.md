@@ -2,9 +2,12 @@ Last updated March 25, 2017.
 
 # Fantavision (Reloaded)
 
+_"Everything you probably didn't want to know about Fantavision."_ :-)
+
 # Table of Contents
 
 * Introduction
+  * Karateka !?
 * Preparation
 * ESC to Bug out
 * Ye Olde Boot Tracing
@@ -75,6 +78,8 @@ Here is a picture with an _actual_ screenshot with the correct aspect ratio:
 
 * ![Box Back Aspect Ratio](pics/fantavision_box_back_aspectratio.jpg)
 
+## Karateka!?
+
 Speaking of the back of the box, what-the-heck is a picture of **Karateka** doing there???
 
 * ![Back Box Zoom](pics/fantavision_box_back_karateka.png)
@@ -87,7 +92,9 @@ At least the manual cover is pretty cool!
 
 * ![Manual Cover](pics/fantavision_manual_cover.jpg)
 
-It had a "mouse cursor" and pull-down menus on the Apple II back in 1985 all 
+OK, now that I'm done obsessing over "the goods" let's get back on topic.
+
+_Fantavision_ had a "mouse cursor" and pull-down menus on the Apple II back in 1985 all
 in glorious 6 color 280x192 resolution.
 
 * ![Logo](pics/about.png)
