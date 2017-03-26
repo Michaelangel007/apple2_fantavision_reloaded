@@ -609,10 +609,10 @@ On my //e it looks this:
     C6D7:A2 56      ^17     LDX #$56
     C6D9:CA         ^18     DEX
     C6DA:30 FB              BMI ^17         ; $C6D7
-    C6DC:B1 26              LDA ($26),Y
-    C6DE:5E 00 03           LSR $0300,X
+    C6DC:B1 26              LDA (P5.Buff),Y
+    C6DE:5E 00 03           LSR $0300,X     ; $0300[ $00 .. $55 ]
     C6E1:2A                 ROL
-    C6E2:5E 00 03           LSR $0300,X
+    C6E2:5E 00 03           LSR $0300,X     ; $0300[ $00 .. $55 ]
     C6E5:2A                 ROL
     C6E6:91 26              STA (P5.Buff),Y
     C6E8:C8                 INY
