@@ -71,7 +71,7 @@ You gotta love the marketing people. They couldnt' even
 * Keep the aspect ratio correct
 * Had to use a MOCKUP for the screen !
 
-* ![Box Back Aspect Ratio](pics/fantavision_box_aspectratio.jpg)
+* ![Box Back Aspect Ratio](pics/fantavision_box_back_aspectratio.jpg)
 
 At least the manual cover is pretty cool
 
