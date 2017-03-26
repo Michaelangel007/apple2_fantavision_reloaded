@@ -33,7 +33,6 @@ _"Everything you probably didn't want to know about Fantavision."_ :-)
 * Boot Tracing Stage 5
 * Boot Tracing Stage 6
   * Boot Stage Memory Map
-
 * Disk Information
   * Notes
   * COPY, eh?
