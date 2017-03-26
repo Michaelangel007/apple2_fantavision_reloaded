@@ -548,7 +548,7 @@ On my //e it looks this:
 
                     P5.ReadSector
     C65C:18         ^0      CLC             ; C=0 Look Address D5,AA,96
-    C65D:08         ^1      PHP             ; C=1 look Data    D5,AA,AD
+    C65D:08         ^1      PHP             ; C=1 Look Data    D5,AA,AD
 
     C65E:BD 8C C0   ^2      LDA DRIVE_DATA,X
     C661:10 FB              BPL ^2          ;^ $C65E
