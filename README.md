@@ -100,7 +100,7 @@ Speaking of the back of the box, what-the-heck is a picture of **Karateka** doin
 This background is from Karateka.  As John Romero corrected me once that is
 pronounced `Karateka`. :-) Oh wait, I'm supposed to be serious here.
 It is pronounced: `Care-Ah-Tea-Kah`.
-And here I thought it it was "Ka-rot-a-ka" but I digress.
+And here I thought it it was `Kah-rot-a-ka` but I digress.
 
 * ![Kareteka Logo](pics/karateka.png)
 
