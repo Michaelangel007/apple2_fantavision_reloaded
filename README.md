@@ -738,6 +738,8 @@ I'll use the prefix:
 
                             rwts_DestAddr           = $B3E9 ; ProDOS block load dest
 
+                            Decode02AA              = $200  ; Y = $AA .. $00 = -56 .. 0
+
                             ORG $B000
 
     B000:4C 51 B4   RWTS_ReadTrack:      JMP Do_ReadTrack   ; [0] Y = Track, A = Addr
@@ -756,38 +758,41 @@ I'll use the prefix:
     B011:86 FD              STX rwts_SlotX16        ; $E6 = Pointer to Dest Address
     B013:8A                 TXA
     B014:09 8C              ORA #<DRIVE_DATA        ; DRIVE_DATA = $C08C
-    B016:8D 70 B0           STA FixupA+1
-    B019:8D 87 B0           STA FixupB+1
-    B01C:8D 9D B0           STA _B09C+1
-    B01F:8D B1 B0           STA _B0B0+1
-    B022:8D C6 B0           STA _B0C5+1
+    B016:8D 70 B0           STA FixupA+1            ; *** SELF-MODIFYING CODE: LDX $C0xC
+    B019:8D 87 B0           STA FixupB+1            ; *** SELF-MODIFYING CODE: LDX $C0xC
+    B01C:8D 9D B0           STA FixupC+1            ; *** SELF-MODIFYING CODE: LDX $C0xC
+    B01F:8D B1 B0           STA FixupD+1            ; *** SELF-MODIFYING CODE: LDX $C0xC
+    B022:8D C6 B0           STA FixupE+1            ; *** SELF-MODIFYING CODE: LDX $C0xC
 
     B025:A5 E6              LDA rwts_LoadAddr
     B027:A4 E7              LDY rwts_LoadAddr+1
-    B029:8D C3 B0           STA _B0C2+1
-    B02C:8C C4 B0           STY _B0C2+2
+                    Fix3:
+    B029:8D C3 B0           STA Data3+1             ; *** SELF-MODIFYING CODE: STA $FFFF,Y
+    B02C:8C C4 B0           STY Data3+2             ; *** SELF-MODIFYING CODE
     B02F:38                 SEC
     B030:E9 54              SBC #$54
-    B032:B0 02              BCS                     ;v $B036 TODO
+    B032:B0 02              BCS Fix2                ;v $B036
     B034:88                 DEY
     B035:38                 SEC
+                    Fix2:                           ; TODO: FIXME:
+    B036:8D AB B0           STA Data2+1             ; *** SELF-MODIFYING CODE: STA $FFFF,Y
+    B039:8C AC B0           STY Data2+2             ; *** SELF-MODIFYING CODE
+    B03C:E9 57              SBC #$57                ; $56 nibbles + 1
+    B03E:B0 01              BCS Fix1                ;v $B041
+    B040:88                 DEY
+                    Fix1:
+    B041:8D 84 B0           STA Data1+1             ; *** SELF-MODIFYING CODE: STA $FFFF,Y
+    B044:8C B5 B0           STY Data1+2             ; *** SELF-MODIFYING CODE
 
-    B036:8D AB B0           STA                     ; $B0AA+1
-    B039:8C AC B0           STA                     ; $B0AA+2
-    B03C:E9 57              SBC #$57
-    B03E:B0 01              BCS                     ;v $B041
-
-    B041:8D 84 B0           STA                     ; $B083+1
-    B044:8C B5 B0           STA                     ; $B083+2
-    B047:A0 20              LDY #$20
-
+    B047:A0 20              LDY #$20                ; Must find Data Header within 32 nibbles
+                    NextDataHeader:
     B049:88                 DEY
                     DataProlog1:
     B04C:BD 8C C0           LDA DRIVE_DATA,X
     B04F:10 FB              BPL DataProlog1
                     TestProlog1:
     B051:49 D5              EOR #$D5
-    B053:D0 F4              BNE _B049
+    B053:D0 F4              BNE NextDataHeader      ;^ $B049
     B055:EA                 NOP
                     DataProlog2:
     B056:BD 8C C0           LDA DRIVE_DATA,X
@@ -800,42 +805,82 @@ I'll use the prefix:
     B063:10 FB              BPL DataProlog3
                     TestProlog3:
     B065:C9 AD              CMP #$AD
-    B067:D0 E8              BNE                     ;^ $B051
-    B069:A0 AA              LDY #$AA                ;Decode #$56 nibbles into $2AA..$2FF
+    B067:D0 E8              BNE TestProlog1         ;^ $B051
+
+    B069:A0 AA              LDY #$AA                ;Decode 1st $56 nibbles into $2AA..$2FF
     B06B:A9 00              LDA #$00
                     NextChecksum:
     B06D:85 E1              STA rwts_ReadChecksum
                     FixupA:
     B06F:AE 8C C0           LDX DRIVE_DATA          ; *** SELF-MODIFIED CODE @ $B016
     B072:10 FB              BPL FixupA              ; A = $96 .. $FF
-    B074:BD 00 B1           LDA DiskNibble64-$96,X  ; [nib]
-    B077:99 00 02           STA Decode200,Y         ; $02AA .. $02FF buffer of $56 bytes
+    B074:BD 00 B1           LDA Base64-$96,X        ; Base64[ A ]
+    B077:99 00 02           STA Decode02AA,Y        ; $02AA .. $02FF buffer of $56 bytes
     B07A:45 E1              EOR rwts_ReadChecksum
     B07C:C8                 INY
     B07D:D0 EE              BNE NextChecksum        ;^ $B06D
 
-    B07F:A0 AA              LDY #$AA
+    B07F:A0 AA              LDY #$AA                ;Decode 2nd $56 nibbles = $AC total
     B081:D0 03              BNE FixupB              ;v $B086, always
+                    Data1:
     B083:99 FF FF           STA $FFFF,Y             ; *** SELF-MODIFYING code!
-
                     FixupB:
-    B086:AE 8C C0           LDX $C08C               ; *** SELF-MODIFIED CODE @ $B019
+    B086:AE 8C C0           LDX DRIVE_DATA          ; *** SELF-MODIFIED CODE @ $B019
     B089:10 FB              BPL FixupB
-    B08B:
+    B08B:5D 00 B1           EOR Base64-$96,X        ; Base64[ A ]
+    B08E:BE 00 02           LDX Decode02AA,Y        ; $2AA .. $2FF
+    B091:5D 00 B2           EOR Decode6to7,X        ;
+    B094:C8                 INY
+    B095:D0 EC              BNE Data1               ;^ $B083
+    B097:48                 PHA                     ; Save very last byte for $B0E6
+    B098:29 FC              AND #$FC                ; 1111_1100
 
-... TODO ...
-
-
+    B09A:A0 AA              LDY #$AA                ; Decode 3rd $56 nibbles = $102 total
+                    FixupC:
+    B09C:AE 8C C0           LDX DRIVE_DATA          ; *** SELF-MODIFIED CODE @ $B01C
+    B09F:10 FB              BPL FixupC
+    B0A1:5D 00 B1           EOR Base64-$96  ,X
+    B0A4:BE 00 02           LDX Decode02AA  ,Y
+    B0A7:5D 01 B2           EOR Decode6to7+1,X
+                    Data2:
+    B0AA:99 FF FF           STA $FFFF,Y             ; *** SELF-MODIFIED CODE @ $B036
+    B0AE:C8                 INY
+    B0AE:D0 EC              BNE FixupC              ;^ $B09C
+                    FixupD:
+    B0B0:AE 8C C0           LDX DRIVE_DATA
+    B0B3:10 FB              BPL FixupD
+    B0B5:29 FC              AND #$FC                ; 1111_1100
+    B0B7:A0 AC              LDY #$AC                ; Decode 4th $54 = $156 total (342)
+                    Map3:
+    B0B9:5D 00 B1           EOR Base64-$96  ,X
+    B0BC:BE FE 01           LDX Decode02AA-2,Y
+    B0BF:5D 02 B2           EOR Base6to7+2  ,X
+                    Data3:
+    B0C2:99 FF FF           STA $FFFF,Y             ; *** SELF-MODIFIED CODE @ $B029
+                    FixupE:
+    B0C5:AE 8C C0           LDX DRIVE_DATA
+    B0C8:10 FB              BPL FixupE
+    B0CA:C8                 INY
+    B0CB:D0 EC              BNE Map3                ;^ $B0B9
+    B0CD:29 FC              AND #$FC                ; 1111_1100
+    B0CF:5D 00 B1           EOR Base64-$96,X
+    B0D2:A6 FD              LDX rwts_SlotX16        ; Done with X-reg
+    B0D4:A8                 TAY                     ; Save checksum
+    B0D5:D0 09              BNE DataBad             ;v $B0E0
                     DataEpilog1:
-    B0DC:C9 DE              CMP #$DE
+    B0D7:BD 8C C0           LDA DRIVE_DATA,X
+    B0DA:10 FB              BPL DataEpilog1
+                    TestEpilog1:                    ; Only checks 1st nib: DE
+    B0DC:C9 DE              CMP #$DE                ; Not full DE AB !
     B0DE:B0 02              BCS DataEpilogGood      ;v $B0E2
+                    DataBad:
     B0E0:38                 SEC
     B0E1:24                 DFB $24                 ; bit $zp
                     DataEpilogGood:
     B0E2:18                 CLC
-    B0E3:68                 PLA
+    B0E3:68                 PLA                     ; Restore last byte @ $B097 !
     B0E4:A0 55              LDY #$55
-    B0E6:91 E6              STY (rwts_LoadAddr),Y
+    B0E6:91 E6              STA (rwts_LoadAddr),Y
     B0E8:60                 RTS
 
                     Do_Seek:
@@ -944,7 +989,7 @@ I'll use the prefix:
     B190:00 00 00 00
     B194:00 00
 
-                    DiskNibble64:
+                    Base64:                     ;Map valid disk nibble to base 64
                                                 ;Valid Disk Nibbles (6-bit * 4) Lookup Table
                                                 ;[+0 +1 +2 +3 +4 +5 +6 +7]
                                                 ;[+8 +9 +A +B +C +D +E +F]
@@ -980,6 +1025,7 @@ I'll use the prefix:
                                                 ; * 4 bytes/nibble
                                                 ; * 4'th byte not used -- used as padding since X*3 = x*2 + x = too slow
                                                 ; * Sequence in psuedo-base 4: 0,2,1,3
+                        Decode6to7:             ; Decode 6-bit to 7-bit
     B200:00 00 00 96        DFB $00,$00,$00,$96 ; [00]
     B204:02 00 00 97        DFB $02,$00,$00,$97 ; [01]
     B208:01 00 00 9A        DFB $01,$00,$00,$9A ; [02]
