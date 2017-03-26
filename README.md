@@ -2971,26 +2971,26 @@ Tracks $00 through $21 we find the following disk nibbles
 for Track $00, Sector $0:
 
 ```
-D5 AA 96 FF FE AA AA AA AA FF FE DE AB
-\______/ \___/ \___/ \___/ \___/ \___/
- Address  Vol   Trk   Sec   XOR  Address
-Prologue  254   $00   $0   Check Epilogue
+    D5 AA 96 FF FE AA AA AA AA FF FE DE AB
+    \______/ \___/ \___/ \___/ \___/ \___/
+     Address  Vol   Trk   Sec   XOR  Address
+    Prologue  254   $00   $0   Check Epilogue
 
-...random sync bytes...
+    ...random sync bytes...
 
-D5 AA AD ...342... DE AA EB
-\______/           \______/
- Data               Data
-Prologue           Epilogue
+    D5 AA AD ...342... DE AA EB
+    \______/           \______/
+     Data               Data
+    Prologue           Epilogue
 ```
 
 The standard Address bit-stream for a DOS 3.3 disk is:
 
 ```
-D5 AA 96 vv vv tt tt ss ss cc cc DE AA EB
-\______/ \___/ \___/ \___/ \___/ \______/
- Address Vol.  Track Sec.  Check Address
-Prologue                         Epilogue
+    D5 AA 96 vv vv tt tt ss ss cc cc DE AA EB
+    \______/ \___/ \___/ \___/ \___/ \______/
+     Address Vol.  Track Sec.  Check Address
+    Prologue                         Epilogue
 ```
 
 Everything looks kosher with _Fantavision_ -- except
