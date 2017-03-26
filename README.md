@@ -4230,10 +4230,11 @@ TODO: Determine how many movies from Side B we can fit onto Side A ?
 
 I'm not the only who wished history had turned out different. :-/
 
-NO, I'm not talking about Hitler.  See, [Godwin's Law](https://en.wikipedia.org/wiki/Godwin's_law)
+NO, I'm not talking about Hitler or some bad Sci-Fi Deus Ex Machina time travel cop-out.
+See, [Godwin's Law](https://en.wikipedia.org/wiki/Godwin's_law)
 automatically got invoked and we didn't even do anything!
 
-Anyways, [another Fantavision Fan]([https://68kmla.org/forums/index.php?/topic/5766-a-fictional-history-of-fantavision/])
+Anyways, [another Fantavision Fan](https://68kmla.org/forums/index.php?/topic/5766-a-fictional-history-of-fantavision/)
 wrote up this serious/funny lament of Fantavision history:
 
 I always thought that this was a pretty neat vector animation program for the Apple II. What do you think would happen if it went on and was still around today instead of Flash? Here's what I think would come about:
