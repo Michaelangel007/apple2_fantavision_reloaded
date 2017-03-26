@@ -311,7 +311,7 @@ but I'll be nice guy and provide a fully documented disassembly:
 
 ```asm
                     ; Disk Drive P5 PROM Usage ZP and IO
-                            P5.Buff             = $26   ; 16-bit pointer to dest
+                            P5.Dest             = $26   ; 16-bit pointer to dest
                             P5.SlotX16          = $2B   ; i.e. $60 = Slot 6
                             P5.TrackHave        = $40
                             P5.WantTrack        = $41   ;
@@ -427,7 +427,7 @@ but I'll be nice guy and provide a fully documented disassembly:
     0863:85 3D              STA P5.SecWant          ;
     0865:B9 CE 08           LDA DestPage,Y          ;
     0868:F0 05              BEQ NextSector          ;v $086F Never read into Zero Page!
-    086A:85 27              STA P5.Buff+1           ; Tell P5 PROM where in mem we want to load
+    086A:85 27              STA P5.Dest+1           ; Tell P5 PROM where in mem we want to load
 
                     CallReadSec:                    ; *** SELF-MODIFIED @ $084F
     086C:20 5C 00           JSR $005C               ; CALL P5 PROM Read Sector @ $C65C
@@ -526,7 +526,7 @@ it comes from the P5 PROM ReadSector routine @ $C65C.
 On my //e it looks this:
 
 ```asm
-                            P5.Buff             = $26   ; 16-bit pointer to dest
+                            P5.Dest             = $26   ; 16-bit pointer to dest
                             P5.SlotX16          = $2B   ; i.e. $60 = Slot 6
 
                             ; Magic Numbers "disk nisk nibbles"
@@ -599,7 +599,7 @@ On my //e it looks this:
     C6BF:10 FB              BPL ^14         ;^ $C6BC
     C6C1:59 D6 02           EOR $36C-$96,Y
     C6C4:A4 3C              LDY P5.Nibs
-    C6C6:91 26              STA (P5.Buff),Y
+    C6C6:91 26              STA (P5.Dest),Y
     C6C8:C8                 INY
     C6C9:D0 EF              BNE ^13         ;^ $C6BA
     C6CB:BC 8C C0   ^15     LDY DRIVE_DATA,X
@@ -611,16 +611,16 @@ On my //e it looks this:
     C6D7:A2 56      ^17     LDX #$56
     C6D9:CA         ^18     DEX
     C6DA:30 FB              BMI ^17         ; $C6D7
-    C6DC:B1 26              LDA (P5.Buff),Y
+    C6DC:B1 26              LDA (P5.Dest),Y
     C6DE:5E 00 03           LSR $0300,X     ; $0300[ $00 .. $55 ]
     C6E1:2A                 ROL
     C6E2:5E 00 03           LSR $0300,X     ; $0300[ $00 .. $55 ]
     C6E5:2A                 ROL
-    C6E6:91 26              STA (P5.Buff),Y
+    C6E6:91 26              STA (P5.Dest),Y
     C6E8:C8                 INY
     C6E9:D0 EE              BNE ^18         ;^ $C6D9
 
-    C6EB:E6 27              INC P5.Buff+1   ; DestAddr += $0100
+    C6EB:E6 27              INC P5.Dest+1   ; DestAddr += $0100
     C6ED:E6 3D              INC P5.SecWant  ; SectorsLoaded++
     C6EF:A5 3D              LDA P5.SecWant  ;    also alias for NextSectorToLoad
     C6F1:CD 00 08           CMP P5.SecTotal ; SectorsLoaded <= SectorsTotal ?
