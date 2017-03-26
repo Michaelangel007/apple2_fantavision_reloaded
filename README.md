@@ -1,4 +1,4 @@
-Last updated March 25, 2017.
+Last updated: Sunday, March 26, 2017.
 
 # Fantavision (Reloaded)
 
