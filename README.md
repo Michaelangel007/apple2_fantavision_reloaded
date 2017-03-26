@@ -313,8 +313,10 @@ but I'll be nice guy and provide a fully documented disassembly:
                     ; Disk Drive P5 PROM Usage ZP and IO
                             P5.Buff             = $26   ; 16-bit pointer to dest
                             P5.SlotX16          = $2B   ; i.e. $60 = Slot 6
+                            P5.TrackHave        = $40
                             P5.WantTrack        = $41   ;
 
+                            P5.Nibs             = $3C   ; counter for $56 nibbles
                             P5.SecWant          = $3D   ;
                             P5.SecTotal         = $0800 ; T00S0 @ $00: total number of sectors to load
 
@@ -577,26 +579,26 @@ On my //e it looks this:
     C699:28                 PLP             ; Don't care about carry, restore stack
     C69A:C5 3D              CMP P5.SecWant  ; A=SectorHave == SectorWant? (init $00 from $C654)
     C69C:D0 BE              BNE ^0          ;^ $C65C
-    C69E:A5 40              LDA TrackHave   ; (read from prologue)
+    C69E:A5 40              LDA P5.TrackHave    ; (read from prologue)
     C6A0:C5 41              CMP TrackWant   ;
     C6A2:D0 B8              BNE ^0          ;^ $C65C !=
     C6A4:B0 B7              BCS ^1          ;^ $C65D >=
     C6A6:A0 56      ^10     LDY #$56        ; Decode $56 nibbles in 6&2
-    C6A8:84 3C      ^11     STY $3C
+    C6A8:84 3C      ^11     STY P5.Nibs
 
     C6AA:BC 8C C0   ^12     LDY DRIVE_DATA,X
     C6AD:10 FB              BPL ^12         ;^ $C6AA
     C6AF:59 D6 02           EOR $36C-$96,Y  ; [$96] $36C:00, $36C-$96=$2D6
-    C6B2:A4 3C              LDY $3C         ; [$FF] $3D5:3F, $2D6+$FF=$3D5
+    C6B2:A4 3C              LDY P5.Nibs     ; [$FF] $3D5:3F, $2D6+$FF=$3D5
     C6B4:88                 DEY
     C6B5:99 00 03           STA $0300,Y     ; Buf1 = [$300 .. $35B]
     C6B8:D0 EE              BNE ^11         ;^ $C6A8
 
-    C6BA:84 3C      ^13     STY $3C         ; Y = #FF
+    C6BA:84 3C      ^13     STY P5.Nibs     ; Y = #FF
     C6BC:BC 8C C0   ^14     LDY DRIVE_DATA,X
     C6BF:10 FB              BPl ^14         ;^ $C6BC
     C6C1:59 D6 02           EOR $36C-$96,Y
-    C6C4:A4 3C              LDY $3C
+    C6C4:A4 3C              LDY P5.Nibs
     C6C6:91 26              STA ($26),Y
     C6C8:C8                 INY
     C6C9:D0 EF              BNE ^13         ;^ $C6BA
