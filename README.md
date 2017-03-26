@@ -73,7 +73,7 @@ This was in the days before:
 * Macromedia's [Flash](https://en.wikipedia.org/wiki/Adobe_Flash)
 became ubiquitous,
 
-* and Sony released their PS2 puzzle game with the same name
+* and Sony released their PS2 launch title puzzle game with the same name
 [Fantavision](http://www.imdb.com/title/tt0384947/),
 
 ![PS2 Box Front](pics/ps2_fantavision_box_front.jpg)
