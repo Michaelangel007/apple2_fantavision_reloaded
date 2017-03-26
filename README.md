@@ -751,11 +751,22 @@ I'll use the prefix:
     B00F:38                 SEC                             ; Error TODO: Who calls us???
     B010:60                 RTS
 
+                    ; The main "workhorse" -- read one sector
+                    ; Called internally at $B366
+                    ; Called externally by the user indirectly via:
+                    ;
+                    ; * RWTS_ReadTrack
+                    ; * RWTS_LoadCode
+                    ; * RWTS_LoadBlocks
+                    ; * RWTS_ReadTrackQuiet
+                    ;
                     ; ====================
-                    ; X = Slot * $10
+                    ; X  = Slot * $10
+                    ; E6 = Pointer to Dest Address Low
+                    ; E7 = Pointer to Dest Address High
                     ; ====================
                     RWTS_ReadSector
-    B011:86 FD              STX rwts_SlotX16        ; $E6 = Pointer to Dest Address
+    B011:86 FD              STX rwts_SlotX16
     B013:8A                 TXA
     B014:09 8C              ORA #<DRIVE_DATA        ; DRIVE_DATA = $C08C
     B016:8D 70 B0           STA FixupA+1            ; *** SELF-MODIFYING CODE: LDX $C0xC
