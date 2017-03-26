@@ -1573,7 +1573,7 @@ Here is a "difference" between the Original and Black Bag logos:
 
 At least they fixed the grammar, right? `Br0derbund presents`
 
-What were talkin about? Oh yeah, the specifics of the Black Bag crack.
+What were we talking about again? Oh yeah, the specifics of the Black Bag crack. :-)
 
 On Track $15, Sector $5 @ $B500 it uses:
 
@@ -1610,11 +1610,10 @@ _That_ code looks like this:
 
 Looks like this was an amateur rush job
 
-* if you try to boot this version in Slot 5 it will fail.
-* They waste an entire Track for 2 sectors
+* If you try to boot this version in Slot 5 it will fail,
+* They waste an entire Track $22 for 2 sectors,
 * This "loader" code is bloated taking 41 bytes compared to 19 bytes needed
   to do the job. We'll cover this in _Cracking Step 1: The Easy Stuff_
-
 
 Someone even patched the backup utility !
 
