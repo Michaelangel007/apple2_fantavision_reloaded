@@ -580,7 +580,7 @@ On my //e it looks this:
     C69E:A5 40              LDA TrackHave   ; (read from prologue)
     C6A0:C5 41              CMP TrackWant   ;
     C6A2:D0 B8              BNE ^0          ;^ $C65C !=
-    C6A4:B0 B7              BCS ^1          ;^ $C65D <=
+    C6A4:B0 B7              BCS ^1          ;^ $C65D >=
     C6A6:A0 56      ^10     LDY #$56        ; Decode $56 nibbles in 6&2
     C6A8:84 3C      ^11     STY $3C
 
