@@ -1563,7 +1563,7 @@ No, I'm NOT talking about the "Names", but _these_ changes:
 * the `f` in Software
 * Adding stray pixels?
 
-For comparision here is the original logo:
+For comparison here is the original logo:
 
 * ![Logo](pics/logo.png)
 
