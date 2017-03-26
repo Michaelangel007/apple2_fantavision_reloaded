@@ -2930,14 +2930,14 @@ To see Token 13
 The Applesoft "Fantavision Menu" returns via CALL 768
 
 ```asm
-0300:A9 60     LDA #$60
-0302:8D 50 40  STA $4050
-0306:4C 00 60  JMP $6000  FANTA_INIT
-0309:20 26 03  JSR $0326
-030B:A9 02     LDA #$02
-030D:85 40     STA $40
-030F:20 00 B3  JSR $B300
-0312:4C 1B 03  JMP $031B
+    0300:A9 60     LDA #$60
+    0302:8D 50 40  STA $4050
+    0306:4C 00 60  JMP $6000  FANTA_INIT
+    0309:20 26 03  JSR $0326
+    030B:A9 02     LDA #$02
+    030D:85 40     STA $40
+    030F:20 00 B3  JSR $B300
+    0312:4C 1B 03  JMP $031B
 ```
 
 ## Boot Stage Memory Map
