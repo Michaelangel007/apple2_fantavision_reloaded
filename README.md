@@ -593,7 +593,7 @@ On my //e it looks this:
     C6CB:BC 8C C0   ^15     LDY DRIVE_DATA,X
     C6CE:10 FB              BPL ^15
     C6D0:59 D6 02           EOR $36C-$96,Y
-    C6D3:D0 87      ^16     BNE             ;^ $C65C
+    C6D3:D0 87      ^16     BNE ^0          ;^ $C65C used as trampoline by $C6F6
 
     C6D5:A0 00              LDY #$00
     C6D7:A2 56      ^17     LDX #$56
