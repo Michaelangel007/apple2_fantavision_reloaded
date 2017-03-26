@@ -3027,7 +3027,9 @@ The spelling of "cracked" -- kracked -- is simply part of this "culture"
 or "warez scene" as it was (self) called.
 "Cracking" is the (fine) art of removing copy protection.
 
-How can we bypass the two nibble counts used?
+How can we bypass the two nibble counts used on the original disk?
+
+* ![Disk](pics/fantavision_disk.jpg)
 
 Recall that Boot Stage 2 at $B500, reads in the 4&4 encypted Boot Stage 3
 into $BC00 .. $BFFF. The code at $BC00 .. $BD26 is used by the Backup Utility
