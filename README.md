@@ -257,6 +257,9 @@ Let's turn off that drive motor so we don't wear the drive (and disk) out.
 ```
     C0E8:1
 ```
+<hr>
+
+NOTE: Disk Motor
 
 Technically you don't need to _store_ any thing at the Drive Motor IO location.
 Even a read will trigger turning off the drive motor:
@@ -264,6 +267,11 @@ Even a read will trigger turning off the drive motor:
 ```
     C0E8
 ```
+
+I _prefer_ to be explicit since you accidently press `RETURN` again
+the System Monitor will show C0E9 and turn the **drive 2** motor on!
+
+<hr>
 
 We want to save this puppy so let's move the Boot Stage 1 to a safe place ...
 
