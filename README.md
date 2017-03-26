@@ -63,19 +63,24 @@ _"Get off my LAN, Grandpa"_
 * -- Any Generation Z kid born in the new millennium with WIFI.
 
 Before Macromedia's [Flash](https://en.wikipedia.org/wiki/Adobe_Flash)
-became ubiquitous back in 1985
+became ubiquitous and Sony released their PS2 puzzle game with the same name
+[Fantavision](http://www.imdb.com/title/tt0384947/),
+
+![PS2 Box Front](pics/ps2_fantavision_box_front.jpg)
+
+the publisher
 [Brøderbund](https://en.wikipedia.org/wiki/Broderbund)
-released a fantastic animation program called `Fantavision`
+released a fantastic animation program called `Fantavision` back in 1985.
 
 * ![Box Front](pics/fantavision_box_front.jpg)
 
-The box has definitely seen better days:
+My box has definitely seen better days:
 
 * ![Box Back](pics/fantavision_box_back.jpg)
 
 You gotta love the marketing people. They couldn't even:
 
-* Keep the aspect ratio correct
+* Keep the aspect ratio correct, and
 * Had to use a MOCKUP for the screen !
 
 Here is a picture with an _actual_ screenshot with the correct aspect ratio:
@@ -4427,8 +4432,9 @@ in 2010 until Flash _finally_ died ~2017.
 
 # Credits
 
-* Nick for proofreading
-* 4am and qkumba for their crack notes. Love, Love, Love reading them!
+* Nick Westgate for proofreading
+* 4am and qkumba for their crack notes. Love, Love, LOVE reading them!
 * Don Worth and Pieter Lechner for two mediocre books:
   * _"Beneath Apple DOS"_ and
   * _"Beneath Apple ProDOS"_
+* Dave Voyles for the nudge to include PS2 Fantavision
