@@ -213,6 +213,29 @@ We end up with this "error" screen:
 *
 ```
 
+<hr>
+
+NOTE: Laser 128
+
+If you are on a Laser 128 or 128 EX system the 9600G trick _won't_ work.
+You'll need to add these commands / patches as well:
+
+```
+    C600:0
+    9800<C800.C8FFM
+    960D:98
+    9610:98
+    9660:98
+    9669:98
+    9696:96
+    96D7:98
+    96EA:98
+```
+
+<hr>
+
+
+
 Let's turn off that drive motor so we don't wear the drive (and disk) out.
 
 ```
