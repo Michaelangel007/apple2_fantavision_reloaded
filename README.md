@@ -4230,4 +4230,13 @@ TODO: Determine how many movies from Side B we can fit onto Side A ?
 * [ ] `Fantavision.BIN` loadable under DOS 3.3
 * [ ] Movie Format
 * [ ] Movie Player
-* [ ] `Assembly Source Listing` for Fantavision
+* [ ] `Assembly Source Listing` (reverse engineered) for Fantavision
+
+
+# Credits
+
+* Nick for proofreading
+* 4am and qkumba for their crack notes. Love, Love, Love reading them!
+* Don Worth and Pieter Lechner for two mediocre books:
+  * _"Beneath Apple DOS"_ and
+  * _"Beneath Apple ProDOS"_
