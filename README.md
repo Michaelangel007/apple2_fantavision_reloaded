@@ -281,7 +281,7 @@ We want to save this puppy so let's move the Boot Stage 1 to a safe place ...
 
 ... and reboot with our `Fanta.Work` disk so we can save it.
 
-I already have a work ProntoDOS disk in Drive 5 so I'll be using ...
+I already have my ``Fanta.Work` disk in Drive 5 so I'll be using ...
 
 ```
     C500G
@@ -656,7 +656,7 @@ Let's map out the Track/Sector (T/S) boot stages
 # Boot Tracing Stage 1b
 
 Since we'll be typing in the same commands over and over again
-let's make a "Turn-Key" system on our DOS data disk.
+let's make a "Turn-Key" system on our `Fanta.Work` DOS data disk.
 
 ```asm
     1EEE:A2 00      LDX #$00
