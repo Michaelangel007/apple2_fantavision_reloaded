@@ -1136,9 +1136,9 @@ I'll use the prefix:
                     RWTS_Read16:
     B333:A2 0F              LDX #$0F            ; 16 sectors to load
                     MapLog2Phys:
-    B335:BC A9 B3           LDY $B3A9,X         ; ProDOS Logical Sector
-    B338:B9 C9 B3           LDA $B3C9,Y
-    B33B:9D D9 B3           STA $B3D9,X
+    B335:BC A9 B3           LDY $B3A9,X         ; TODO: FIXME ProDOS Logical Sector
+    B338:B9 C9 B3           LDA $B3C9,Y         ; TODO: FIXME
+    B33B:9D D9 B3           STA $B3D9,X         ; TODO: FIXME
     B33E:CA                 DEX
     B33F:10 F4              BPL MapLog2Phys     ;^ $B335
 
@@ -1152,7 +1152,7 @@ I'll use the prefix:
     B34B:F0 31              BEQ ReadError       ;v $B37E
     B34D:20 26 B1           JSR RWTS_ReadPrologue
     B350:B0 F7              BCS AttemptRead     ;^ $B349
-    B352:A5 E4              LDA $E4
+    B352:A5 E4              LDA $E4             ; TODO: FIXME
     B354:C5 ED              CMP rwts_Track
     B356:D0 39              BNE                 ;v $B391
     B358:A4 E3              LDY rwts_SectorHave
