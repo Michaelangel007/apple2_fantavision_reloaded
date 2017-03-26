@@ -88,11 +88,14 @@ Speaking of the back of the box, what-the-heck is a picture of **Karateka** doin
 
 * ![Back Box Zoom](pics/fantavision_box_back_karateka.png)
 
-This background is from Karateka
+This background is from Karateka.  As John Romero corrected me once that is
+pronounced `Karateka`. :-) Oh wait, I'm supposed to be serious here.
+It is pronounced: `Care-Ah-Tea-Kah`.
+And here I thought it it was "Ka-rot-a-ka" but I digress.
 
 * ![Kareteka Logo](pics/karateka.png)
 
-At least the manual cover is pretty cool!
+At least the manual front cover (like the box front) is pretty cool!
 
 * ![Manual Cover](pics/fantavision_manual_cover.jpg)
 
