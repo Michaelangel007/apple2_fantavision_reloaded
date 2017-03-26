@@ -599,7 +599,7 @@ On my //e it looks this:
     C6BF:10 FB              BPL ^14         ;^ $C6BC
     C6C1:59 D6 02           EOR $36C-$96,Y
     C6C4:A4 3C              LDY P5.Nibs
-    C6C6:91 26              STA ($26),Y
+    C6C6:91 26              STA (P5.Buff),Y
     C6C8:C8                 INY
     C6C9:D0 EF              BNE ^13         ;^ $C6BA
     C6CB:BC 8C C0   ^15     LDY DRIVE_DATA,X
