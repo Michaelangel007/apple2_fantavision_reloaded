@@ -60,7 +60,22 @@ became ubiquitous back in 1985
 [Brøderbund](https://en.wikipedia.org/wiki/Broderbund)
 released a fantastic animation program called `Fantavision`
 
-* ![Logo](pics/logo.png)
+* ![Box Front](pics/fantavision_box_front.jpg)
+
+The box has definitely seen better days:
+
+* ![Box Back](pics/fantavision_box_back.jpg)
+
+You gotta love the marketing people. They couldnt' even
+
+* Keep the aspect ratio correct
+* Had to use a MOCKUP for the screen !
+
+* ![Box Back Aspect Ratio](pics/fantavision_box_aspectratio.jpg)
+
+At least the manual cover is pretty cool
+
+* ![Manual Cover](pics/fantavision_manual_cover.jpg)
 
 It had a "mouse cursor" and pull-down menus on the Apple II back in 1985 all 
 in glorious 6 color 280x192 resolution.
@@ -1503,7 +1518,7 @@ No, I'm NOT talking about the "Names", but _these_ changes:
 * the `f` in Software
 * Adding stray pixels?
 
-For comparision here is the original logo again:
+For comparision here is the original logo:
 
 * ![Logo](pics/logo.png)
 
