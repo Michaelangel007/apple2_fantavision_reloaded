@@ -62,17 +62,21 @@ _"Get off my LAN, Grandpa"_
 
 * -- Any Generation Z kid born in the new millennium with WIFI.
 
-Before Macromedia's [Flash](https://en.wikipedia.org/wiki/Adobe_Flash)
-became ubiquitous and Sony released their PS2 puzzle game with the same name
+Back in 1985
+[Brøderbund](https://en.wikipedia.org/wiki/Broderbund)
+released a fantastic animation program called `Fantavision`:
+
+* ![Box Front](pics/fantavision_box_front.jpg)
+
+This was in the days before:
+
+* Macromedia's [Flash](https://en.wikipedia.org/wiki/Adobe_Flash)
+became ubiquitous,
+
+* and Sony released their PS2 puzzle game with the same name
 [Fantavision](http://www.imdb.com/title/tt0384947/),
 
 ![PS2 Box Front](pics/ps2_fantavision_box_front.jpg)
-
-the publisher
-[Brøderbund](https://en.wikipedia.org/wiki/Broderbund)
-released a fantastic animation program called `Fantavision` back in 1985.
-
-* ![Box Front](pics/fantavision_box_front.jpg)
 
 My box has definitely seen better days:
 
