@@ -66,14 +66,16 @@ The box has definitely seen better days:
 
 * ![Box Back](pics/fantavision_box_back.jpg)
 
-You gotta love the marketing people. They couldnt' even
+You gotta love the marketing people. They couldn't even:
 
 * Keep the aspect ratio correct
 * Had to use a MOCKUP for the screen !
 
+Here is a picture with an _actual_ screenshot with the correct aspect ratio:
+
 * ![Box Back Aspect Ratio](pics/fantavision_box_back_aspectratio.jpg)
 
-At least the manual cover is pretty cool
+At least the manual cover is pretty cool!
 
 * ![Manual Cover](pics/fantavision_manual_cover.jpg)
 
@@ -87,12 +89,6 @@ Technically, no, but dithering gives the impression there are more colors.
 
 It is a pity it was never updated to use the Double Hi-Resolution graphics
 that the //e, //c, and Laser 128 supported. (YES, I'm aware there was a IIgs version.)
-
-* TODO: PIC: Disk
-
-* TODO: PIC: Box
-
-* TODO: PIC: Manual
 
 Back then I had many unanswered questions about it:
 
