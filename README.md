@@ -1198,7 +1198,7 @@ I'll use the prefix:
     B394:85 FF              STA rwts_HalfTrack_Have
     B396:A5 ED              LDA rwts_Track
     B398:20 E9 B0           JSR Do_Seek
-    B39B:4C 33 B3           JMP Read16Sectors
+    B39B:4C 33 B3           JMP RWTS_Read16     ;^ $B333
 
                     RWTS_UnloadSectors              ; Called @ $B312
     B39E:A0 0F              LDY #$0F                ; 16 Sectors to load -- TODO: CALLED from $B312
