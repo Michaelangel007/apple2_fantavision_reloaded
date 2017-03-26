@@ -313,12 +313,11 @@ but I'll be nice guy and provide a fully documented disassembly:
                     ; Disk Drive P5 PROM Usage ZP and IO
                             P5.Dest             = $26   ; 16-bit pointer to dest
                             P5.SlotX16          = $2B   ; i.e. $60 = Slot 6
-                            P5.TrackHave        = $40
-                            P5.WantTrack        = $41   ;
 
-                            P5.Nibs             = $3C   ; counter for $56 nibbles
                             P5.SecWant          = $3D   ;
-                            P5.SecTotal         = $0800 ; T00S0 @ $00: total number of sectors to load
+
+                            P5.TrackHave        = $40
+                            P5.TrackWant        = $41   ;
 
                             PHASE_MASK          = $03   ; 4 phases
                             PHASE0_OFF          = $C080
@@ -417,7 +416,7 @@ but I'll be nice guy and provide a fully documented disassembly:
     0852:A9 0F              LDA #$0F                ; Num Sectors to Read
     0854:85 52              STA NumSecLeft          ;
     0856:A9 15              LDA #$15                ; Track $15 contains Boot Stage 2
-    0858:85 41              STA P5.WantTrack        ;
+    0858:85 41              STA P5.TrackWant        ;
     085A:0A                 ASL                     ; $15 * 2 = $2A Half-Tracks
     085B:20 81 08           JSR BS.HalfTrackSeek    ;v $0881
 
