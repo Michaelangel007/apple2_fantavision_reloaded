@@ -3019,9 +3019,48 @@ to skip reading track 22.
 ## Kracking Fantavision
 
 Back in the day all the kids pretending to be cool used to use "3l33t" (elite) speak.
-The spelling of "cracked" -- kracked -- is simply part of this "culture"
+The altenative spelling of "cracked" -- kracked -- is simply part of this "culture"
 or "warez scene" as it was (self) called.
-"Cracking" is the (fine) art of removing copy protection.
+
+"Cracking", or Kracking -- however the heck you want to spell it,
+is the (fine) art of removing copy protection.  When you shell out $40 for a program
+you expect to be able to make a backup.  Disks get damaged, companies go out
+of business, and basically you, the customer, is screwed up shit-creek without a paddle.
+This is unacceptable.
+
+Of course some us, *cough*, also have _other_ reasons:
+
+* To learn,
+* Because we can,
+* The fastest way to motive a programmer is to tell them they _can't_ do something!
+
+_"Bet you can't copy this disk?"_
+
+_"Oh yeah? Let's see about that!"_
+
+Before the word _hacking_ got hijacked to mean _destructive intrusion_,
+hacking _originally_ meant a **benign curiosity.** HOW did something work?
+Learning for the sake of learning was the goal.
+
+And then the script kiddies and "black hats" wrecked it for everyone.
+People who started "trading" software without any moral considerations for
+respecting other people's property -- since the justification was:
+
+* Software is just a number afterall ...
+
+The problem is the original publishers didn't get their money.
+Next thing you know "hacking" is a "bad" thing.  Yeah, FUCK OFF MSM (main-stream media)!
+I'm still bitter about this corruption of words for some "agenda."
+
+The original "hacker culture" had an ethos or "Code of Conduct."
+You NEVER did anything out of malice.  Inspite of pubslishers treating
+you like crap and assuming you were one of those dirty "pirates."
+
+And thus the copy protection wars were started.
+
+Both sides not trusting the other -- and basically wanting to screw them over.
+
+Enough about the history lesson.
 
 How can we bypass the two nibble counts used on the original disk?
 
