@@ -1904,6 +1904,8 @@ And now for the moment of truth ...
     C050 C052 C054 C057
 ```
 
+![Logo](pics/logo.png)
+
 5. When you are done viewing ...
 
 ```asm
