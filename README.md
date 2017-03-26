@@ -2712,11 +2712,11 @@ NOTES:
 Here is a disassembly of the first few bytes of the Applesoft program.
 
 ```asm
-0800:08 0C 08 00 13 A5 AB 39 30 30 30 00
-     \/ \___/ \___/ \/ \/ \/ \/ \/ \/ \/
-   not  Addr  Line    GOTO 9 0  0  0  End-of-Line
-  used  Next  Num  ONERR
-        Statement
+    0800:08 0C 08 00 13 A5 AB 39 30 30 30 00
+         \/ \___/ \___/ \/ \/ \/ \/ \/ \/ \/
+       not  Addr  Line    GOTO 9 0  0  0  End-of-Line
+      used  Next  Num  ONERR
+            Statement
 ```
 
 Let's pivot that table to make it easier to read:
