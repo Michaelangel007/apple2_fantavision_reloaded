@@ -4447,7 +4447,7 @@ in 2010 until Flash _finally_ died ~2017.
 # Credits
 
 * Nick Westgate for proofreading
-* 4am and qkumba for their crack notes. Love, Love, LOVE reading them!
+* 4am, Antoine, and qkumba for their crack notes. Love, _Love_, **LOVE** reading them!
 * Don Worth and Pieter Lechner for two mediocre books:
   * _"Beneath Apple DOS"_ and
   * _"Beneath Apple ProDOS"_
