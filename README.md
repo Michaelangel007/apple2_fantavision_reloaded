@@ -4179,6 +4179,7 @@ TODO: Determine how many movies from Side B we can fit onto Side A ?
 
 # TODOs
 
+* [ ] "UNBACKUP"
 * [ ] `Fantavision.BIN` loadable under DOS 3.3
 * [ ] Movie Format
 * [ ] Movie Player
