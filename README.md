@@ -192,7 +192,7 @@ but let's take the more traditional approach.
 
 # Ye Olde Boot Tracing
 
-1. If you computer isn't already on, turn it on and press `CTRl-RESET`
+1. If you computer isn't already on, turn it on and press `CTRL-RESET`
 
 2. Insert the original Fantavision disk in Slot 6, Drive 1
 
