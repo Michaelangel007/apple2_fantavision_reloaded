@@ -49,7 +49,7 @@ Last updated March 25, 2017.
   * Deleted Files!?
 * In Search of a Better Beep, or two
 * Cramming everything on side A?
-* To Do
+* TODOs
 
 # Introduction
 
@@ -4174,10 +4174,10 @@ Fantavision also has Roland Gustafsson classic 'RW18' error "ZAP" @ $B380.
 
 So we have a TON of unused space now. How much of side B can we fit onto side A ?
 
-TODO
+TODO: Determine how many movies from Side B we can fit onto Side A ?
 
 
-# To Do
+# TODOs
 
 * [ ] `Fantavision.BIN` loadable under DOS 3.3
 * [ ] Movie Format
