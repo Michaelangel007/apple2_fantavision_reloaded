@@ -202,7 +202,9 @@ and didn't properly "exit" (JMP) to the right slot.
 
 If we were really bored we could write some boot sector tools
 on the blank disk in slot 6 and "chain" reverse engineering
-but let's take the more traditional approach.
+but let's take the more traditional approach. (Most Brøderbund products
+would zero memory on Ctrl-Reset and Reboot -- so while we _could_
+inspect memory this won't really help us with other programs.)
 
 # Ye Olde Boot Tracing
 
