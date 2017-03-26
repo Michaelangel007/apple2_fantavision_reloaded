@@ -242,6 +242,13 @@ Let's turn off that drive motor so we don't wear the drive (and disk) out.
     C0E8:1
 ```
 
+Technically you don't need to _store_ any thing at the Drive Motor IO location.
+Even a read will trigger turning off the drive motor:
+
+```
+    C0E8
+```
+
 We want to save this puppy so let's move the Boot Stage 1 to a safe place ...
 
 ```
