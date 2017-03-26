@@ -88,7 +88,7 @@ But isn't there more then 6 colors in that picture?
 Technically, no, but dithering gives the impression there are more colors.
 
 It is a pity it was never updated to use the Double Hi-Resolution graphics
-that the //e, //c, and Laser 128 supported. (YES, I'm aware there was a IIgs version.)
+that the //e (enhanced), //c, and Laser 128 supported. (YES, I'm aware there was a IIgs version.)
 
 Back then I had many unanswered questions about it:
 
