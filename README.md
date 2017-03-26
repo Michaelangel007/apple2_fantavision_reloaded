@@ -594,7 +594,7 @@ On my //e it looks this:
     C6B5:99 00 03           STA $0300,Y     ; Buf1 = [$300 .. $35B]
     C6B8:D0 EE              BNE ^11         ;^ $C6A8
 
-    C6BA:84 3C      ^13     STY P5.Nibs     ; Y = #FF
+    C6BA:84 3C      ^13     STY P5.Nibs     ; Y = #00
     C6BC:BC 8C C0   ^14     LDY DRIVE_DATA,X
     C6BF:10 FB              BPL ^14         ;^ $C6BC
     C6C1:59 D6 02           EOR $36C-$96,Y
