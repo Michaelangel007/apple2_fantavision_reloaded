@@ -748,8 +748,8 @@ I'll use the prefix:
     B009:4C E9 B0   RWTS_Seek:           JMP Do_Seek        ; [3] A = Track
     B00C:4C 62 B4   RWTS_ReadTrackQuiet: JMP Do_B462        ; [4] Y = Track, A = Addr, no zap if bad read
 
-    B00F:38                 SEC                             ; Error TODO: Who calls us???
-    B010:60                 RTS
+    B00F:38                 SEC                             ; Signal Error -- NOT used!!
+    B010:60                 RTS                             ; Wastes 2 bytes
 
                     ; The main "workhorse" -- read one sector
                     ; Called internally at $B366
