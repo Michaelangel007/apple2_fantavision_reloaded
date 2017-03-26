@@ -52,7 +52,9 @@ _"Everything you probably didn't want to know about Fantavision."_ :-)
 * In Search of a Better Beep, or two
 * Cramming everything on side A?
 * TODOs
+* An Alternate Time Line
 * Credits
+
 
 # Introduction
 
@@ -4222,6 +4224,46 @@ Fantavision also has Roland Gustafsson classic 'RW18' error "ZAP" @ $B380.
 So we have a TON of unused space now. How much of side B can we fit onto side A ?
 
 TODO: Determine how many movies from Side B we can fit onto Side A ?
+
+
+# An Alternate Time-Line
+
+I'm not the only who wished history had turned out different. :-/
+
+NO, I'm not talking about Hitler.  See, [Godwin's Law](https://en.wikipedia.org/wiki/Godwin's_law)
+automatically got invoked and we didn't even do anything!
+
+Anyways, [another Fantavision Fan]([https://68kmla.org/forums/index.php?/topic/5766-a-fictional-history-of-fantavision/])
+wrote up this serious/funny lament of Fantavision history:
+
+I always thought that this was a pretty neat vector animation program for the Apple II. What do you think would happen if it went on and was still around today instead of Flash? Here's what I think would come about:
+
+* 1988: Fantavision 2.0 is released. With this version, many other 8 bit platforms, such as the C64, the ZX Spectrum, the Amstrad CPC, the Atari 8 bit line, the MSX, the Sharp X1, and the PC-8801 are supported, along with more 16 and 32 bit platforms such as the Macintosh and X68000. Changes include faster and more compact vector Algorithms, support for digitized sound, an interface overhaul with support for scenes, which can be assigned backdrops and objects for each, export to standalone, and limited support for raster graphics and text.
+
+* 1990: Fantavision 3.0 Last version for 8 bit platforms. support for the Sharp X1 and MSX is dropped, and interactivity, along with the Fantascript scripting language, is added. Also, a unified Fantavision format, .FTV, is created to make exchange across platforms easier. Also, support for raster effects is added.
+
+* 1992: Fantavision 4.0 Fantavision is acquired by Macromind. This is also the first version without 8 bit support. Platform support added: FM Towns computers, Atari Falcon 030, and the Amiga 1200. In this version, support for animated rasters and more raster effects is added, along with 3D object support.
+
+* 1994: Fantavision 5.0 Last 16 bit version. In this version, support for 3D backdrops and cameras is added, along with 3D collision detection, and inverse kinematics for both 2D and 3D objects.
+
+* 1996: Fantavision 6.0 Fantavision goes online! The new online player goes through several name changes before finally settling on Vectorshock. support for 3D textures and lighting, as well as video (soundless), 2D raster backgrounds, and panoramic 3D backgrounds. scrapped names for Fantavision web player:
+
+- Fantavision Online
+- Fantavision Live
+- Fantavision Theater
+- Livevision
+- Liveweb
+- Livetheater
+- Futureshock
+- Vectorvision
+- Vectortheater
+- Vectorsplash
+- Vectorwave
+
+* 1999: Fantavision 7.0 Support for networking, video with sound, and many more vector and raster effects is added. Macromedia decides to release the Fantavision player as open source.
+
+* 2000: Fantavision 7.5 Fantavision now supports many more video formats, and very high quality video. The Fantavision file format is declared a standard by the ISO.
+
 
 
 # TODOs
