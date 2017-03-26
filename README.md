@@ -795,7 +795,7 @@ I'll use the prefix:
     B041:8D 84 B0           STA Data1+1             ; *** SELF-MODIFYING CODE: STA $FFFF,Y
     B044:8C B5 B0           STY Data1+2             ; *** SELF-MODIFYING CODE
 
-    B047:A0 20              LDY #$20                ; NOT used!!
+    B047:A0 20              LDY #$20                ; NOT used!! Wastes 2 bytes
                     NextDataHeader:                 ; The _intent_ was probably to
     B049:88                 DEY                     ; find the Data Header with 32 nibbles
                     DataProlog1:
