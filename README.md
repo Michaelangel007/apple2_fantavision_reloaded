@@ -57,7 +57,8 @@ _"Everything you probably didn't want to know about Fantavision."_ :-)
 # Introduction
 
 _"Get off my LAN, Grandpa"_
--- Any kid born in the new millenium with WIFI.
+
+* -- Any kid born in the new millennium with WIFI.
 
 Before Macromedia's [Flash](https://en.wikipedia.org/wiki/Adobe_Flash)
 became ubiquitous back in 1985 
