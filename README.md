@@ -75,6 +75,14 @@ Here is a picture with an _actual_ screenshot with the correct aspect ratio:
 
 * ![Box Back Aspect Ratio](pics/fantavision_box_back_aspectratio.jpg)
 
+Speaking of the back of the box, what-the-heck is a picture of **Karateka** doing there???
+
+* ![Back Box Zoom](pics/fantavision_box_back_karateka.png)
+
+This background is from Karateka
+
+* ![Kareteka Logo](pics/karateka.png)
+
 At least the manual cover is pretty cool!
 
 * ![Manual Cover](pics/fantavision_manual_cover.jpg)
