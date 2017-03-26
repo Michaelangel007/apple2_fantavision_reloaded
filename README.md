@@ -1561,7 +1561,7 @@ No, I'm NOT talking about the "Names", but _these_ changes:
 
 * the `S` in Software
 * the `f` in Software
-* Adding stray pixels?
+* Adding stray pixels
 
 For comparison here is the original logo:
 
@@ -1571,7 +1571,7 @@ Here is a "difference" between the Original and Black Bag logos:
 
 * ![Black Bag Difference](pics/logo_difference_blackbag.png)
 
-At least they fixed the grammar, right? `Br0derbund presents`
+At least they "fixed" the grammar, right? `Br0derbund presents`. **sigh** (No, they didn't)
 
 What were we talking about again? Oh yeah, the specifics of the Black Bag crack. :-)
 
