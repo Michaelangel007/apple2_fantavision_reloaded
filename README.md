@@ -623,7 +623,7 @@ On my //e it looks this:
     C6EF:A5 3D              LDA P5.SecWant  ;    also alias for NextSectorToLoad
     C6F1:CD 00 08           CMP P5.SecTotal ; SectorsLoaded <= SectorsTotal ?
     C6F4:A6 2B              LDX P5.SlotX16  ;
-    C6F6:90 DB              BCC ^16         ;^ $C6D3
+    C6F6:90 DB              BCC ^16         ;^ $C6D3 target ^0 is > +128 bytes away
 
     C6F8:4C 01 08           JMP $0801       ; $0800 = Num of Sectors to read
     C6FB:00                 DS $C700-*      ; unused last 5 bytes
