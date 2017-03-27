@@ -603,9 +603,9 @@ On my //e it looks this:
     C6B8:D0 EE              BNE ^11             ;^ $C6A8
 
     C6BA:84 3C      ^13     STY P5.Nibs         ; Y = #00
-    C6BC:BC 8C C0   ^14     LDY DRIVE_DATA,X
+    C6BC:BC 8C C0   ^14     LDY DRIVE_DATA,X    ; Can't use A ...
     C6BF:10 FB              BPL ^14             ;^ $C6BC
-    C6C1:59 D6 02           EOR $36C-$96,Y
+    C6C1:59 D6 02           EOR $36C-$96,Y      ; .. since A = checksum
     C6C4:A4 3C              LDY P5.Nibs
     C6C6:91 26              STA (P5.Dest),Y
     C6C8:C8                 INY
