@@ -389,8 +389,8 @@ but I'll be nice guy and provide a fully documented disassembly:
     081D:A9 FF              LDA #$FF                ;
     081F:8D FB 04           STA TXTHOLE31           ; Screen Text Hole Slot 3, Temp 1
 
-    0822:8D F3 03           STA RESET+1             ; Make Ctrl-Reset
-    0825:8D F4 03           STA RESET+2             ; do warm restart @ TODO: FIXME:
+    0822:8D F3 03           STA RESET+1             ; Make Ctrl-Reset do warm start
+    0825:8D F4 03           STA RESET+2             ; since $FFFC -> $3F4:FF != $3F3[0] XOR #$A5
 
     0828:8D 00 C0           STA STORE40             ;
     082B:8D 0C C0           STA CLR80VID            ;
