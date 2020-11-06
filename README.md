@@ -99,8 +99,15 @@ Speaking of the back of the box, what-the-heck is a picture of **Karateka** doin
 
 This background is from Karateka.  As John Romero corrected me once that is
 pronounced `Karateka`. :-) Oh wait, I'm supposed to be serious here.
-It is pronounced: `Care-Ah-Tea-Kah`.
-And here I thought it it was `Kah-rot-a-ka` but I digress.
+He mentioned it is pronounced: `Care-Ah-Tea-Kah`.
+And here I thought it it was `Kah-rot-a-ka`.
+
+* ![Karateka Pronunciation](pics/pronunciation.png)
+
+The funny thing, Karateka IS an existing word in Japanese, ????, so Jordan Mechner's
+pronouncation is rather strange.  Was this deliberate or an accident?
+
+But I digress...
 
 * ![Kareteka Logo](pics/karateka.png)
 
