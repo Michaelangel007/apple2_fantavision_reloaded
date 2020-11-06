@@ -104,7 +104,7 @@ And here I thought it it was `Kah-rot-a-ka`.
 
 * ![Karateka Pronunciation](pics/pronunciation.png)
 
-The funny thing, Karateka IS an existing word in Japanese, ????, so Jordan Mechner's
+The funny thing, Karateka IS an existing word in Japanese, カラテカ, so Jordan Mechner's
 pronouncation is rather strange.  Was this deliberate or an accident?
 
 But I digress...
