@@ -1,4 +1,4 @@
-Last updated: Sunday, March 26, 2017.
+Last updated: Friday, Nov. 6, 2020.
 
 # Fantavision (Reloaded)
 
@@ -2586,7 +2586,7 @@ DecodeToken:
 0DE9:8D         DFB CR
 0DEA:D4         ASC "To make a backup, you will need"
 0E09:8D         DFB CR
-0E0A:           ASC "one blacnk disk."
+0E0A:           ASC "one blank disk."
 0E19:8D         DFB CR
 0E1A:8D         DFB CR
 0E1B:           ASC "You will need to swap disks a number of "
