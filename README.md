@@ -1050,7 +1050,7 @@ I'll use the prefix:
                                                 ;Valid Disk Nibbles (6-bit * 4) Lookup Table
                                                 ;[+0 +1 +2 +3 +4 +5 +6 +7]
                                                 ;[+8 +9 +A +B +C +D +E +F]
-    B196:      00 04        DFB                 ; -- -- -- -- -- -- 96 97
+    B196:      00 04        DFB         $00,$04 ; -- -- -- -- -- -- 96 97
     B198:98 99 08 0C        DFB $98,$99,$08,$0C ; -- -- 9A 9B -- 9D 9E 9F
     B19C:9C 10 14 18        DFB $9C,$10,$14,$18 ;
     B1A0:A0 A1 A2 A3        DFB $A0,$A1,$A2,$A3 ; -- -- -- -- -- -- A6 A7
