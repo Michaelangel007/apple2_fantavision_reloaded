@@ -4323,6 +4323,35 @@ Fantavision has a nice "soft beep" instead of the classic "hard beep"
     0917:60                 RTS
 ```
 
+Relocating this to $300
+
+```
+0300:A0 20
+0302:A9 02
+0304:20 A8 FC
+0307:8D 30 C0
+030A:A9 24
+030C:20 A8 FC
+030F:8D 30 C0
+0312:88
+0313:D0 ED
+0315:60
+```
+
+And converting it to Applesoft DATA statements:
+
+```BASIC
+10 A=768:B=A+21: FOR I=A TO B:PRINT PEEK(I);",";:NEXT
+```
+
+We have this Applesoft BASIC program that replicates it:
+
+```BASIC
+    1 FOR A=768 TO 789:READ B:POKE A,B:NEXT
+    2 CALL 768
+    9 DATA 160,32,169,2,32,168,252,141,48,192,169,36,32,168,252,141,48,192,136,208,237,96
+```
+
 Fantavision also has Roland Gustafsson classic 'RW18' error "ZAP" @ $B380.
 (Track $15, Sector $3)
 
